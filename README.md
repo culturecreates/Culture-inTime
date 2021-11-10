@@ -1,7 +1,11 @@
-GLAMhack 2021 - Culture inTime 
+This project is licensed under the GNU General Public License v3.0
+
+Culture inTime 
 =========================
 
-GLAMhack 2021 provided the opportunity to continue working on Culture inTime, a sandbox for adding and visualizing Performing Arts Production metadata in a simple calendar-like user interface. Culture inTime was first developed during GLAMhack 2020. A few features have been added: 
+Culture inTime is a sandbox for adding and visualizing Performing Arts Production metadata in a simple calendar-like user interface. Culture inTime was first developed during GLAMhack 2020 and 2021. 
+
+New features: 
 * Anyone with the right skills can now add their own SPARQL queries of existing linked open data (LOD) sources
 * Anyone can now configure their own Spotlights based on data sources in Culture inTime
 
