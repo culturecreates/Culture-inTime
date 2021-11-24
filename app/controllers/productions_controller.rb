@@ -11,6 +11,13 @@ class ProductionsController < ApplicationController
   # GET /productions/1.json
   def show
     # get list of layers chained to this production
+    # TODO: make loading layers recursive
+    # TODO: make generic ?somevar --> SOMEVAR_PLACEHOLDER for any variable. (this is really cool. 
+    #       Looks into the SPARQL to find the placeholders and pulls in the corresponding variables from the parent sparql.
+    # TODO: join all ?param_placeholder strings. This can create a list of URIs or even a list of from <> from <> to load multiple musicbrains IDs
+    # TODO: using https://www.deezer.com/[artist/1558] from Wikidata and a sparql html template, construct an <iframe title="deezer-widget" src="https://widget.deezer.com/widget/dark/[artist/1558]/top_tracks" width="100%" height="300" frameborder="0" allowtransparency="true" allow="encrypted-media; clipboard-write"></iframe>
+
+
     puts "looking for production id #{@production.data_source.id}"
     layers = DataSource.all.select {|d| d.layers.ids == [@production.data_source.id]}
 
@@ -19,7 +26,15 @@ class ProductionsController < ApplicationController
     @details_list = []
     layers.each do |layer|
       puts "Getting layer #{layer.id}"
-      @details_list << loader.query_uri(layer, "<#{@production[:production_uri]}>")
+      layer_output = loader.query_uri(layer, "<#{@production[:production_uri]}>")
+      @details_list << layer_output
+      
+      if layer_output.to_s.include?("param_placeholder")
+        another_layer = DataSource.all.select {|d| d.layers.ids == [layer.id]}
+        another_output = loader.query_uri(another_layer.first, layer_output[0]["param_placeholder"]["value"])
+        @details_list << another_output
+      end
+
     end
 
   end
