@@ -1,38 +1,36 @@
 <% if @details_list.present? %>
 <% if @details_list.first.present? %>
 <div class="ui divider"></div>
-  <div class="meta">
+<div class="meta">
 
-  <% section_title = '' %>
-    
-    <% @details_list.first.each do |line| %>
-      <% if  section_title !=  line.dig('section','value') %>
-        <% section_title = line.dig('section','value') %>
-        <h2>
-          <%= line.dig('section','value') %>
-        </h2>
-      <% end %>
-      <% if line.dig('style','value') == "button" %>
-        <a href="<%= line.dig('content','value') %>">
-          <div class="right floated content">
-            <div class="ui primary button ">
-              <%= line.dig('label','value') %> 
-              <i class="right chevron icon"></i>
-            </div>
-          </div>
-        </a>
-      <% else %>
-        <% if line.dig('content','datatype') == 'http://www.w3.org/2001/XMLSchema#dateTime' %>
-          <%=  date_time_display(line.dig('content','value')) %> 
-        <% else %>
-          <%= line.dig('content','value') %> 
-        <% end %>
-         <br>
-      <% end %>
-
-     
+<% section_title = '' %>
+<% @details_list.each do |section| %>
+  <% section.each do |line| %>
+    <% if  section_title !=  line.dig('section','value') %>
+      <% section_title = line.dig('section','value') %>
+      <h2>
+        <%= line.dig('section','value') %>
+      </h2>
     <% end %>
-
+    <% if line.dig('style','value') == "button" %>
+      <a href="<%= line.dig('content','value') %>">
+        <div class="right floated content">
+          <div class="ui primary button ">
+            <%= line.dig('label','value') %> 
+            <i class="right chevron icon"></i>
+          </div>
+        </div>
+      </a>
+    <% else %>
+      <% if line.dig('content','datatype') == 'http://www.w3.org/2001/XMLSchema#dateTime' %>
+        <%=  date_time_display(line.dig('content','value')) %> 
+      <% else %>
+        <%= line.dig('content','value') %> 
+      <% end %>
+        <br>
+    <% end %>
+  <% end %>
+<% end %>
 </div>
 <% end %>
 <% end %>
