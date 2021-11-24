@@ -2,8 +2,8 @@ module ArtsdataAPI
   module V1
     # Main Client for Artsdata.ca
     class Client
-     # API_ENDPOINT = 'http://db.artsdata.ca'.freeze
-     API_ENDPOINT = 'http://www.sparql.org'.freeze
+      API_ENDPOINT = 'http://db.artsdata.ca'.freeze
+
       attr_reader :oauth_token
 
       def initialize(oauth_token: nil, graph_repository: 'artsdata')
@@ -15,9 +15,8 @@ module ArtsdataAPI
       def execute_sparql sparql
         @logger.info "sparql: #{sparql.truncate(8000).squish}"
         data = request_json(
-          http_method: :get,
-          # endpoint: "/repositories/#{@graph_repository}",
-          endpoint: "/sparql",
+          http_method: :post,
+          endpoint: "/repositories/#{@graph_repository}",
           params: { 'query': escape_sparql(sparql) }
         )
 
