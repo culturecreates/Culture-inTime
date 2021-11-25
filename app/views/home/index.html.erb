@@ -1,28 +1,5 @@
 
 
-<a class="ui grey button" href="<%= search_path(start: "1500-01-01", end: "1900-01-01") %>" >
-  < 1900
-</a>
-<a class="ui grey button" href="<%= search_path(start: "1900-01-01", end: "1949-12-01") %>" >
-  1900 - 1949
-</a>
-  <a class="ui grey button" href="<%= search_path(start: "1950-01-01", end: "1999-12-01") %>">
-  1950 - 1999
-</a>
-<a class="ui grey button" href="<%= search_path(start: "2000-01-01", end: "2018-12-31") %>">
-  2000 - 2018
-</a>
-<a class="ui grey button" href="<%= search_path(start: "2019-01-01", end: "2021-12-30") %>">
-  2019 - 2021
-</a>
-<a class="ui grey button" href="<%= search_path(start: "2022-01-01", end: "2030-12-01") %>">
-  2022 - 2030
-</a>
-
-<div class="ui raised segment no padding">
-<%= react_component("Search") %>
-</div>
-
 <h1 class="header"> Newly Added Productions </h1>
 <div class="ui divider"></div>
 <%= render partial: "productions/production_cards", locals: { production_list: @most_viewed } %>

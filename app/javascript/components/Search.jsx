@@ -4,6 +4,7 @@ import SearchResultList from './SearchResultList';
 
 export default class Search extends React.Component {
   state = { loading: false, results: [] };
+  msg = "Search...";
 
   onChange = (e) => {
     const { value } = e.target;
@@ -23,7 +24,7 @@ export default class Search extends React.Component {
     
       <form method="GET" action="search">
         <div className="ui fluid icon transparent large input">
-          <input name="query" type="text" placeholder="Search productions..." onChange={this.onChange} autoComplete="off" />
+          <input name="query" type="text" placeholder={this.msg} onChange={this.onChange} autoComplete="off" />
           <button type="submit">
             <i className="search icon"></i>
           </button>
