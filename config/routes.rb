@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :people
   resources :works
   resources :spotlights
+  resources :place
   root 'home#index'
   get '/search', to: 'search#index'
 
