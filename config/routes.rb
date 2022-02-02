@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'search_rdf/index'
   resources :people
   resources :works
   resources :spotlights
@@ -6,6 +7,7 @@ Rails.application.routes.draw do
   resources :organizations
   root 'home#index'
   get '/search', to: 'search#index'
+  get '/search_rdf', to: 'search_rdf#index'
 
   get '/spotlight', to: 'home#spotlight'
 
@@ -17,7 +19,7 @@ Rails.application.routes.draw do
   resources :productions
   resources :data_sources do
     member do
-      get 'load'
+      get 'load', 'load_rdf'
     end
     
   end

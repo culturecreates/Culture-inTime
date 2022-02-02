@@ -1,0 +1,30 @@
+<div class="ui raised segment">
+  <h1 class="ui header"><%= params[:query] %> <%= ' - ' if params[:query].present? %> <%= @entities.count %> results</h1>  
+  <div class="ui divider"></div>
+
+  <!--%= will_paginate @productions, renderer: WillPaginateSemanticUi::ActionView::Renderer %-->
+
+  <div class="ui divided link items">
+    <% @entities.each do |entity| %>
+      <a class="item" href="">
+        <div class="small image">
+          <img src="<%= production_image(entity) %>">
+        </div>
+        <div class="content">
+          <div class="header"><%= entity.label %></div>
+          <div class="meta">
+            <span><%= date_display(entity.date_of_first_performance) %></span>
+          </div>
+          <div class="description">
+            <p><%= truncate strip_tags(entity.description), length: 250, seperator: /\w+/ %></p>
+          </div>
+          <div class="extra">
+            <div class="ui label"><i class="green arrow alternate circle down outline icon"></i> <%=entity.location_label %> </div>
+          </div>
+        </div>
+      </a>
+    <% end %>
+  </div>
+
+
+</div>

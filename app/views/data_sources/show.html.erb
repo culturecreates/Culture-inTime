@@ -22,7 +22,7 @@
 
     <% button_label =  @data_source.loaded.blank? ? 'Execute SPARQL' : 'Refresh cache' %>
     <%= link_to button_label, load_data_source_path, class: "ui button primary show_loading" %>
-
+    <%= link_to "Load RDF", load_rdf_data_source_path, class: "ui button primary show_loading" %>
     <% if @data_source.loaded.present? %>
     <%= link_to 'View all', search_path(data_source:@data_source.id), class: "ui button tertiary" %>
     <% end %>
@@ -44,6 +44,30 @@
   <% end %>
 </p>
 
+
+<% if  @sample_graph  %>
+<script>
+$('.ui.accordion')
+  .accordion()
+;
+</script>
+<div class="ui styled accordion">
+  <div class="title">
+    <i class="dropdown icon"></i>
+    What is a dog?
+  </div>
+  <div class="content">
+    <p class="transition hidden">A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p>
+  </div>
+</div>
+
+<pre>
+ <code>
+ Sample JSON-LD for <%= @sample_uri %><br>
+  <%= @sample_graph %>
+</code>
+</pre>
+ <% end %>
 
 <pre>
  <code>

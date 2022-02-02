@@ -78,3 +78,9 @@ gem 'will_paginate'
 gem "will_paginate_semantic_ui"
 gem 'httparty'
 gem 'jquery-rails'
+
+
+gem 'rdf', '~> 3.1.1'
+gem 'json-ld', '~> 3.0.2'
+gem 'sparql', '~> 3.1.3'
+gem 'nokogiri'

@@ -1,5 +1,5 @@
 class DataSourcesController < ApplicationController
-  before_action :set_data_source, only: [:show, :load, :edit, :update, :destroy]
+  before_action :set_data_source, only: [:show, :load,  :load_rdf, :edit, :update, :destroy]
 
   # GET /data_sources
   # GET /data_sources.json
@@ -22,6 +22,20 @@ class DataSourcesController < ApplicationController
       redirect_to @data_source, notice: "#{loader.count} returned by SPARQL, #{ Production.where(data_source: @data_source).count } loaded into cache. Cache errors: #{loader.cache_errors}"
     end
   end
+
+  # GET /data_sources/1/load_rdf
+  def load_rdf
+    loader = LoadRDF.new
+    loader.source(@data_source)
+    @sample_graph = loader.sample
+    @sample_uri = loader.sample_uri
+    if loader.error?
+      render 'show', notice: "Ran into a problem. #{loader.errors}"
+    else
+      render 'show', notice: "#{loader.count} returned by SPARQL, #{ Production.where(data_source: @data_source).count } loaded into cache. Cache errors: #{loader.cache_errors}"
+    end
+  end
+
 
   # GET /data_sources/new
   def new
