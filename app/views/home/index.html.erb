@@ -1,11 +1,11 @@
 
 
-<h1 class="header"> Newly Added Productions </h1>
+<h1 class="header"> <%= t 'productions'%> </h1>
 <div class="ui divider"></div>
 <%= render partial: "productions/production_cards", locals: { production_list: @most_viewed } %>
 
 
-<h1 class="header"> New Spotlights </h1>
+<h1 class="header"> <%= t 'spotlights'%></h1>
 <div class="ui divider"></div>
 <%= render partial: "spotlights/spotlight_cards", locals: { spotlight_list: @newly_added_spotlights } %>
 

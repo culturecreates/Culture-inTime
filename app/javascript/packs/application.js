@@ -9,6 +9,7 @@
 
 import ReactOnRails from 'react-on-rails';
 import Search from '../components/Search';
+import '@doabit/semantic-ui-sass';
 
 ReactOnRails.register({
   Search

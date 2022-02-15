@@ -26,7 +26,10 @@
       </span>
       <% if cookies[:user] %>
         <span class="right floated edit">
-          <a href="/spotlights/<%= spotlight.id %>"><i class="edit icon"></i></a>
+        <%= link_to spotlight_path(spotlight) do %>
+          <i class="edit icon"></i>
+        <% end %>
+         
         </span>
          <% end %>
     </div>

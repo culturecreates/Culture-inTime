@@ -30,10 +30,12 @@ class DataSourcesController < ApplicationController
     @sample_graph = loader.sample
     @sample_uri = loader.sample_uri
     if loader.error?
+      flash.now[:notice] = "Ran into a problem. #{loader.errors}"
       render 'show', notice: "Ran into a problem. #{loader.errors}"
     else
-      render 'show', notice: "#{loader.count} returned by SPARQL, #{ Production.where(data_source: @data_source).count } loaded into cache. Cache errors: #{loader.cache_errors}"
+      flash.now[:notice] = "#{loader.count} URIs returned by SPARQL. Errors: #{loader.cache_errors}"
     end
+    render 'show'
   end
 
 

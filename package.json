@@ -5,10 +5,12 @@
     "node": "10.15.3"
   },
   "dependencies": {
+    "@doabit/semantic-ui-sass": "^2.4.5",
     "@rails/webpacker": "3.5",
     "axios": "^0.21.1",
     "babel-preset-react": "^6.24.1",
     "jquery": "^3.6.0",
+    "popper.js": "^1.16.1",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

@@ -22,6 +22,10 @@
 
 $( document ).ready(function() {
   
+  $('.ui.accordion')
+    .accordion()
+  ;
+
   MemberStack.onReady.then(function(member) {   
 
     // check if member is logged in   

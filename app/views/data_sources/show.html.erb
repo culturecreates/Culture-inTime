@@ -30,44 +30,34 @@
   <% else %>
     Chained to layers: <%= @data_source.layers.map {|l| l.name }.join(", ") %>
   <% end %>
-
-
 </p>
+
 <p id="notice">
   <% if notice %>
   <div class="ui info message">
     <div class="header">
       <%= notice %>
     </div>
-
   </div>
   <% end %>
 </p>
 
 
 <% if  @sample_graph  %>
-<script>
-$('.ui.accordion')
-  .accordion()
-;
-</script>
-<div class="ui styled accordion">
-  <div class="title">
-    <i class="dropdown icon"></i>
-    What is a dog?
+  <div class="ui styled accordion" style="width:100%;">
+    <div class="title">
+      <i class="dropdown icon"></i>
+        Sample JSON-LD for <a href="<%= @sample_uri %>"><%= @sample_uri %></a>
+    </div>
+    <div class="content">
+      <pre class="transition hidden">
+      <code>
+        <%= @sample_graph %>
+      </code>
+      </pre>
+    </div>
   </div>
-  <div class="content">
-    <p class="transition hidden">A dog is a type of domesticated animal. Known for its loyalty and faithfulness, it can be found as a welcome guest in many households across the world.</p>
-  </div>
-</div>
-
-<pre>
- <code>
- Sample JSON-LD for <%= @sample_uri %><br>
-  <%= @sample_graph %>
-</code>
-</pre>
- <% end %>
+<% end %>
 
 <pre>
  <code>

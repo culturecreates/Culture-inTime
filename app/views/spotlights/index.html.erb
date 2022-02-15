@@ -1,9 +1,11 @@
 <p id="notice"><%= notice %></p>
- <h1 class="header">Spotlights</h1>
+ <h1 class="header"><%= t 'spotlights' %></h1>
 <div class="ui divider"></div>
 <% if cookies[:user]%>
 <p>
-<%= link_to 'Add Spotlight', new_spotlight_path, class: "ui button primary" %>
+<%= link_to new_spotlight_path, class: "ui button primary" do %>
+ <i class="plus icon"></i><%= t 'spotlights' %>
+ <% end %>
 </p>
 <% end %>
 

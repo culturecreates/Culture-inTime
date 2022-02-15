@@ -27,17 +27,25 @@
   <body>
     <div id="top-nav" data-turbolinks-permanent class="ui container">
       <div class="ui stackable menu">
-        <a class="header item" href="/">
-          <span style="margin-left: 8px;">Culture inTime</span>
-        </a>
-         <a class="item" href="/spotlights">Spotlights</a>
-        <a class="item" href="/productions">Productions</a>
-        <a class="item" href="/people">People</a>
-        <a class="item" href="/organizations">Organizations</a>
-        <a class="item" href="/places">Places</a>
-        <a class="item" href="/works">Works</a>
-        <a class="item" href="/data_sources">Data Sources</a>
+        <%= link_to t('Culture inTime'), root_path, class: "header item" %>
+        <%= link_to t('spotlights'), spotlights_path, class: "item" %>
+        <%= link_to t('productions'), productions_path, class: "item" %>
+       <%= link_to t('Sources'), data_sources_path, class: "item" %>
+        
         <div class="right menu">
+        
+          <div class="ui simple dropdown item">
+            <%= I18n.locale %>
+         
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <%= link_to "English", root_path(locale: :en), class: "item" %>
+              <%= link_to "Français", root_path(locale: :fr), class: "item" %>
+              <%= link_to "Deutsch", root_path(locale: :de), class: "item" %>
+            
+            </div>
+          </div>
+       
           <div class="item">
             <span>
               <a href="#/ms/login" class="ui secondary  button">Log In</a>
