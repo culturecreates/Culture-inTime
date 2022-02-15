@@ -1,5 +1,5 @@
 <div class="ui raised segment">
-  <h1 class="ui header"><%= params[:query] %> <%= ' - ' if params[:query].present? %> <%= @productions.count %> results</h1>  
+  <h1 class="ui header"><%= params[:query] %> <%= ' - ' if params[:query].present? %> <%= @productions.count %> <%= t("results")%></h1>  
   <div class="ui divider"></div>
 
   <%= will_paginate @productions, renderer: WillPaginateSemanticUi::ActionView::Renderer %>

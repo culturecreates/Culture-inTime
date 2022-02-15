@@ -5,7 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
+ 
+    <% if I18n.locale == :de %>
+      <%= render partial: "layouts/memberstack_translation_german" %>
+    <% end %>
+  
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
@@ -30,7 +34,7 @@
         <%= link_to t('Culture inTime'), root_path, class: "header item" %>
         <%= link_to t('spotlights'), spotlights_path, class: "item" %>
         <%= link_to t('productions'), productions_path, class: "item" %>
-       <%= link_to t('Sources'), data_sources_path, class: "item" %>
+       <%= link_to t('sources'), data_sources_path, class: "item" %>
         
         <div class="right menu">
         
@@ -48,13 +52,13 @@
        
           <div class="item">
             <span>
-              <a href="#/ms/login" class="ui secondary  button">Log In</a>
+              <a href="#/ms/login" class="ui secondary  button"><%= t('login') %></a>
             </span>
             <span>
             <a href="#/ms/profile" class="ui basic button"><span data-ms-member="email"></span></a>
           </span>
            <span>
-            <a href="#/ms/signup/6072f56a96a83a00043d49cd/#/ms/content/!members" class="ui primary button">Sign Up</a>
+            <a href="#/ms/signup/6072f56a96a83a00043d49cd/#/ms/content/!members" class="ui primary button"><%= t('signup') %></a>
              </span>
           </div>
          

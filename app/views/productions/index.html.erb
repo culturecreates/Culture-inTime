@@ -1,6 +1,6 @@
 
 <p id="notice"><%= notice %></p>
- <h1 class="header">Productions</h1>
+ <h1 class="header"><%= t('productions')%> </h1>
 <div class="ui divider"></div>
 <a class="ui grey button" href="<%= search_path(start: "1500-01-01", end: "1900-01-01") %>" >
   < 1900
@@ -25,7 +25,7 @@
 <%= react_component("Search") %>
 </div>
 
-<h1 class="header"> Newly Added Productions </h1>
+<h1 class="header"> <%= t('newly-added')%> <%= t('productions')%> </h1>
 <div class="ui divider"></div>
 <%= render partial: "productions/production_cards", locals: { production_list: @productions } %>
 

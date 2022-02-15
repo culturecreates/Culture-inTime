@@ -1,6 +1,6 @@
 <p id="notice"><%= notice %></p>
 
-<h1 class="header">Data Sources</h1>
+<h1 class="header"><%= t("sources")%></h1>
 <div class="ui divider"></div>
 <% if !cookies[:user] %>
   Please  <a href="#/ms/signup/6072f56a96a83a00043d49cd/#/ms/content/!members" class="ui primary"> Sign Up </a> or Log In to add data sources. 
@@ -9,15 +9,15 @@
  <p> <a class="ui button small red" href="https://docs.google.com/document/d/1ht17HeUmt-TXJIk139XP4usTn1AV5boWFoSmFw53q-w/edit?usp=sharing">Readme first</a> guide for adding your own SPARQL </p>
    
    
-  <h1 class="header">SPARQL Queries - Performing Arts Productions </h1> 
+  <h1 class="header"><%= t("sparql-top") %></h1> 
    <div class="ui divider"></div>
 <table class="ui striped table selectable celled">
   <thead>
     <tr>
     <th>ID</th>
-      <th>Name</th>
-      <th>Author</th>
-      <th>Cached</th>
+      <th><%= t('name') %></th>
+      <th><%= t('author') %></th>
+      <th><%= t('cached') %></th>
       <th colspan="1"></th>
     </tr>
   </thead>
@@ -33,11 +33,11 @@
         <td><%= data_source.loaded %></td>
         <td>
          <span style="display: flex;">
-          <%= link_to 'Show', data_source, class: "ui button mini green" %>
+          <%= link_to t('show'), data_source, class: "ui button mini green" %>
           <% if cookies[:user] == data_source.email || is_admin? %>
-          <%= link_to 'Edit', edit_data_source_path(data_source), class: "ui button mini" %>
-          <%= link_to 'Chain', new_data_source_path(layer: data_source.id ),  data: { confirm: 'Create supplimentary SPARQL chained to this SPARQL?' }, class: "ui button mini" %>
-          <%= link_to 'Destroy', data_source, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button mini red" %>
+          <%= link_to t('edit'), edit_data_source_path(data_source), class: "ui button mini" %>
+          <%= link_to t('chain'), new_data_source_path(layer: data_source.id ),  data: { confirm: 'Create supplimentary SPARQL chained to this SPARQL?' }, class: "ui button mini" %>
+          <%= link_to t('destroy'), data_source, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button mini red" %>
         <% end %>
         </span>
         </td>
@@ -49,21 +49,21 @@
 
 
 <% if cookies[:user] %>
-  <%= link_to 'Add Data Source', new_data_source_path, class: "ui button primary" %>
+  <%= link_to new_data_source_path, class: "ui button primary" do %>
+    <i class="plus icon"></i><%= t('sources')%>
+  <% end %>
 <% end %>
 
 
-<h1 class="header"> SPARQL Queries - Supplementary data</h1>
+<h1 class="header"> <%= t("sparql-supplementary") %></h1>
 <div class="ui divider"></div>
-<p class="meta">Note: Use PRODUCTION_URI_PLACEHOLDER in your SPARQL to pass in the Production URI </p>
-
 <table class="ui striped table selectable celled">
   <thead>
     <tr>
     <th>ID</th>
-      <th>Name</th>
-      <th>Author</th>
-      <th>Chained to source</th>
+      <th><%= t('name') %></th>
+      <th><%= t('author') %></th>
+      <th><%= t('chained-to-source') %></th>
       <th colspan="1"></th>
     </tr>
   </thead>
@@ -82,8 +82,8 @@
           <%= link_to 'Show', data_source, class: "ui button tiny green" %>
 
           <% if cookies[:user] == data_source.email || is_admin? %>
-          <%= link_to 'Edit', edit_data_source_path(data_source), class: "ui button tiny" %>
-          <%= link_to 'Destroy', data_source, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button tiny red" %>
+          <%= link_to t('edit'), edit_data_source_path(data_source), class: "ui button tiny" %>
+          <%= link_to t('destroy'), data_source, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button tiny red" %>
         <% end %>
         </span>
         </td>
