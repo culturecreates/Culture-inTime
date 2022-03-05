@@ -30,7 +30,7 @@
 # available at http://guides.rubyonrails.org/i18n.html.
 
 fr:
-  spotlights: "Extraits en vedette"
+  spotlights: "En vedette"
   productions: "Productions"
   people: "Personnes"
   works: "Œuvres"
