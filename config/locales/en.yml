@@ -46,7 +46,7 @@ en:
   show: "Show"
   edit: "Edit"
   chain: "Chain"
-  destroy: "Destroy"
+  destroy: "Delete"
   name: "Name"
   author: "Author"
   cached: "Cached on"
