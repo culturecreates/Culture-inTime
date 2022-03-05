@@ -18,5 +18,5 @@ de:
   destroy: "Löschen"
   name: "Name"
   author: "Autor"
-  cached: "Auf dem Server gespeichert am"
+  cached: "Gespeichert am"
   chained-to-source: "Mit Datenquelle verknüpft"
