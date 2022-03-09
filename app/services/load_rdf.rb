@@ -3,7 +3,7 @@ class LoadRDF
   attr_accessor :sample_uri
 
   def initialize
-    @client = ArtsdataAPI::V1::Client.new()
+    @client = ArtsdataApi::V1::Client.new()
     @cache_errors = []
   end
 
@@ -28,7 +28,9 @@ class LoadRDF
     # Only update loaded data if some productions were saved to db
     return unless @graph.count.positive?
     
+    # persist to graphDB
     RDFGraph.graph << @graph
+    RDFGraph.persist(data_source.id)
     data_source.update_attribute(:loaded, Time.now)
   end
 

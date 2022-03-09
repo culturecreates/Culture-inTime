@@ -24,6 +24,17 @@ class RDFGraph
     end
     entities
   end
+
+  def self.persist(id)
+    graph_name = "http://culture-in-time.com/graph/#{id}"
+    artsdata_client.drop_graph(graph_name)
+    artsdata_client.upload_turtle(graph.dump(:turtle), graph_name)
+
+  end
+
+  def self.artsdata_client
+    @artsdata_client ||= ArtsdataApi::V1::Client.new(oauth_token: "YXJ0c2RhdGEtYXBpOlN5amNpeC16b3Z3ZXMtN3ZvYm1p")
+  end
 end
 
 class Entity
