@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_17_013559) do
+ActiveRecord::Schema.define(version: 2022_03_09_191130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 2021_04_17_013559) do
     t.string "query"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "sparql"
   end
 
   add_foreign_key "productions", "data_sources"
