@@ -1,5 +1,5 @@
 class DataSourcesController < ApplicationController
-  before_action :set_data_source, only: [:show, :load,  :load_rdf, :edit, :update, :destroy]
+  before_action :set_data_source, only: [:show, :apply_upper_ontology,  :load_rdf, :edit, :update, :destroy]
 
   # GET /data_sources
   # GET /data_sources.json
@@ -13,29 +13,29 @@ class DataSourcesController < ApplicationController
   end
 
   # GET /data_sources/1/load
-  def load
-    loader = LoadProductions.new
-    loader.source(@data_source)
-    if loader.error?
-      redirect_to @data_source, notice: "Ran into a problem. #{loader.errors}"
-    else
-      redirect_to @data_source, notice: "#{loader.count} returned by SPARQL, #{ Production.where(data_source: @data_source).count } loaded into cache. Cache errors: #{loader.cache_errors}"
-    end
+  def apply_upper_ontology
+    flash.now[:notice] = "Upper ontology applied!"
+    render 'show'
   end
 
   # GET /data_sources/1/load_rdf
   def load_rdf
-    loader = LoadRDF.new
-    loader.source(@data_source)
-    @sample_graph = loader.sample
-    @sample_uri = loader.sample_uri
-    if loader.error?
-      flash.now[:notice] = "Ran into a problem. #{loader.errors}"
-      render 'show', notice: "Ran into a problem. #{loader.errors}"
+    if @data_source.type_uri.blank?
+      flash.now[:notice] = "Need a type." 
+      render 'show'
     else
-      flash.now[:notice] = "#{loader.count} URIs returned by SPARQL. Errors: #{loader.cache_errors}"
+      loader = LoadRDF.new
+      loader.source(@data_source)
+      @sample_graph = loader.sample
+      @sample_uri = loader.sample_uri
+      if loader.error?
+        flash.now[:notice] = "Ran into a problem. #{loader.errors}"
+        render 'show', notice: "Ran into a problem. #{loader.errors}"
+      else
+        flash.now[:notice] = "#{loader.count} URIs returned by SPARQL #{loader.cache_errors}"
+      end
+      render 'show'
     end
-    render 'show'
   end
 
 
@@ -105,6 +105,6 @@ class DataSourcesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def data_source_params
-    params.require(:data_source).permit(:name, :sparql, :email, :loaded, :data_sources)
+    params.require(:data_source).permit(:upper_prefix, :upper_title, :upper_description, :upper_date, :upper_image, :upper_place, :upper_country, :upper_languages, :type_uri, :name, :sparql, :email, :loaded, :data_sources)
   end
 end

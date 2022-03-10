@@ -9,8 +9,8 @@ class LoadPerformances
 
   def canada(production_uri)
     @client.execute_sparql(SparqlLoader.load("canadian_performances", 
-      "https://www.lavitrineduquebec.com/activity/Femme_s_#Event", 
-      production_uri))
+      ["https://www.lavitrineduquebec.com/activity/Femme_s_#Event", 
+      production_uri]))
   end
 
 end

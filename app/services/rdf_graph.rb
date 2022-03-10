@@ -32,6 +32,8 @@ class RDFGraph
 
   end
 
+ 
+
   def self.artsdata_client
     @artsdata_client ||= ArtsdataApi::V1::Client.new(oauth_token: "YXJ0c2RhdGEtYXBpOlN5amNpeC16b3Z3ZXMtN3ZvYm1p")
   end

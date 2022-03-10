@@ -20,11 +20,11 @@
       <div class="ui basic tertiary left pointing label"><%= @data_source.loaded %></div>
     </div>
 
-    <% button_label =  @data_source.loaded.blank? ? 'Execute SPARQL' : 'Refresh cache' %>
-    <%= link_to button_label, load_data_source_path, class: "ui button primary show_loading" %>
+  
     <%= link_to "Load RDF", load_rdf_data_source_path, class: "ui button primary show_loading" %>
+     <%= link_to "Apply Upper Ontology", apply_upper_ontology_data_source_path, class: "ui button secondary show_loading" %>
     <% if @data_source.loaded.present? %>
-    <%= link_to 'View all', search_path(data_source:@data_source.id), class: "ui button tertiary" %>
+     <%= link_to 'View all', search_path(data_source:@data_source.id), class: "ui button tertiary" %>
     <% end %>
 
   <% else %>
@@ -58,6 +58,58 @@
     </div>
   </div>
 <% end %>
+
+<div class="ui styled accordion" style="width:100%;">
+    <div class="title">
+      <i class="dropdown icon"></i>
+        Upper Ontology </a>
+    </div>
+    <div class="content">
+     <p> <%= @data_source.type_uri %></p>
+     <%= form_with(model: @data_source, local: true, class: "ui form") do |form| %>
+        <div class="four fields">
+        <div class="field">
+          <%= form.label "Title"%>
+          <%= form.text_field :upper_title %>
+        </div>  
+        <div class="field">
+          <%= form.label "Description"%>
+          <%= form.text_field :upper_description %>
+        </div>   
+          <div class="field">
+          <%= form.label "Date of first performance"%>
+          <%= form.text_field :upper_date %>
+        </div>   
+          <div class="field">
+          <%= form.label "Image"%>
+          <%= form.text_field :upper_image %>
+        </div>   
+        </div>  
+        <div class="four fields">
+          <div class="field">
+          <%= form.label "Place name of first performance"%>
+          <%= form.text_field :upper_place %>
+        </div>   
+          <div class="field">
+          <%= form.label "Country name of first performance"%>
+          <%= form.text_field :upper_country %>
+        </div>   
+        <div class="field">
+          <%= form.label "Languages"%>
+          <%= form.text_field :upper_languages %>
+        </div>   
+         <div class="field">
+          <%= form.label "Prefix"%>
+          <%= form.text_field :upper_prefix %>
+        </div>   
+      </div> 
+       <div class="actions">
+    <%= form.submit "Update", class: 'ui button green show_loading' %>
+  </div>
+      <% end %>
+    </div>
+  </div>
+
 
 <pre>
  <code>

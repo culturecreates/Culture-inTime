@@ -21,7 +21,7 @@ Rails.application.routes.draw do
 
     resources :data_sources do
       member do
-        get 'load', 'load_rdf'
+        get  'load_rdf', 'apply_upper_ontology'
       end
     end
   end

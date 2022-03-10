@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_09_191130) do
+ActiveRecord::Schema.define(version: 2022_03_10_033008) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,15 @@ ActiveRecord::Schema.define(version: 2022_03_09_191130) do
     t.datetime "loaded"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type_uri"
+    t.string "upper_title"
+    t.string "upper_description"
+    t.string "upper_date"
+    t.string "upper_image"
+    t.string "upper_place"
+    t.string "upper_country"
+    t.string "upper_languages"
+    t.string "upper_prefix"
   end
 
   create_table "data_sources_spotlights", id: false, force: :cascade do |t|
@@ -68,6 +77,13 @@ ActiveRecord::Schema.define(version: 2022_03_09_191130) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "sparql"
+    t.string "map_title"
+    t.string "map_description"
+    t.string "map_date"
+    t.string "map_image"
+    t.string "map_place"
+    t.string "map_country"
+    t.string "map_languages"
   end
 
   add_foreign_key "productions", "data_sources"

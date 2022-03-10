@@ -9,21 +9,14 @@ class LoadRDF
 
   # Main method to load or refresh a source
   # Drop and load Productions from SPARQL
-  # Input activeRecord DataSource
+  # Input: activeRecord DataSource
   def source(data_source)
     @data = @client.execute_sparql(data_source.sparql)
-   # @graph = RDFGraph.graph
+ 
 
     return if self.error?
-
-    # Drop graph (source ID)
-    # TODO: data_source.productions.delete_all
-
     # Load new productions
     @graph = load(data_source, @data[:message])
-
-    # add some context for Wikidata
-    
 
     # Only update loaded data if some productions were saved to db
     return unless @graph.count.positive?
@@ -66,7 +59,7 @@ class LoadRDF
       uri = resource['uri']['value']  if resource['uri']
       begin
         graph << RDF::Graph.load(uri)
-      
+        graph << [RDF::URI(uri), RDF.type, RDF::URI(data_source.type_uri)]
       rescue => exception
         cache_errors << [uri, exception]  unless cache_errors.count > 10 #max errors
       end
