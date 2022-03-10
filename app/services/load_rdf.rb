@@ -8,7 +8,8 @@ class LoadRDF
   end
 
   # Main method to load or refresh a source
-  # Drop and load Productions from SPARQL
+  # Load Entities using data source's SPARQL
+  # Persist data source's graph in graphDB
   # Input: activeRecord DataSource
   def source(data_source)
     @data = @client.execute_sparql(data_source.sparql)
@@ -27,7 +28,9 @@ class LoadRDF
     data_source.update_attribute(:loaded, Time.now)
   end
 
+  # TODO: Move this to RDFGraph
   def sample
+    return if  @data[:message].empty?
     @sample_uri = @data[:message].first['uri']['value']
     query = SPARQL.parse("CONSTRUCT {<#{@sample_uri}> ?p ?o .} WHERE { <#{@sample_uri}> ?p ?o .}")
     query.execute(@graph).to_jsonld

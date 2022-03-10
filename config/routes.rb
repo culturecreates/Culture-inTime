@@ -15,7 +15,8 @@ Rails.application.routes.draw do
   scope "/:locale" do
     get '/search', to: 'search#index'
     get '/search_rdf', to: 'search_rdf#index'
-
+    get '/search_rdf/spotlight', to: 'search_rdf#spotlight'
+    
     resources :productions
     resources :spotlights
 

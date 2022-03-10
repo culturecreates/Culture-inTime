@@ -1,0 +1,35 @@
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX schema: <http://schema.org/>
+PREFIX cit: <http://culture-in-time.org/ontology/>
+
+
+insert {
+    graph ?graph {
+        ?entity   cit:title ?title ;
+            cit:startDate ?date ;
+            cit:description ?description ;
+            cit:placeName ?place ;
+            cit:placeCountryName ?country ;
+            cit:image ?image .
+    }
+}
+where {
+    
+    values ?l {
+        <languages_placeholder>
+    }
+    values  ?graph { <graph_placeholder> }
+
+    graph ?graph {
+        ?entity a <type_uri_placeholder> . 
+        OPTIONAL { ?entity <title_prop_placeholder>  ?title . filter(lang(?title) = ?l) }
+        OPTIONAL { ?entity <date_prop_placeholder>  ?date . }
+        OPTIONAL { ?entity <description_prop_placeholder>  ?description . filter(lang(?description) = ?l) }
+        OPTIONAL { ?entity <image_prop_placeholder>  ?image . }  
+        OPTIONAL { ?entity <place_name_prop_placeholder>  ?place . filter(lang(?place) = ?l) }
+    }
+ 
+    OPTIONAL { ?entity <place_name_country_prop_placeholder>  ?country . filter(lang(?country) = ?l) }  
+    
+}

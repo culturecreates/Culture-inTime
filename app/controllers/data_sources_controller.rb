@@ -12,17 +12,25 @@ class DataSourcesController < ApplicationController
   def show
   end
 
-  # GET /data_sources/1/load
+  # GET /data_sources/1/apply_upper_ontology
   def apply_upper_ontology
-    flash.now[:notice] = "Upper ontology applied!"
+    if @data_source.upper_title.blank?
+      flash.now[:notice] = "Error: need a title property in upper ontology." 
+    else
+      response = RDFGraph.upper_ontology(@data_source)
+      if response[:code] == 204
+        flash.now[:notice] = "Upper ontology applied!"
+      else
+        flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not apply upper ontology."
+      end
+    end
     render 'show'
   end
 
   # GET /data_sources/1/load_rdf
   def load_rdf
     if @data_source.type_uri.blank?
-      flash.now[:notice] = "Need a type." 
-      render 'show'
+      flash.now[:notice] = "Please add an entity type." 
     else
       loader = LoadRDF.new
       loader.source(@data_source)
@@ -30,12 +38,11 @@ class DataSourcesController < ApplicationController
       @sample_uri = loader.sample_uri
       if loader.error?
         flash.now[:notice] = "Ran into a problem. #{loader.errors}"
-        render 'show', notice: "Ran into a problem. #{loader.errors}"
       else
         flash.now[:notice] = "#{loader.count} URIs returned by SPARQL #{loader.cache_errors}"
       end
-      render 'show'
     end
+    render 'show'
   end
 
 

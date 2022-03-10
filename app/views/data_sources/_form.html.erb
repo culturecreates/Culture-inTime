@@ -11,8 +11,10 @@
     </div>
   <% end %>
 
+
   <div class="field">
     <%= form.label :name %>
+    
     <%= form.text_field :name %>
   </div>
 
@@ -31,19 +33,18 @@
     <%= form.email_field :email, value: cookies[:user], readonly: readonly %>
    </div>
 
-  <%
-=begin%>
+
  <div class="field">
   Data sources to chain:
  
   <% @data_sources.each do |t| %>
+  <% next if t.name.empty? %>
   <div class="inline field">
     <%= form.check_box "data_sources[#{t.id}]"  %>
     <%= form.label t.name  %>
   </div>
   <% end %> 
-<%
-=end%>
+
 
   <div class="actions">
     <%= form.submit "Update", class: 'ui button green show_loading' %>

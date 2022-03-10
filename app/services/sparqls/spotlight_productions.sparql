@@ -1,0 +1,29 @@
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX schema: <http://schema.org/>
+PREFIX cit: <http://culture-in-time.org/ontology/>
+select ?production (sample(?t) as ?title) (sample(?d) as ?description) (sample(?p) as ?place) (sample(?c) as ?country) ?startDate  ?image
+where {
+    ?production   cit:title ?t .
+    OPTIONAL {
+        ?production cit:startDate ?startDate .
+    }
+    OPTIONAL {
+        ?production cit:description ?d .
+    }
+    OPTIONAL {
+        ?production cit:placeName ?p .
+    }
+    OPTIONAL {
+        ?production cit:placeCountryName ?c .
+    }
+    OPTIONAL {
+        ?production cit:image ?image .
+    }
+    {
+        select ?production where {
+            ?production  a schema:Event .
+        }
+    }
+} group by ?startDate ?production ?image
+order by ?startDate
