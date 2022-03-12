@@ -3,11 +3,18 @@ class ProductionsController < ApplicationController
 
   # GET /productions
   # GET /productions.json
+  # Output: @productions list of Class Entity
   def index
-    @productions = Production.order(updated_at: :desc).limit(5)
+    spotlight = Spotlight.find(1)
+    @productions = RDFGraph.spotlight(spotlight)[1..5]
   end
 
   # GET /productions/show?uri=
+  # Input: uri String
+  # Output: 
+  #   @graph Class RDFGraph to display as JSON-LD in footer 
+  #   @production Class Entity
+  #   @properties_with_labels SPARQL JSON response to iterate on additional properties to display
   def show
     # Load a local graph with first set of triples
     uri = params[:uri]
@@ -33,15 +40,17 @@ class ProductionsController < ApplicationController
     # List properties with labels
     query = SPARQL.parse(<<~SPARQL)
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT distinct ?label ?o
+    SELECT distinct ?label ?o ?p ?o_label
     WHERE { 
-      ?s ?p ?o .
+      ?s ?p ?o  .
       OPTIONAL { ?p rdfs:label ?label_en .
         filter(lang(?label_en) = "en") }
       OPTIONAL { ?p rdfs:label ?label_none .
         filter(lang(?label_none) = "") }
       BIND (COALESCE(?label_en, ?label_none) as ?label)
       filter(Bound(?label))
+      OPTIONAL { ?o rdfs:label ?o_label . } 
+
     } 
     order by ?label
     SPARQL
