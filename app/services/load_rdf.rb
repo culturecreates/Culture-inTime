@@ -63,6 +63,8 @@ class LoadRDF
       begin
         graph << RDF::Graph.load(uri)
         graph << [RDF::URI(uri), RDF.type, RDF::URI(data_source.type_uri)]
+      rescue RDF::ReaderError => exception
+        cache_errors << [uri, exception]  unless cache_errors.count > 10 #max errors
       rescue => exception
         cache_errors << [uri, exception]  unless cache_errors.count > 10 #max errors
       end

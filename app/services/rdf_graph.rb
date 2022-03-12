@@ -5,7 +5,39 @@ class RDFGraph
     #@@graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
   end
 
+  # Input: Production URI string
+  # Output: RDF Graph
+  def self.production(uri)
+    graph = RDF::Graph.new
+    sparql = <<~SPARQL
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+    CONSTRUCT {
+      <#{uri}> ?p ?o .
+      ?p rdfs:label ?label .
+      } 
+    WHERE { 
+      <#{uri}> ?p ?o . 
+      OPTIONAL { ?p rdfs:label ?label . }
+    }
+    SPARQL
+    
+    response = artsdata_client.execute_construct_sparql(sparql)
+    if response[:code] == 200
+      graph << JSON::LD::API.toRdf(response[:message])
+    end
+    #graph << [RDF::URI(uri), RDF.type, RDF::URI("http://schema.org/Event")]
+    #graph << [RDF::URI(uri), RDF::URI("http://schema.org/name"), RDF::Literal("Test Name")]
+    graph
+  end
+
+  # Input: ActiveRecord DataSource
+  # Output: response hash {code: , message: }
+  def self.upper_ontology(data_source)
+    artsdata_client.execute_update_sparql(generate_upper_ontology_sparql(data_source))
+  end
+
   # Input: ActiveRecord Spotlight
+  # Output: entities -> list of Entity Classes
   def self.spotlight(spotlight)
     entities = []
 
@@ -24,12 +56,14 @@ class RDFGraph
     results =  artsdata_client.execute_sparql(generate_query_sparql(spotlight))
 
     results[:message].each do |e|
+      
       title = e["title"]["value"] || ""
       description = e.dig("description","value") || ""
       startDate = e.dig("startDate","value") || ""
       place = e.dig("place","value") || ""
       image = e.dig("image","value") || ""
-      entities << Entity.new(title, description, startDate,  place, image)
+      entity_uri = e.dig("production","value") || ""
+      entities << Entity.new(title, description, startDate,  place, image, entity_uri)
     end
     entities
   end
@@ -39,13 +73,19 @@ class RDFGraph
     artsdata_client.upload_turtle(graph.dump(:turtle), uri(id))
   end
 
+  ################
+  # Private
+  #################
+
   def self.uri(id)
     "http://culture-in-time.com/graph/#{id}"
   end
 
-  def self.upper_ontology(data_source)
-    artsdata_client.execute_update_sparql(generate_upper_ontology_sparql(data_source))
-  end
+
+
+  ##################
+  #  SPARQL Templates
+  ####################
 
   def self.generate_upper_ontology_sparql(data_source)
     SparqlLoader.load('apply_upper_ontology', [
@@ -63,7 +103,9 @@ class RDFGraph
   end
 
   def self.generate_query_sparql(spotlight)
-    SparqlLoader.load('spotlight_productions',[])
+    SparqlLoader.load('spotlight_productions',[
+      '<spotlight_query_placeholder> a "triple"', spotlight.sparql
+    ])
     
   end
 
@@ -75,14 +117,24 @@ class RDFGraph
 end
 
 class Entity
-  attr_accessor :title, :description, :date_of_first_performance, :location_label, :main_image
+  attr_accessor :title, :description, :date_of_first_performance, :location_label, :main_image, :entity_uri
 
-  def initialize(title, description, date, place, image)
+  def initialize(title = '', description = '', date = '', place = '', image = '', entity_uri = '')
     @title = title
     @description = description
     @date_of_first_performance = date
     @location_label = place
     @main_image = image
+    @entity_uri = entity_uri
+  end
+
+  def load_solution(solution)
+    @title = solution.title if solution.bound?(:title)
+    @description = solution.description.value if solution.bound?(:description)
+    @date_of_first_performance = solution.startDate.value if solution.bound?(:startDate)
+    @location_label = solution.placeName if  solution.bound?(:placeName)
+    @main_image = solution.image if  solution.bound?(:image)
+    @entity_uri = solution.production.value
   end
 
   def method_missing(m,*args,&block)

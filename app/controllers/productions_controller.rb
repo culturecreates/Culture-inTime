@@ -1,5 +1,5 @@
 class ProductionsController < ApplicationController
-  before_action :set_production, only: [:show, :edit, :update, :destroy]
+  before_action :set_production, only: [ :edit, :update, :destroy]
 
   # GET /productions
   # GET /productions.json
@@ -7,35 +7,67 @@ class ProductionsController < ApplicationController
     @productions = Production.order(updated_at: :desc).limit(5)
   end
 
-  # GET /productions/1
-  # GET /productions/1.json
+  # GET /productions/show?uri=
   def show
-    # get list of layers chained to this production
-    # TODO: make loading layers recursive
-    # TODO: make generic ?somevar --> SOMEVAR_PLACEHOLDER for any variable. (this is really cool. 
-    #       Looks into the SPARQL to find the placeholders and pulls in the corresponding variables from the parent sparql.
-    # TODO: join all ?param_placeholder strings. This can create a list of URIs or even a list of from <> from <> to load multiple musicbrains IDs
-    # TODO: using https://www.deezer.com/[artist/1558] from Wikidata and a sparql html template, construct an <iframe title="deezer-widget" src="https://widget.deezer.com/widget/dark/[artist/1558]/top_tracks" width="100%" height="300" frameborder="0" allowtransparency="true" allow="encrypted-media; clipboard-write"></iframe>
+    # Load a local graph with first set of triples
+    uri = params[:uri]
+    @graph = RDFGraph.production(uri)
+
+    cit = RDF::Vocabulary.new("http://culture-in-time.org/ontology/")
+    query = RDF::Query.new({
+      production: {
+     #   RDF.type  => schema.Event,
+        cit.title => :title,
+      }
+    }, **{})
+    
+    query << RDF::Query::Pattern.new(:production, cit.placeName, :placeName, optional: true)
+    query << RDF::Query::Pattern.new(:production, cit.image, :image, optional: true)
+    query << RDF::Query::Pattern.new(:production, cit.description, :description, optional: true)
+    query << RDF::Query::Pattern.new(:production, cit.startDate, :startDate, optional: true)
+
+    solution =  query.execute(@graph).first
+    @production = Entity.new
+    @production.load_solution(solution)
+
+    # List properties with labels
+    query = SPARQL.parse(<<~SPARQL)
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    SELECT distinct ?label ?o
+    WHERE { 
+      ?s ?p ?o .
+      OPTIONAL { ?p rdfs:label ?label_en .
+        filter(lang(?label_en) = "en") }
+      OPTIONAL { ?p rdfs:label ?label_none .
+        filter(lang(?label_none) = "") }
+      BIND (COALESCE(?label_en, ?label_none) as ?label)
+      filter(Bound(?label))
+    } 
+    order by ?label
+    SPARQL
+
+    @properties_with_labels = query.execute(@graph).to_json
+ 
 
 
-    puts "looking for production id #{@production.data_source.id}"
-    layers = DataSource.all.select {|d| d.layers.ids == [@production.data_source.id]}
+    ############## Layers 
+    # layers = DataSource.all.select {|d| d.layers.ids == [@production.data_source.id]}
 
-    puts "layers: #{layers}"
-    loader = LoadProductions.new
-    @details_list = []
-    layers.each do |layer|
-      puts "Getting layer #{layer.id}"
-      layer_output = loader.query_uri(layer, "<#{@production[:production_uri]}>")
-      @details_list << layer_output
+    # puts "layers: #{layers}"
+    # loader = LoadProductions.new
+    # @details_list = []
+    # layers.each do |layer|
+    #   puts "Getting layer #{layer.id}"
+    #   layer_output = loader.query_uri(layer, "<#{@production[:production_uri]}>")
+    #   @details_list << layer_output
       
-      if layer_output.to_s.include?("param_placeholder")
-        another_layer = DataSource.all.select {|d| d.layers.ids == [layer.id]}
-        another_output = loader.query_uri(another_layer.first, layer_output[0]["param_placeholder"]["value"])
-        @details_list << another_output
-      end
+    #   if layer_output.to_s.include?("param_placeholder")
+    #     another_layer = DataSource.all.select {|d| d.layers.ids == [layer.id]}
+    #     another_output = loader.query_uri(another_layer.first, layer_output[0]["param_placeholder"]["value"])
+    #     @details_list << another_output
+    #   end
 
-    end
+    # end
 
   end
 

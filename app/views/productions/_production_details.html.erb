@@ -1,38 +1,29 @@
-<% if @details_list.present? %>
-<% if @details_list.first.present? %>
+  
+
+
+<% if @properties_with_labels.present? %>
+
 <div class="ui divider"></div>
 <div class="meta">
 
-<% section_title = '' %>
-<% @details_list.each do |section| %>
-  <% section.each do |line| %>
-    <% if  section_title !=  line.dig('section','value') %>
-      <% section_title = line.dig('section','value') %>
-      <h2>
-        <%= line.dig('section','value') %>
-      </h2>
+<% prop = '' %>
+<% JSON.parse(@properties_with_labels)["results"]["bindings"].each do |line| %>
+
+ <% if prop !=  line.dig('label','value') %>
+    <h2>
+            <%= line.dig('label','value')  if  line.dig('label','value') %>
+            <% prop = line.dig('label','value') %>
+    </h2>
     <% end %>
-    <% if line.dig('style','value') == "button" %>
-      <a href="<%= line.dig('content','value') %>">
-        <div class="right floated content">
-          <div class="ui primary button ">
-            <%= line.dig('label','value') %> 
-            <i class="right chevron icon"></i>
-          </div>
-        </div>
-      </a>
+    <% if line.dig('o','type') == 'uri' %>
+        <a href='<%= line.dig('o','value') %>'><%= line.dig('o','value').split('/').last %></a>
     <% else %>
-      <% if line.dig('content','datatype') == 'http://www.w3.org/2001/XMLSchema#dateTime' %>
-        <%=  date_time_display(line.dig('content','value')) %> 
-      <% else %>
-        <%= line.dig('content','value') %> 
-      <% end %>
-        <br>
+        <%= line.dig('o','value')  %>
+        <%= "@" + line.dig('o','xml:lang') if line.dig('o','xml:lang') %>
     <% end %>
-  <% end %>
+  <br> 
 <% end %>
-</div>
-<% end %>
+
 <% end %>
 
  
