@@ -43,14 +43,14 @@ class ProductionsController < ApplicationController
     SELECT distinct ?label ?o ?p ?o_label
     WHERE { 
       ?s ?p ?o  .
+      OPTIONAL { ?o rdfs:label ?o_label . } 
       OPTIONAL { ?p rdfs:label ?label_en .
         filter(lang(?label_en) = "en") }
       OPTIONAL { ?p rdfs:label ?label_none .
         filter(lang(?label_none) = "") }
       BIND (COALESCE(?label_en, ?label_none) as ?label)
       filter(Bound(?label))
-      OPTIONAL { ?o rdfs:label ?o_label . } 
-
+      filter(?label != "label")
     } 
     order by ?label
     SPARQL

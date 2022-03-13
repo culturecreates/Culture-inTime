@@ -1,7 +1,4 @@
-  
-
-
-<% if @properties_with_labels.present? %>
+  <% if @properties_with_labels.present? %>
 
 <div class="ui divider"></div>
 <div class="meta">
@@ -15,9 +12,13 @@
             <% prop = line.dig('label','value') %>
     </h2>
     <% end %>
-    <% if line.dig('o','type') == 'uri' %>
+    <% if line.dig('o','type') != 'literal' %>
         <a href='<%= line.dig('o','value') %>'><%= line.dig('o','value').split('/').last %></a>
-        <%= line.dig('o_label','value') %>
+         <% if line.dig('o_label','value') %>
+        <a href='?uri=<%= line.dig('o','value') %>'>link</a>
+        <% end %>
+        <%= line.dig('o_label','value') unless line.dig('o_label','value')  == line.dig('o','value').split('/').last %>
+         <%= "@" + line.dig('o_label','xml:lang') if line.dig('o_label','xml:lang') %>
     <% else %>
         <%= line.dig('o','value')  %>
         <%= "@" + line.dig('o','xml:lang') if line.dig('o','xml:lang') %>
