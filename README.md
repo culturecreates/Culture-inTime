@@ -3,7 +3,7 @@ This project is licensed under the GNU General Public License v3.0
 Culture inTime 
 =========================
 
-Culture inTime is a sandbox for adding and visualizing Performing Arts Production metadata in a simple calendar-like user interface. Culture inTime was first developed during GLAMhack 2020 and 2021. 
+Culture inTime is a playground for adding and visualizing Performing Arts Production metadata in a simple calendar-like user interface. Culture inTime was first developed during GLAMhack 2020 and 2021. 
 
 New features: 
 * Anyone with the right skills can now add their own SPARQL queries of existing linked open data (LOD) sources
