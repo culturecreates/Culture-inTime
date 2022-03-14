@@ -6,7 +6,7 @@ Culture inTime
 Culture inTime is a playground for agregating and visualizing Performing Arts Production metadata from multipe data sources. Culture inTime was first developed during GLAMhack 2020 and 2021. 
 
 Main features: 
-* Anyone with basic SPARQL skilss can add their own federated SPARQL queries to load data from linked open data (LOD) sources such as Wikidata.
+* Anyone with basic SPARQL skills can add their own federated SPARQL queries to load data from linked open data (LOD) sources such as Wikidata.
 * Anyone can configure their own Spotlights based on data sources in Culture inTime
 
 Culture inTime continues to put its focus on Performing Arts Productions. Go to https://culture-intime.herokuapp.com/ to try it out!
