@@ -4,26 +4,26 @@ PREFIX schema: <http://schema.org/>
 PREFIX cit: <http://culture-in-time.org/ontology/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 
-select ?production (sample(?t) as ?title) (sample(?d) as ?description) (sample(?p) as ?place) (sample(?c) as ?country) ?startDate  ?image
+select ?uri (sample(?t) as ?title) (sample(?d) as ?description) (sample(?p) as ?place) (sample(?c) as ?country) ?startDate  ?image
 where {
-    ?production   cit:title ?t .
+    ?uri   cit:title ?t .
     OPTIONAL {
-        ?production cit:startDate ?startDate .
+        ?uri cit:startDate ?startDate .
     }
     OPTIONAL {
-        ?production cit:description ?d .
+        ?uri cit:description ?d .
     }
     OPTIONAL {
-        ?production cit:placeName ?p .
+        ?uri cit:placeName ?p .
     }
     OPTIONAL {
-        ?production cit:placeCountryName ?c .
+        ?uri cit:placeCountryName ?c .
     }
     OPTIONAL {
-        ?production cit:image ?image .
+        ?uri cit:image ?image .
     }
     {
        <spotlight_query_placeholder> a "triple"
     }
-} group by ?startDate ?production ?image
+} group by ?startDate ?uri ?image
 order by ?startDate
