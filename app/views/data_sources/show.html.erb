@@ -67,7 +67,7 @@
     <div class="content">
      <p> <%= @data_source.type_uri %></p>
      <%= form_with(model: @data_source, local: true, class: "ui form") do |form| %>
-        <div class="four fields">
+        <div class="three fields">
         <div class="field">
           <%= form.label "Title"%>
           <%= form.text_field :upper_title %>
@@ -80,28 +80,37 @@
           <%= form.label "Date of first performance"%>
           <%= form.text_field :upper_date %>
         </div>   
+        </div>  
+        <div class="three fields">
           <div class="field">
           <%= form.label "Image"%>
           <%= form.text_field :upper_image %>
         </div>   
-        </div>  
-        <div class="four fields">
+        
           <div class="field">
           <%= form.label "Place name of first performance"%>
           <%= form.text_field :upper_place %>
         </div>   
-          <div class="field">
+          <%
+=begin%>
+ <div class="field">
           <%= form.label "Country name of first performance"%>
           <%= form.text_field :upper_country %>
-        </div>   
+        </div>    
+<%
+=end%>
         <div class="field">
           <%= form.label "Languages"%>
           <%= form.text_field :upper_languages %>
         </div>   
-         <div class="field">
+         <%
+=begin%>
+ <div class="field">
           <%= form.label "Prefix"%>
           <%= form.text_field :upper_prefix %>
-        </div>   
+        </div>    
+<%
+=end%>
       </div> 
        <div class="actions">
     <%= form.submit "Update", class: 'ui button green show_loading' %>

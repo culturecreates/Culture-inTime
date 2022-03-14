@@ -25,7 +25,7 @@
 
   <div class="field">
     <%= form.label :sparql %> List URIs in variable ?uri
-    <%= form.text_area :sparql, rows: 40 %>
+    <%= form.text_area :sparql, rows: 14 %>
   </div>
 
   <div class="field">
@@ -33,19 +33,24 @@
     <%= form.email_field :email, value: cookies[:user], readonly: readonly %>
    </div>
 
-
- <div class="field">
-  Data sources to chain:
- 
-  <% @data_sources.each do |t| %>
-  <% next if t.name.empty? %>
-  <div class="inline field">
-    <%= form.check_box "data_sources[#{t.id}]"  %>
-    <%= form.label t.name  %>
+  <div class="ui styled accordion" style="width:100%;">
+    <div class="title">
+      <i class="dropdown icon"></i>
+        Data source chain 
+    </div>
+    <div class="content">
+      <div class="field">
+        <% @data_sources.each do |t| %>
+          <% next if t.name.empty? %>
+          <div class="inline field">
+            <%= form.check_box "data_sources[#{t.id}]"  %>
+            <%= form.label t.name  %>
+          </div>
+        <% end %> 
+      </div>
+    </div>
   </div>
-  <% end %> 
-
-
+ <br>
   <div class="actions">
     <%= form.submit "Update", class: 'ui button green show_loading' %>
   </div>
