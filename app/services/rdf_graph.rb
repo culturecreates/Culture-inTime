@@ -1,8 +1,8 @@
 class RDFGraph
   
   def self.graph
-    @@graph ||= RDF::Graph.new
-    #@@graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
+    @graph ||= RDF::Graph.new
+    # graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
   end
 
   # Input: Production URI string
