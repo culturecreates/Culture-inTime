@@ -5,6 +5,11 @@ class RDFGraph
     # graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
   end
 
+  def self.count
+    @count 
+    # graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
+  end
+
   # Input: Production URI string
   # Output: RDF Graph
   def self.production(uri)
@@ -44,8 +49,8 @@ class RDFGraph
     entities = []
 
     results =  artsdata_client.execute_sparql(generate_query_sparql(spotlight))
-
-    results[:message].each do |e|
+    @count = results[:message].count
+    results[:message].first(20).each do |e|
       
       title = e["title"]["value"] || ""
       description = e.dig("description","value") || ""

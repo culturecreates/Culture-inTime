@@ -5,7 +5,7 @@
         <img src="<%= production_image(@production) %>">
       </div>
       <div class="content">
-       <h1 class="header"><%= @production.title %></h1>
+       <h1 class="header"><%= @production.title.present? ? @production.title :  @production.entity_uri%></h1>
         <div class="meta">
           <span class="cinema"> <%= date_display(@production.date_of_first_performance) %> </span>
         </div>

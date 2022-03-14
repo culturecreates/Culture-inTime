@@ -34,7 +34,7 @@ class ProductionsController < ApplicationController
     query << RDF::Query::Pattern.new(:production, cit.startDate, :startDate, optional: true)
 
     solution =  query.execute(@graph).first
-    @production = Entity.new
+    @production = Entity.new('','','','','',uri)
     @production.load_solution(solution)
 
     # List properties with labels
