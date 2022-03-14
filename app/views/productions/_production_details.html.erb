@@ -14,9 +14,9 @@
     <% end %>
     <% if line.dig('o','type') != 'literal' %>
         <a href='<%= line.dig('o','value') %>'><%= line.dig('o','value').split('/').last %></a>
-         <% if line.dig('o_label','value') %>
-        <a href='?uri=<%= line.dig('o','value') %>'>link</a>
-        <% end %>
+         <% if line.dig('o_label','value') &&  line.dig('o','value').start_with?("http") %>
+            <a href='?uri=<%= line.dig('o','value') %>'><i class="external square alternate icon"></i></a>
+          <% end %>
         <%= line.dig('o_label','value') unless line.dig('o_label','value')  == line.dig('o','value').split('/').last %>
          <%= "@" + line.dig('o_label','xml:lang') if line.dig('o_label','xml:lang') %>
     <% else %>

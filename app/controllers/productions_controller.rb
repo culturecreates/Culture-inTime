@@ -51,6 +51,7 @@ class ProductionsController < ApplicationController
       BIND (COALESCE(?label_en, ?label_none) as ?label)
       filter(Bound(?label))
       filter(?label != "label")
+      filter(?o != "")
     } 
     order by ?label
     SPARQL
