@@ -13,7 +13,7 @@ Culture inTime continues to put its focus on Performing Arts Productions. Go to 
 
 Types of Users
 =========================
-* Power User: Can create SPARQL queries and Spotlights on data.
+* Power User: Can create SPARQL queries and Spotlights.
 * Spotlight Editor: Creates Spotlights on data without needing SPARQL. 
 * Browser: Uses Search functionality and pre-configured Spotlights to peruse data. 
 
