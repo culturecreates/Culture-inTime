@@ -14,7 +14,6 @@ class LoadRDF
   def source(data_source)
     @data = @client.execute_sparql(data_source.sparql)
  
-
     return if self.error?
     # Load new productions
     @graph = load(data_source, @data[:message])
@@ -23,6 +22,7 @@ class LoadRDF
     return unless @graph.count.positive?
     
     # persist to graphDB
+    RDFGraph.drop
     RDFGraph.graph << @graph
     RDFGraph.persist(data_source.id)
     data_source.update_attribute(:loaded, Time.now)

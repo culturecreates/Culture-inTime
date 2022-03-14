@@ -5,11 +5,16 @@ class RDFGraph
     # graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
   end
 
+  def self.drop
+    @graph = RDF::Graph.new
+  end
+
   def self.count
-    @count 
+    @count ||= 0
     # graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
   end
 
+  # Returns details of a URI in graph format
   # Input: Production URI string
   # Output: RDF Graph
   def self.production(uri)
