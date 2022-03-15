@@ -9,7 +9,9 @@ Main features:
 * Anyone with basic SPARQL skills can add their own federated SPARQL queries to load data from linked open data (LOD) sources with SPARQL endpoints such as Wikidata.org, Artsdata.ca and open data sources without SPARQL endpoints such as musicbrainz.org.
 * Anyone can create their own Spotlights based on data sources in Culture inTime
 
-Culture inTime continues to put its focus on Performing Arts Productions. Go to https://culture-intime.herokuapp.com/ to try it out!
+Culture inTime continues to put its focus on Performing Arts Productions. The current v3 is running at https://culture-intime.herokuapp.com/
+
+V3 is coming this summer with a simplified approach to writing SPARQLs. Stay tuned!
 
 Types of Users
 =========================
