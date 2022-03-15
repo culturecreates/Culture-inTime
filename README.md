@@ -11,7 +11,7 @@ Main features:
 
 Culture inTime continues to put its focus on Performing Arts Productions. Version 2 is running at https://culture-intime.herokuapp.com/
 
-Version 3 is coming in the summer of 2022 with a simplified approach to writing SPARQLs. Stay tuned!
+Version 3 is coming summer of 2022 with a simplified approach to writing SPARQLs. Stay tuned!
 
 Types of Users
 =========================
