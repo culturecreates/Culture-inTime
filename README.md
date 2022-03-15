@@ -7,7 +7,7 @@ Culture inTime is a playground for aggregating and visualizing Performing Arts r
 
 Main features: 
 * Anyone with basic SPARQL skills can add their own federated SPARQL queries to load data from linked open data (LOD) sources with SPARQL endpoints such as Wikidata.org, Artsdata.ca and open data sources without SPARQL endpoints such as musicbrainz.org.
-* Anyone can create their own Spotlights based on data sources in Culture inTime
+* Anyone can create their own Spotlights to group together performing arts productions around a theme.
 
 Culture inTime continues to put its focus on Performing Arts Productions. Version 2 is running at https://culture-intime.herokuapp.com/
 
