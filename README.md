@@ -3,7 +3,7 @@ This project is licensed under the GNU General Public License v3.0
 Culture inTime 
 =========================
 
-Culture inTime is a playground for agregating and visualizing Performing Arts related metadata from multipe data sources. Culture inTime was first developed during [GLAMhack 2020 and 2021](https://hack.glam.opendata.ch/).
+Culture inTime is a playground for aggregating and visualizing Performing Arts related metadata from multipe data sources. Culture inTime was first developed during [GLAMhack 2020 and 2021](https://hack.glam.opendata.ch/).
 
 Main features: 
 * Anyone with basic SPARQL skills can add their own federated SPARQL queries to load data from linked open data (LOD) sources with SPARQL endpoints such as Wikidata.org, Artsdata.ca and open data sources without SPARQL endpoints such as musicbrainz.org.
