@@ -24,7 +24,7 @@
     <%= link_to "Load RDF", load_rdf_data_source_path, class: "ui button primary show_loading" %>
      <%= link_to "Apply Upper Ontology", apply_upper_ontology_data_source_path, class: "ui button secondary show_loading" %>
     <% if @data_source.loaded.present? %>
-     <%= link_to 'View all', search_path(data_source:@data_source.id), class: "ui button tertiary" %>
+     <%= link_to 'View all', search_rdf_data_source_path(data_source:@data_source.id), class: "ui button tertiary" %>
     <% end %>
 
   <% else %>

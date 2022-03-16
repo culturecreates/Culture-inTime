@@ -51,22 +51,18 @@ class RDFGraph
   # Input: ActiveRecord Spotlight
   # Output: entities -> list of Entity Classes
   def self.spotlight(spotlight)
-    entities = []
-
     results =  artsdata_client.execute_sparql(generate_query_sparql(spotlight))
-    @count = results[:message].count
-    results[:message].first(20).each do |e|
-      
-      title = e["title"]["value"] || ""
-      description = e.dig("description","value") || ""
-      startDate = e.dig("startDate","value") || ""
-      place = e.dig("place","value") || ""
-      image = e.dig("image","value") || ""
-      entity_uri = e.dig("uri","value") || ""
-      entities << Entity.new(title, description, startDate,  place, image, entity_uri)
-    end
-    entities
+    load_entities(results[:message])
+    
   end
+
+  # Input: ActiveRecord DataSource
+  # Output: entites -> list of Entity Classes
+  def self.data_source(data_source)
+    results =  artsdata_client.execute_sparql(generate_data_source_sparql(data_source))
+    load_entities(results[:message])
+  end
+
 
   def self.persist(id)
     # artsdata_client.drop_graph(uri(id))
@@ -81,6 +77,20 @@ class RDFGraph
     "http://culture-in-time.com/graph/#{id}"
   end
 
+  def self.load_entities(sparql_results)
+    @count = sparql_results.count
+    entities = []
+    sparql_results.first(20).each do |e|
+      title = e["title"]["value"] || ""
+      description = e.dig("description","value") || ""
+      startDate = e.dig("startDate","value") || ""
+      place = e.dig("place","value") || ""
+      image = e.dig("image","value") || ""
+      entity_uri = e.dig("uri","value") || ""
+      entities << Entity.new(title, description, startDate,  place, image, entity_uri)
+    end
+    entities
+  end
 
 
   ##################
@@ -105,6 +115,13 @@ class RDFGraph
   def self.generate_query_sparql(spotlight)
     SparqlLoader.load('spotlight_productions',[
       '<spotlight_query_placeholder> a "triple"', spotlight.sparql
+    ])
+  end
+
+  def self.generate_data_source_sparql(data_source)
+    SparqlLoader.load('data_source',[
+      'graph_placeholder', uri(data_source.id),
+      'entity_class_placeholder', data_source.type_uri
     ])
   end
 

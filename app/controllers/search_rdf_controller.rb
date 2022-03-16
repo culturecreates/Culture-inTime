@@ -10,4 +10,11 @@ class SearchRdfController < ApplicationController
     @count = RDFGraph.count
     render "index"
   end
+
+  def data_source
+    data_source = DataSource.find(params[:data_source])
+    @entities = RDFGraph.data_source(data_source)
+    @count = RDFGraph.count
+    render "index"
+  end
 end

@@ -29,6 +29,5 @@ where {
         OPTIONAL { ?entity <image_prop_placeholder>  ?image . }  
            }
   OPTIONAL { ?entity <place_name_prop_placeholder>  ?place . filter(lang(?place) = ?l) }
-  OPTIONAL { ?entity <place_name_country_prop_placeholder>  ?country . filter(lang(?country) = ?l) }  
     
 }
