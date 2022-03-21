@@ -5,8 +5,7 @@ class ProductionsController < ApplicationController
   # GET /productions.json
   # Output: @productions list of Class Entity
   def index
-    spotlight = Spotlight.find(1)
-    @productions = RDFGraph.spotlight(spotlight)[1..5]
+    @productions = Entity.spotlight(1)[1..5]
   end
 
   # GET /productions/show?uri=

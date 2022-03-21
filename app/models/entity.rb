@@ -11,10 +11,42 @@ class Entity
     @entity_uri = entity_uri
   end
 
-  def self.all
-    
+  # Class method to find all entities give a DataSource id
+  def self.data_source(data_source_id)
+    data_source = DataSource.find(data_source_id)
+    results = RDFGraph.execute(data_source.generate_sparql)
+    load_entities(results[:message])
   end
 
+  # Class method to find all entities give a Spotlight id
+  def self.spotlight(spotlight_id)
+    spotlight = Spotlight.find(spotlight_id)
+    results = RDFGraph.execute(spotlight.generate_sparql)
+    load_entities(results[:message])
+  end
+
+  def self.count
+    @count || 0
+  end
+
+
+  # Class method that returns a list of entities of Class Entity
+  def self.load_entities(sparql_results)
+    @count = sparql_results.count
+    entities = []
+    sparql_results.first(20).each do |e|
+      title = e["title"]["value"] || ""
+      description = e.dig("description","value") || ""
+      startDate = e.dig("startDate","value") || ""
+      place = e.dig("place","value") || ""
+      image = e.dig("image","value") || ""
+      entity_uri = e.dig("uri","value") || ""
+      entities << Entity.new(title, description, startDate,  place, image, entity_uri)
+    end
+    entities
+  end
+
+  # not sure about this
   def load_solution(solution)
     if solution
       @title = solution.title if solution.bound?(:title)

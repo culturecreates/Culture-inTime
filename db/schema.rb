@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_10_033008) do
+ActiveRecord::Schema.define(version: 2022_03_17_182634) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(version: 2022_03_10_033008) do
     t.string "upper_country"
     t.string "upper_languages"
     t.string "upper_prefix"
+    t.string "fetch_method"
   end
 
   create_table "data_sources_spotlights", id: false, force: :cascade do |t|

@@ -85,3 +85,5 @@ gem 'json-ld', '~> 3.1.4'
 gem 'sparql', '~> 3.1.3'
 gem 'nokogiri'
 gem 'rdf-turtle'
+
+gem 'sidekiq'

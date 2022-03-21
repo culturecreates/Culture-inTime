@@ -53,3 +53,11 @@ en:
   chained-to-source: "Chained to source"
 
 
+  helpers:
+    label:
+      data_source:
+        fetch_method: "Method to fetch data"
+ 
+
+  content-negotiation: "Automatic content negotiation"
+  SPARQL-describe: "SPARQL describe"

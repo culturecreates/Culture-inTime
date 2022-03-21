@@ -1,4 +1,21 @@
 class RDFGraph
+
+  def self.execute(sparql)
+    artsdata_client.execute_sparql(sparql)
+  end
+
+
+  def self.update(sparql)
+    artsdata_client.execute_update_sparql(sparql)
+  end
+
+  ## Returns JSON-LD from a construct sparql
+  def self.construct(sparql)
+    artsdata_client.execute_construct_sparql(sparql)
+  end
+
+
+  ############## OLD ##
   
   def self.graph
     @graph ||= RDF::Graph.new
@@ -73,57 +90,60 @@ class RDFGraph
   # Private
   #################
 
-  def self.uri(id)
-    "http://culture-in-time.com/graph/#{id}"
-  end
+  # def self.uri(id)
+  #   "http://culture-in-time.com/graph/#{id}"
+  # end
 
-  def self.load_entities(sparql_results)
-    @count = sparql_results.count
-    entities = []
-    sparql_results.first(20).each do |e|
-      title = e["title"]["value"] || ""
-      description = e.dig("description","value") || ""
-      startDate = e.dig("startDate","value") || ""
-      place = e.dig("place","value") || ""
-      image = e.dig("image","value") || ""
-      entity_uri = e.dig("uri","value") || ""
-      entities << Entity.new(title, description, startDate,  place, image, entity_uri)
-    end
-    entities
-  end
+  # def self.load_entities(sparql_results)
+  #   @count = sparql_results.count
+  #   entities = []
+  #   sparql_results.first(20).each do |e|
+  #     title = e["title"]["value"] || ""
+  #     description = e.dig("description","value") || ""
+  #     startDate = e.dig("startDate","value") || ""
+  #     place = e.dig("place","value") || ""
+  #     image = e.dig("image","value") || ""
+  #     entity_uri = e.dig("uri","value") || ""
+  #     entities << Entity.new(title, description, startDate,  place, image, entity_uri)
+  #   end
+  #   entities
+  # end
 
 
   ##################
   #  SPARQL Templates
   ####################
 
-  def self.generate_upper_ontology_sparql(data_source)
-    SparqlLoader.load('apply_upper_ontology', [
-      'graph_placeholder', uri(data_source.id),
-      'type_uri_placeholder' , data_source.type_uri,
-      '<languages_placeholder>', data_source.upper_languages.split(",").map {|l| "\"#{l}\"" }.join(" "),
-      '<title_prop_placeholder>', data_source.upper_title,
-      '<date_prop_placeholder>', data_source.upper_date,
-      '<description_prop_placeholder>', data_source.upper_description,
-      '<place_name_prop_placeholder>', data_source.upper_place,
-      '<place_name_country_prop_placeholder>', data_source.upper_country,
-      '<image_prop_placeholder>' , data_source.upper_image
-    ])
+  # old
+  # def self.generate_upper_ontology_sparql(data_source)
+  #   SparqlLoader.load('apply_upper_ontology', [
+  #     'graph_placeholder', uri(data_source.id),
+  #     'type_uri_placeholder' , data_source.type_uri,
+  #     '<languages_placeholder>', data_source.upper_languages.split(",").map {|l| "\"#{l}\"" }.join(" "),
+  #     '<title_prop_placeholder>', data_source.upper_title,
+  #     '<date_prop_placeholder>', data_source.upper_date,
+  #     '<description_prop_placeholder>', data_source.upper_description,
+  #     '<place_name_prop_placeholder>', data_source.upper_place,
+  #     '<place_name_country_prop_placeholder>', data_source.upper_country,
+  #     '<image_prop_placeholder>' , data_source.upper_image
+  #   ])
     
-  end
+  # end
 
-  def self.generate_query_sparql(spotlight)
-    SparqlLoader.load('spotlight_productions',[
-      '<spotlight_query_placeholder> a "triple"', spotlight.sparql
-    ])
-  end
+  # old
+  # def self.generate_query_sparql(spotlight)
+  #   SparqlLoader.load('spotlight_productions',[
+  #     '<spotlight_query_placeholder> a "triple"', spotlight.sparql
+  #   ])
+  # end
 
-  def self.generate_data_source_sparql(data_source)
-    SparqlLoader.load('data_source',[
-      'graph_placeholder', uri(data_source.id),
-      'entity_class_placeholder', data_source.type_uri
-    ])
-  end
+  # old
+  # def self.generate_data_source_sparql(data_source)
+  #   SparqlLoader.load('data_source',[
+  #     'graph_placeholder', uri(data_source.id),
+  #     'entity_class_placeholder', data_source.type_uri
+  #   ])
+  # end
 
 
   def self.artsdata_client

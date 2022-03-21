@@ -24,6 +24,7 @@ module ArtsdataApi
       end
 
       # Send SPARQL to query endpoint
+      # Returns JSON
       def execute_sparql(sparql)
         @logger.info "sparql: #{sparql.truncate(8000).squish}"
         data = request_json(
@@ -43,6 +44,7 @@ module ArtsdataApi
       end
 
       # Send SPARQL construct query to endpoint
+      # Returns JSON-LD
       def execute_construct_sparql(sparql)
         @logger.info "sparql: #{sparql.truncate(8000).squish}"
         data = request_jsonld(

@@ -51,6 +51,12 @@
     </div>
   </div>
  <br>
+
+<div class="field">
+ <%= form.label :fetch_method %>
+ <%= form.select :fetch_method, [ [t("content-negotiation"), :content_negotiation],[t("SPARQL-describe"), :SPARQL_describe]], class: 'ui dropdown' %>
+</div>
+
   <div class="actions">
     <%= form.submit "Update", class: 'ui button green show_loading' %>
   </div>

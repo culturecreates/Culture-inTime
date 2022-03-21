@@ -43,16 +43,16 @@
 </p>
 
 
-<% if  @sample_graph  %>
+<% if   @data_source.sample_graph  %>
   <div class="ui styled accordion" style="width:100%;">
     <div class="title">
       <i class="dropdown icon"></i>
-        Sample JSON-LD for <a href="<%= @sample_uri %>"><%= @sample_uri %></a>
+        Sample JSON-LD for <a href="<%=  @data_source.sample_uri %>"><%=  @data_source.sample_uri %></a>
     </div>
     <div class="content">
       <pre class="transition hidden">
       <code>
-        <%= @sample_graph %>
+        <%=  @data_source.sample_graph %>
       </code>
       </pre>
     </div>

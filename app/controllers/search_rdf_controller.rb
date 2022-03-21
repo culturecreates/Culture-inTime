@@ -5,16 +5,14 @@ class SearchRdfController < ApplicationController
   end
 
   def spotlight 
-    spotlight = Spotlight.find(params[:spotlight])
-    @entities = RDFGraph.spotlight(spotlight)
-    @count = RDFGraph.count
+    @entities = Entity.spotlight(params[:spotlight])
+    @count = Entity.count
     render "index"
   end
 
   def data_source
-    data_source = DataSource.find(params[:data_source])
-    @entities = RDFGraph.data_source(data_source)
-    @count = RDFGraph.count
+    @entities = Entity.data_source(params[:data_source])
+    @count = Entity.count  # TODO: fix count i.e. Entity.data_source_count(params[:data_source])
     render "index"
   end
 end

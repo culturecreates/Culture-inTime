@@ -59,14 +59,22 @@ class LoadRDF
   def load(data_source, data)
     graph = RDF::Graph.new
     data.each do |resource|
-      uri = resource['uri']['value']  if resource['uri']
-      begin
-        graph << RDF::Graph.load(uri)
-        graph << [RDF::URI(uri), RDF.type, RDF::URI(data_source.type_uri)]
-      rescue RDF::ReaderError => exception
-        cache_errors << [uri, exception]  unless cache_errors.count > 10 #max errors
-      rescue => exception
-        cache_errors << [uri, exception]  unless cache_errors.count > 10 #max errors
+      next unless resource['uri']
+      
+      uri = resource['uri']['value'] 
+      if data_source.fetch_method == "SPARQL_describe"
+
+
+      else
+        
+        begin
+          graph << RDF::Graph.load(uri)
+          graph << [RDF::URI(uri), RDF.type, RDF::URI(data_source.type_uri)]
+        rescue RDF::ReaderError => exception
+          cache_errors << [uri, exception]  unless cache_errors.count > 10 #max errors
+        rescue => exception
+          cache_errors << [uri, exception]  unless cache_errors.count > 10 #max errors
+        end
       end
     end
     graph

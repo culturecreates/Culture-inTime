@@ -17,7 +17,7 @@ class DataSourcesController < ApplicationController
     if @data_source.upper_title.blank?
       flash.now[:notice] = "Error: need a title property in upper ontology." 
     else
-      response = RDFGraph.upper_ontology(@data_source)
+      response = @data_source.apply_upper_ontology
       if response[:code] == 204
         flash.now[:notice] = "Upper ontology applied!"
       else
@@ -32,14 +32,10 @@ class DataSourcesController < ApplicationController
     if @data_source.type_uri.blank?
       flash.now[:notice] = "Please add an entity type." 
     else
-      loader = LoadRDF.new
-      loader.source(@data_source)
-      @sample_graph = loader.sample
-      @sample_uri = loader.sample_uri
-      if loader.error?
-        flash.now[:notice] = "Ran into a problem. #{loader.errors}"
+      if @data_source.load_rdf
+        flash.now[:notice] = "Loading RDF started..."
       else
-        flash.now[:notice] = "#{loader.count} URIs returned by SPARQL #{loader.cache_errors}"
+        flash.now[:notice] = "Ran into a problem. #{@data_source.errors}"
       end
     end
     render 'show'
@@ -112,6 +108,6 @@ class DataSourcesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def data_source_params
-    params.require(:data_source).permit(:upper_prefix, :upper_title, :upper_description, :upper_date, :upper_image, :upper_place, :upper_country, :upper_languages, :type_uri, :name, :sparql, :email, :loaded, :data_sources)
+    params.require(:data_source).permit(:fetch_method, :upper_prefix, :upper_title, :upper_description, :upper_date, :upper_image, :upper_place, :upper_country, :upper_languages, :type_uri, :name, :sparql, :email, :loaded, :data_sources)
   end
 end
