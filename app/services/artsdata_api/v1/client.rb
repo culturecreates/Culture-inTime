@@ -12,7 +12,7 @@ module ArtsdataApi
         elsif Rails.env.staging?
           'http://3.97.145.197:7200'.freeze # Lightsail AWS
         else
-          'http://localhost:7200'.freeze
+          'http://99.79.129.47'.freeze
         end
 
       attr_reader :oauth_token

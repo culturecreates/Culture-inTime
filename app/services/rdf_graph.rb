@@ -14,6 +14,9 @@ class RDFGraph
     artsdata_client.execute_construct_sparql(sparql)
   end
 
+  def self.persist(turtle, graph_name)
+    artsdata_client.upload_turtle(turtle, graph_name)
+  end
 
   ############## OLD ##
   
@@ -81,10 +84,7 @@ class RDFGraph
   end
 
 
-  def self.persist(id)
-    # artsdata_client.drop_graph(uri(id))
-    artsdata_client.upload_turtle(graph.dump(:turtle), uri(id))
-  end
+
 
   ################
   # Private
@@ -147,7 +147,7 @@ class RDFGraph
 
 
   def self.artsdata_client
-    @artsdata_client ||= ArtsdataApi::V1::Client.new(oauth_token: Rails.application.credentials.dig(:graphdb, :oauth_token))
+    @artsdata_client ||= ArtsdataApi::V1::Client.new  # (oauth_token: Rails.application.credentials.dig(:graphdb, :oauth_token))
   end
 end
 

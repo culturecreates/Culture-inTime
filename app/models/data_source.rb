@@ -16,10 +16,11 @@ class DataSource < ApplicationRecord
 
     @uris = @response[:message].pluck("uri").pluck("value")
     @sample_uri = @uris.first
-    #TODO: get endpoint from sparql SERVICE
-    sparql_endpoint = 'http://localhost:7200/repositories/artsdata'
+   
 
     if self.fetch_method == "SPARQL_describe"
+      #TODO: get endpoint from sparql SERVICE
+      sparql_endpoint = 'http://99.79.129.47/repositories/culture-in-time'
       # get sample graph
       sparql = <<~SPARQL
       CONSTRUCT {
@@ -31,6 +32,7 @@ class DataSource < ApplicationRecord
         }
       }
       SPARQL
+
       response = RDFGraph.construct(sparql)
       return false unless response[:code] == 200
 
@@ -53,6 +55,11 @@ class DataSource < ApplicationRecord
         BatchUpdateJob.set(queue: "graph-#{self.id}").perform_later(sparql)
       end
     else
+      @sample_graph = RDF::Graph.load(@sample_uri).to_jsonld
+
+      @uris.each do |uri|
+        BatchContentNegotiationJob.set(queue: "graph-#{self.id}").perform_later(uri,graph_name,self.type_uri)
+      end
 
     end
 

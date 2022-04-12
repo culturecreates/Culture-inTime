@@ -1,7 +1,6 @@
 class SearchRdfController < ApplicationController
   def index
-
-    @entities = RDFGraph.all
+    @entities = Entity.spotlight(1)
   end
 
   def spotlight 
