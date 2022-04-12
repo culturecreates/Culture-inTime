@@ -33,7 +33,7 @@ class DataSourcesController < ApplicationController
       flash.now[:notice] = "Please add an entity type." 
     else
       if @data_source.load_rdf
-        flash.now[:notice] = "Loading RDF started..."
+        flash.now[:notice] = "Loading #{@data_source.uri_count} entities..."
       else
         flash.now[:notice] = "Ran into a problem. #{@data_source.errors}"
       end

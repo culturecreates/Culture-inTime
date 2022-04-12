@@ -18,15 +18,15 @@ class RDFGraph
     artsdata_client.upload_turtle(turtle, graph_name)
   end
 
+  def self.drop(graph_name)
+    artsdata_client.drop_graph(graph_name)
+  end
+
   ############## OLD ##
   
   def self.graph
     @graph ||= RDF::Graph.new
     # graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
-  end
-
-  def self.drop
-    @graph = RDF::Graph.new
   end
 
   def self.count

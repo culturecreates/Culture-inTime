@@ -10,57 +10,32 @@ class DataSource < ApplicationRecord
     association_foreign_key: :linked_data_source_id
 
 
+  # Method to drop and load data source into a graph
   def load_rdf
     @response = RDFGraph.execute(self.sparql)
+    puts @response
     return false unless @response[:code] == 200
 
     @uris = @response[:message].pluck("uri").pluck("value")
-    @sample_uri = @uris.first
-   
-
+    RDFGraph.drop(graph_name)
     if self.fetch_method == "SPARQL_describe"
       #TODO: get endpoint from sparql SERVICE
-      sparql_endpoint = 'http://99.79.129.47/repositories/culture-in-time'
-      # get sample graph
-      sparql = <<~SPARQL
-      CONSTRUCT {
-          <#{@sample_uri}> ?p ?o .
-      }
-      WHERE { 
-          SERVICE <#{sparql_endpoint}> {
-          <#{@sample_uri}> ?p ?o . 
-        }
-      }
-      SPARQL
-
-      response = RDFGraph.construct(sparql)
-      return false unless response[:code] == 200
-
-      @sample_graph = response[:message]
-
+      sparql_endpoint = 'http://db.artsdata.ca/repositories/artsdata'
       @uris.each do |uri|
-        sparql = <<~SPARQL
-        INSERT {
-          graph <#{graph_name}> {
-            <#{uri}> ?p ?o ; a <#{self.type_uri}>
-
-          } 
-        }
-        WHERE { 
-            SERVICE <#{sparql_endpoint}> {
-            <#{uri}> ?p ?o . 
-          }
-        }
-        SPARQL
-        BatchUpdateJob.set(queue: "graph-#{self.id}").perform_later(sparql)
+        BatchUpdateJob.set(queue: "graph-#{self.id}").perform_later(uri, graph_name, self.type_uri, sparql_endpoint)
       end
     else
-      @sample_graph = RDF::Graph.load(@sample_uri).to_jsonld
+      @sample_uri = @uris.first
+      begin 
+        @sample_graph = RDF::Graph.load(@sample_uri).to_jsonld
+      rescue => exception
+        puts exception.inspect
+      end
+      return false unless @sample_graph
 
       @uris.each do |uri|
         BatchContentNegotiationJob.set(queue: "graph-#{self.id}").perform_later(uri,graph_name,self.type_uri)
       end
-
     end
 
     return true
@@ -70,9 +45,12 @@ class DataSource < ApplicationRecord
     RDFGraph.update(generate_upper_ontology_sparql)
   end
 
-
   def sample_graph
     return @sample_graph
+  end
+
+  def uri_count
+    return @uris.count
   end
 
   def sample_uri 
