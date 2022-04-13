@@ -24,15 +24,15 @@ class RDFGraph
 
   ############## OLD ##
   
-  def self.graph
-    @graph ||= RDF::Graph.new
-    # graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
-  end
+  # def self.graph
+  #   @graph ||= RDF::Graph.new
+  #   # graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
+  # end
 
-  def self.count
-    @count ||= 0
-    # graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
-  end
+  # def self.count
+  #   @count ||= 0
+  #   # graph ||= RDF::Graph.load('config/initializers/artsdata-dump.nt', format: :nquads)
+  # end
 
   # Returns details of a URI in graph format
   # Input: Production URI string
@@ -64,24 +64,24 @@ class RDFGraph
 
   # Input: ActiveRecord DataSource
   # Output: response hash {code: , message: }
-  def self.upper_ontology(data_source)
-    artsdata_client.execute_update_sparql(generate_upper_ontology_sparql(data_source))
-  end
+  # def self.upper_ontology(data_source)
+  #   artsdata_client.execute_update_sparql(generate_upper_ontology_sparql(data_source))
+  # end
 
   # Input: ActiveRecord Spotlight
   # Output: entities -> list of Entity Classes
-  def self.spotlight(spotlight)
-    results =  artsdata_client.execute_sparql(generate_query_sparql(spotlight))
-    load_entities(results[:message])
+  # def self.spotlight(spotlight)
+  #   results =  artsdata_client.execute_sparql(generate_query_sparql(spotlight))
+  #   load_entities(results[:message])
     
-  end
+  # end
 
-  # Input: ActiveRecord DataSource
-  # Output: entites -> list of Entity Classes
-  def self.data_source(data_source)
-    results =  artsdata_client.execute_sparql(generate_data_source_sparql(data_source))
-    load_entities(results[:message])
-  end
+  # # Input: ActiveRecord DataSource
+  # # Output: entites -> list of Entity Classes
+  # def self.data_source(data_source)
+  #   results =  artsdata_client.execute_sparql(generate_data_source_sparql(data_source))
+  #   load_entities(results[:message])
+  # end
 
 
 
