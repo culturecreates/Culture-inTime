@@ -41,7 +41,7 @@ class Entity
       place = e.dig("place","value") || ""
       image = e.dig("image","value") || ""
       entity_uri = e.dig("uri","value") || ""
-      entities << Entity.new(title: title, description: description, startDate: startDate,  place: place, image: image, entity_uri: entity_uri)
+      entities << Entity.new(title: title, description: description, date: startDate,  place: place, image: image, entity_uri: entity_uri)
     end
     entities
   end
