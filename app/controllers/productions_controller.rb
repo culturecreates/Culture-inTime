@@ -11,9 +11,12 @@ class ProductionsController < ApplicationController
   # GET /productions/show?uri=
   # Input: uri String
   # Output: 
-  #   @production Class Entity with methodes graph and properties_with_labels
+  #   @production Class Entity with methods graph and properties_with_labels
   def show
     @production = Entity.find(params[:uri])
+    if params[:layout]
+      @production.layout(params[:layout])
+    end
 
   end
 

@@ -43,9 +43,9 @@
          
             <i class="dropdown icon"></i>
             <div class="menu">
-              <%= link_to "English", root_path(locale: :en), class: "item" %>
-              <%= link_to "Français", root_path(locale: :fr), class: "item" %>
-              <%= link_to "Deutsch", root_path(locale: :de), class: "item" %>
+              <%= link_to "English", request.original_url.sub("/#{I18n.locale}","/en")  , class: "item" %>
+              <%= link_to "Français", request.original_url.sub("/#{I18n.locale}","/fr"), class: "item" %>
+              <%= link_to "Deutsch", request.original_url.sub("/#{I18n.locale}","/de"), class: "item" %>
             
             </div>
           </div>

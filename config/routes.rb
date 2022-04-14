@@ -1,18 +1,8 @@
 Rails.application.routes.draw do
-  
-  root 'home#index'
-
-  get '/:locale' => 'home#index'
-
-
-
-  get '/admin', to: 'admin#index', as: 'admin'
-  get '/admin/build_cache', to: 'admin#build_cache', as: 'admin_build_cache'
- 
-
- 
 
   scope "/:locale" do
+    root to: 'home#index'
+   
     get '/search', to: 'search#index'
     get '/search_rdf', to: 'search_rdf#index'
     get '/search_rdf/spotlight', to: 'search_rdf#spotlight'
@@ -29,6 +19,11 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  root to: redirect("/#{I18n.default_locale}", status: 302), as: :redirected_root
+  get "/*path", to: redirect("/#{I18n.default_locale}/%{path}", status: 302),
+                constraints: { path: /(?!(#{I18n.available_locales.join("|")})\/).*/ },
+                format: false
   
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

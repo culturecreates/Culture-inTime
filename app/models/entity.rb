@@ -1,6 +1,6 @@
 
 class Entity
-  attr_accessor :title, :description, :date_of_first_performance, :location_label, :main_image, :entity_uri
+  attr_accessor :title, :description, :date_of_first_performance, :location_label, :main_image, :entity_uri, :layout_id
 
   def initialize(**h) 
     @title = h[:title]
@@ -30,7 +30,7 @@ class Entity
   end
 
 
-  # Class method that returns a list of entities of Class Entity
+  # Class method that returns an light index list of entities
   def self.load_entities(sparql_results)
     @count = sparql_results.count
     entities = []
@@ -44,6 +44,32 @@ class Entity
       entities << Entity.new(title: title, description: description, date: startDate,  place: place, image: image, entity_uri: entity_uri)
     end
     entities
+  end
+
+  # Class method that returns full graph of individual entity
+  def self.find(entity_uri)
+    entity = Entity.new(entity_uri: entity_uri)
+
+    # load upper ontology into entity
+    solution =  entity.upper_ontology_query.execute(entity.graph).first
+    if solution 
+      entity.title = solution.title if solution.bound?(:title)
+      entity.description = solution.description.value if solution.bound?(:description)
+      entity.date_of_first_performance = solution.startDate.value if solution.bound?(:startDate)
+      entity.location_label = solution.placeName if  solution.bound?(:placeName)
+      entity.main_image = solution.image if  solution.bound?(:image)
+    end
+    entity
+  end
+
+  def layout(layout_id)
+    @layout_id = layout_id
+    cit = RDF::Vocabulary.new("http://culture-in-time.org/ontology/")
+    graph << RDF::Statement.new(RDF::URI("http://schema.org/description"), cit.label, "Description")
+    graph << RDF::Statement.new(RDF::URI("http://schema.org/description"), cit.order, 1)
+    graph << RDF::Statement.new(RDF::URI("http://www.wikidata.org/prop/direct/P161"), cit.label, "Cast")
+    graph << RDF::Statement.new(RDF::URI("http://www.wikidata.org/prop/direct/P161"), cit.order, 2)
+
   end
 
 
@@ -84,40 +110,43 @@ class Entity
     end
     graph
   end
-
-
-  def self.find(entity_uri)
-    entity = Entity.new(entity_uri: entity_uri)
-    graph = entity.graph
-
-    # load upper ontology into entity
-    solution =  entity.upper_ontology_query.execute(graph).first
-
-    entity.title = solution.title if solution.bound?(:title)
-    entity.description = solution.description.value if solution.bound?(:description)
-    entity.date_of_first_performance = solution.startDate.value if solution.bound?(:startDate)
-    entity.location_label = solution.placeName if  solution.bound?(:placeName)
-    entity.main_image = solution.image if  solution.bound?(:image)
-    entity
-  end
+  
 
   def properties_with_labels
     query = SPARQL.parse(<<~SPARQL)
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    SELECT distinct ?label ?o ?p ?o_label
+    PREFIX cit:  <http://culture-in-time.org/ontology/>
+    SELECT distinct ?label ?p ?o ?o_label
     WHERE { 
       ?s ?p ?o  .
       OPTIONAL { ?o rdfs:label ?o_label . } 
-      OPTIONAL { ?p rdfs:label ?label_en .
-        filter(lang(?label_en) = "en") }
-      OPTIONAL { ?p rdfs:label ?label_none .
-        filter(lang(?label_none) = "") }
-      BIND (COALESCE(?label_en, ?label_none) as ?label)
+      OPTIONAL { ?p rdfs:label ?label  . } 
       filter(Bound(?label))
       filter(?label != "label")
       filter(?o != "")
     } 
     order by ?label
+    SPARQL
+
+    @properties_with_labels ||= query.execute(graph).to_json
+    
+  end
+
+  def properties_with_labels_layout
+    query = SPARQL.parse(<<~SPARQL)
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX cit:  <http://culture-in-time.org/ontology/>
+    SELECT distinct ?label ?p ?o ?o_label
+    WHERE { 
+      ?s ?p ?o .
+      OPTIONAL { ?o rdfs:label ?o_label .}
+      OPTIONAL { ?p cit:label ?label .}
+      OPTIONAL {?p cit:order ?order .}
+      filter(Bound(?label))
+      filter(?label != "label")
+      filter(?o != "")
+    } 
+    order by ?order
     SPARQL
 
     @properties_with_labels ||= query.execute(graph).to_json
