@@ -7,7 +7,8 @@ module ProductionsHelper
       color = Digest::MD5.hexdigest(production.title)[0..5]
       "https://dummyimage.com/300x200/#{color}/ffffff.png&text=#{production.title}"
     else
-      production&.main_image
+      # Convert wikimedia urls to https to fix image rendering problem. see https://github.com/culturecreates/Culture-inTime/issues/9
+      production&.main_image.value.gsub("http://commons.wikimedia.org/wiki/Special:","https://commons.wikimedia.org/wiki/Special:")
     end
   end
 
@@ -22,7 +23,6 @@ module ProductionsHelper
 
   def date_time_display(date_time)
     Time.zone = 'Eastern Time (US & Canada)'
-    #I18n.l(date_time, format: :long)
-    date_time.in_time_zone.strftime("%d %b %Y - %a - %H:%M %Z")
+    I18n.l(date_time.in_time_zone, format: :long)
   end
 end
