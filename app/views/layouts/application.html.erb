@@ -10,7 +10,7 @@
       <%= render partial: "layouts/memberstack_translation_german" %>
     <% end %>
   
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag  'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -33,7 +33,7 @@
       <div class="ui stackable menu">
         <%= link_to t('Culture in-Time'), root_path, class: "header item" %>
         <%= link_to t('spotlights'), spotlights_path, class: "item" %>
-        <%= link_to t('productions'), productions_path, class: "item" %>
+       
        <%= link_to t('sources'), data_sources_path, class: "item" %>
         
         <div class="right menu">

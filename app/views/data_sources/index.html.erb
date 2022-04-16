@@ -15,9 +15,9 @@
   <thead>
     <tr>
     <th>ID</th>
-      <th><%= t('name') %></th>
-      <th><%= t('author') %></th>
-      <th><%= t('cached') %></th>
+      <th><%= t('table.name') %></th>
+      <th><%= t('table.author') %></th>
+      <th><%= t('table.cached') %></th>
       <th colspan="1"></th>
     </tr>
   </thead>
@@ -33,11 +33,11 @@
         <td><%= data_source.loaded %></td>
         <td>
          <span style="display: flex;">
-          <%= link_to t('show'), data_source, class: "ui button mini green" %>
+          <%= link_to t('button.show'), data_source, class: "ui button mini green" %>
           <% if cookies[:user] == data_source.email || is_admin? %>
-          <%= link_to t('edit'), edit_data_source_path(data_source), class: "ui button mini" %>
-          <%= link_to t('chain'), new_data_source_path(layer: data_source.id ),  data: { confirm: 'Create supplimentary SPARQL chained to this SPARQL?' }, class: "ui button mini" %>
-          <%= link_to t('destroy'), data_source, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button mini red" %>
+          <%= link_to t('button.edit'), edit_data_source_path(data_source), class: "ui button mini" %>
+          <%= link_to t('button.chain'), new_data_source_path(layer: data_source.id ),  data: { confirm: 'Create supplimentary SPARQL chained to this SPARQL?' }, class: "ui button mini" %>
+          <%= link_to t('button.destroy'), data_source, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button mini red" %>
         <% end %>
         </span>
         </td>
@@ -61,9 +61,9 @@
   <thead>
     <tr>
     <th>ID</th>
-      <th><%= t('name') %></th>
-      <th><%= t('author') %></th>
-      <th><%= t('chained-to-source') %></th>
+      <th><%= t('table.name') %></th>
+      <th><%= t('table.author') %></th>
+      <th><%= t('table.chained-to-source') %></th>
       <th colspan="1"></th>
     </tr>
   </thead>
@@ -79,11 +79,11 @@
         <td><%= data_source.layers.map {|l| l.id }.join(', ') %></td>
         <td>
      <span style="display: flex;">
-          <%= link_to 'Show', data_source, class: "ui button tiny green" %>
+          <%= link_to t('button.show'), data_source, class: "ui button tiny green" %>
 
           <% if cookies[:user] == data_source.email || is_admin? %>
-          <%= link_to t('edit'), edit_data_source_path(data_source), class: "ui button tiny" %>
-          <%= link_to t('destroy'), data_source, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button tiny red" %>
+          <%= link_to t('button.edit'), edit_data_source_path(data_source), class: "ui button tiny" %>
+          <%= link_to t('button.destroy'), data_source, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button tiny red" %>
         <% end %>
         </span>
         </td>

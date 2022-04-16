@@ -2,7 +2,6 @@
   <% if data_source.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(data_source.errors.count, "error") %> prohibited this data_source from being saved:</h2>
-
       <ul>
       <% data_source.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -14,17 +13,16 @@
 
   <div class="field">
     <%= form.label :name %>
-    
     <%= form.text_field :name %>
   </div>
 
   <div class="field">
-    <%= form.label "Type for Upper Ontology"%>
+    <%= form.label :type_uri %>
     <%= form.text_field :type_uri %>
   </div>
 
   <div class="field">
-    <%= form.label :sparql %> List URIs in variable ?uri
+    <%= form.label :sparql %> <%= t "List URIs in variable ?uri"  %>
     <%= form.text_area :sparql, rows: 14 %>
   </div>
 
@@ -36,7 +34,7 @@
   <div class="ui styled accordion" style="width:100%;">
     <div class="title">
       <i class="dropdown icon"></i>
-        Data source chain 
+        <%= t "Data source chain" %> 
     </div>
     <div class="content">
       <div class="field">
@@ -58,7 +56,7 @@
 </div>
 
   <div class="actions">
-    <%= form.submit "Update", class: 'ui button green show_loading' %>
+    <%= form.submit t("button.update"), class: 'ui button green show_loading' %>
   </div>
 
 <% end %>
