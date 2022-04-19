@@ -6,14 +6,7 @@ module ArtsdataApi
     # code: 200 is success for SPARQL queries
     # code: 204 is success for SPARQL updates
     class Client
-      API_ENDPOINT =
-        if Rails.env.production?
-          'http://db.artsdata.ca'.freeze
-        elsif Rails.env.staging?
-          'http://3.97.145.197:7200'.freeze # Lightsail AWS
-        else
-          'http://99.79.129.47'.freeze
-        end
+      API_ENDPOINT = 'http://99.79.129.47'.freeze
 
       attr_reader :oauth_token
 
