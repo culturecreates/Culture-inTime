@@ -13,7 +13,6 @@ class DataSource < ApplicationRecord
   # Method to drop and load data source into a graph
   def load_rdf
     @response = RDFGraph.execute(self.sparql)
-    puts @response
     return false unless @response[:code] == 200
 
     @uris = @response[:message].pluck("uri").pluck("value")
@@ -36,6 +35,9 @@ class DataSource < ApplicationRecord
       @uris.each do |uri|
         BatchContentNegotiationJob.set(queue: "graph-#{self.id}").perform_later(uri,graph_name,self.type_uri)
       end
+      self.loaded = Time.now
+      self.save
+
     end
 
     return true

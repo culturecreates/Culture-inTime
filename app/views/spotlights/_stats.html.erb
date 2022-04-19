@@ -1,0 +1,17 @@
+
+<table class="ui celled table">
+  <thead><tr> 
+    <th>Property</th>
+    <th>Count</th>
+    <th>URI</th>
+  </tr></thead>
+  <tbody>
+    <% properties.each do |prop| %>
+    <tr>
+      <td data-label="Property"> <%= prop["l_sample"]["value"].capitalize %></td>
+      <td data-label="Count"> <%= prop["count"]["value"] %></td>
+      <td data-label="URI"> <%= prop["p"]["value"] %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

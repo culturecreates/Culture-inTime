@@ -62,14 +62,11 @@ class Entity
     entity
   end
 
-  def layout(layout_id)
-    @layout_id = layout_id
-    cit = RDF::Vocabulary.new("http://culture-in-time.org/ontology/")
-    graph << RDF::Statement.new(RDF::URI("http://schema.org/description"), cit.label, "Description")
-    graph << RDF::Statement.new(RDF::URI("http://schema.org/description"), cit.order, 1)
-    graph << RDF::Statement.new(RDF::URI("http://www.wikidata.org/prop/direct/P161"), cit.label, "Cast")
-    graph << RDF::Statement.new(RDF::URI("http://www.wikidata.org/prop/direct/P161"), cit.order, 2)
-
+  def layout(spotlight_id)
+    @layout_id = spotlight_id
+    layout_turtle = Spotlight.find(spotlight_id).layout
+    graph.from_ttl(layout_turtle, prefixes: {rdf: RDF.to_uri, cit: "<http://culture-in-time.org/ontology/>"})
+ 
   end
 
 
@@ -94,13 +91,18 @@ class Entity
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
     CONSTRUCT {
       <#{@entity_uri}> ?p ?o .
-      ?o rdfs:label ?o_label . 
       ?p rdfs:label ?label .
+      ?o rdfs:label ?o_label . 
       } 
     WHERE { 
       <#{@entity_uri}> ?p ?o . 
-      OPTIONAL { ?p rdfs:label ?label . }
-      OPTIONAL { ?o rdfs:label ?o_label . }
+      OPTIONAL { ?p rdfs:label ?label_en . filter(lang(?label_en) = "en") }
+      OPTIONAL { ?p rdfs:label ?label_fr . filter(lang(?label_fr) = "fr") }
+      OPTIONAL { ?p rdfs:label ?label_de . filter(lang(?label_de) = "de") }
+      OPTIONAL { ?p rdfs:label ?label_no_language . filter(lang(?label_no_language) = "") }
+
+      BIND(COALESCE(?label_#{I18n.locale.to_s},?label_en, ?label_fr ,?label_de, ?label_no_language ) as ?label)
+     OPTIONAL { ?o rdfs:label ?o_label . }
     }
     SPARQL
     
@@ -121,11 +123,12 @@ class Entity
       ?s ?p ?o  .
       OPTIONAL { ?o rdfs:label ?o_label . } 
       OPTIONAL { ?p rdfs:label ?label  . } 
-      filter(Bound(?label))
-      filter(?label != "label")
-      filter(?o != "")
+     # filter(Bound(?label))
+     filter(?label != "label")
+   #   filter(?o != "")
+      bind(LCASE(?label) as ?label_lowercase)
     } 
-    order by ?label
+    order by ?label_lowercase
     SPARQL
 
     @properties_with_labels ||= query.execute(graph).to_json
@@ -140,16 +143,15 @@ class Entity
     WHERE { 
       ?s ?p ?o .
       OPTIONAL { ?o rdfs:label ?o_label .}
-      OPTIONAL { ?p cit:label ?label .}
-      OPTIONAL {?p cit:order ?order .}
-      filter(Bound(?label))
+      OPTIONAL { ?p rdfs:label ?label .}
+      ?p cit:order ?order .
       filter(?label != "label")
       filter(?o != "")
     } 
     order by ?order
     SPARQL
 
-    @properties_with_labels ||= query.execute(graph).to_json
+    @properties_with_labels_layout ||= query.execute(graph).to_json
     
   end
 

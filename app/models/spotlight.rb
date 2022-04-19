@@ -10,4 +10,10 @@ class Spotlight < ApplicationRecord
       '<spotlight_query_placeholder> a "triple"', self.sparql
     ])
   end
+
+  def generate_sparql_properties
+    SparqlLoader.load('collect_spotlight_properties',[
+      '<spotlight_query_placeholder> a "triple"', self.sparql
+    ])
+  end
 end

@@ -1,40 +1,53 @@
 <div class="ui divider"></div>
 
-<div class="meta">
+<% if @production.layout_id  %>
+  <div class="ui top mini attached tabular menu">
+    <div class="propSpotlight active item">Filtered</div>
+    <div class="propAll item">All</div>
+  </div>
 
-<% if @production.layout_id %>
-  <% prop = '' %>
-  <% JSON.parse(@production.properties_with_labels_layout)["results"]["bindings"].each do |line| %>
+  <div class="propSpotlight ui bottom attached  active tab segment">
 
-      <% if prop !=  line.dig('label','value') %>
-        <h2 title='<%= line.dig('p','value') %>'>
-          <%= line.dig('label','value')  if  line.dig('label','value') %>    
-        </h2>
-        <% prop = line.dig('label','value') %>
-      <% end %>
-      <% if line.dig('o','type') != 'literal' %>
-          <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o_label','value') %></a>
-      <% else %>
-          <% next if  line.dig('o','xml:lang') != I18n.locale.to_s %>
-          <%= line.dig('o','value')  %>
-         
-      <% end %>
-      <br> 
-  <% end %>
+  <div class="meta">
+    <% prop = '' %>
+    <% JSON.parse(@production.properties_with_labels_layout)["results"]["bindings"].each do |line| %>
 
-<% else %>
+        <% if prop !=  line.dig('label','value') %>
+          <h2 title='<%= line.dig('p','value') %>'>
+            <%= line.dig('label','value').capitalize   if  line.dig('label','value') %>    
+          </h2>
+          <% prop = line.dig('label','value') %>
+        <% end %>
+        <% if line.dig('o','type') != 'literal' %>
+            <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o_label','value') %></a>
+        <% else %>
+            <% next if  line.dig('o','xml:lang') != I18n.locale.to_s %>
+            <%= line.dig('o','value')  %>
+          
+        <% end %>
+        <br> 
+    <% end %> 
+    </div>
+    
+  </div>
+
+  <div class="propAll ui bottom attached  <%= "active" if !@production.layout_id %> tab segment">
+<% end %>
+
+  <div class="meta">
   <% prop = '' %>
   <% JSON.parse(@production.properties_with_labels)["results"]["bindings"].each do |line| %>
       <% if prop !=  line.dig('label','value') %>
         <h2 title='<%= line.dig('p','value') %>'>
-          <%= line.dig('label','value')  if  line.dig('label','value') %>    
+          <%= line.dig('label','value').capitalize  if  line.dig('label','value') %>    
+          <%= "@" + line.dig('label','xml:lang') if line.dig('label','xml:lang') %>
         </h2>
         <% prop = line.dig('label','value') %>
       <% end %>
       <% if line.dig('o','type') != 'literal' %>
-          <a href='<%= line.dig('o','value') %>'><%= line.dig('o','value').split('/').last %></a>
+          <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o','value').split('/').last %></a>
             <% if line.dig('o_label','value') &&  line.dig('o','value').start_with?("http") %>
-              <a href='?uri=<%= line.dig('o','value') %>'><i class="external square alternate icon"></i></a>
+              <a href='<%= line.dig('o','value') %>'><i class="external square alternate icon"></i></a>
             <% end %>
           <%= line.dig('o_label','value') unless line.dig('o_label','value')  == line.dig('o','value').split('/').last %>
           <%= "@" + line.dig('o_label','xml:lang') if line.dig('o_label','xml:lang') %>
@@ -44,10 +57,13 @@
       <% end %>
       <br> 
   <% end %>
+  </div>
 
+<% if @production.layout_id  %>
+  </div>
 <% end %>
 
-</div>
+
 
  
 

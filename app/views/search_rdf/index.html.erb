@@ -6,7 +6,7 @@
 
   <div class="ui divided link items">
     <% @entities.each do |entity| %>
-      <a class="item" href="<%= productions_show_path %>?uri=<%= entity.entity_uri %> ">
+      <a class="item" href="<%= productions_show_path %>?uri=<%= entity.entity_uri %><%= layout_param %> ">
         <div class="small image">
           <img src="<%= production_image(entity) %>">
         </div>

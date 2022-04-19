@@ -29,12 +29,16 @@ en:
     label:
       data_source:
         name: "Name"
+        type_uri: "Type for Upper Ontology"
         fetch_method: "Method to fetch data"
         upper_title: "Title"
       spotlight:
         title: "Title"
+# Data source - tips
+  "List URIs in variable ?uri": "List URIs in ?uri"
+  "Data source chain": "Data source chain (de)"
 
-
+# Data source - drop-down values
   content-negotiation: "Automatic content negotiation"
   SPARQL-describe: "SPARQL describe"
 
@@ -44,3 +48,28 @@ en:
       default: "%d %b %Y"
       long: "%d %b %Y"
       abbr_day: "%d %b %Y - %a"
+
+    abbr_month_names:
+      -
+      - Jan
+      - Feb
+      - Mär
+      - Apr
+      - May
+      - Jun
+      - Jul
+      - Aug
+      - Sep
+      - Oct
+      - Nov
+      - Dec
+
+    abbr_day_names:
+      -
+      - Mon
+      - Tues
+      - Wed
+      - Thurs
+      - Fri
+      - Sat
+      - Sun

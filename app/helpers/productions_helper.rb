@@ -3,12 +3,21 @@ module ProductionsHelper
   require 'digest/md5'
 
   def production_image(production)
-    if production&.main_image&.blank?
-      color = Digest::MD5.hexdigest(production.title)[0..5]
+    if production&.main_image.blank?
+      if production&.title
+        color = Digest::MD5.hexdigest(production&.title)[0..5]
+      else
+        color = Digest::MD5.hexdigest("missing-title")[0..5]
+      end
       "https://dummyimage.com/300x200/#{color}/ffffff.png&text=#{production.title}"
     else
       # Convert wikimedia urls to https to fix image rendering problem. see https://github.com/culturecreates/Culture-inTime/issues/9
-      production&.main_image.value.gsub("http://commons.wikimedia.org/wiki/Special:","https://commons.wikimedia.org/wiki/Special:")
+      url = if production.main_image.class == String
+        production.main_image
+      else
+        production.main_image.value
+      end
+      url.gsub("http://commons.wikimedia.org/wiki/Special:","https://commons.wikimedia.org/wiki/Special:")
     end
   end
 

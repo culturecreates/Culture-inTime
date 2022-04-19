@@ -11,7 +11,11 @@ Rails.application.routes.draw do
     get '/productions/show', to: 'productions#show'
     
     resources :productions
-    resources :spotlights
+    resources :spotlights do
+      member do
+        get 'stats'
+      end
+    end
 
     resources :data_sources do
       member do

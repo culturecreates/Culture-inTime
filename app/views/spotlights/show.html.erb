@@ -1,11 +1,53 @@
-<p id="notice"><%= notice %></p>
+
 
 
 <%= render partial: "spotlight_cards", locals: { spotlight_list: [@spotlight] } %>
 
+<div class="ui divider"></div>
+<p id="notice">
+  <% if notice %>
+  <div class="ui info message">
+    <div class="header">
+      <%= notice %>
+    </div>
+  </div>
+  <% end %>
+</p>
+
+<div class="ui styled accordion" style="width:100%;">
+  <div class="title">
+    <i class="dropdown icon"></i>
+   Statistics
+  </div>
+  <div class="content">
+    <div id="stats">
+      <%= link_to "Load stats", stats_spotlight_path(@spotlight), remote: true, class: "ui button" %>
+    </div>
+  </div>
+  <div class="title">
+    <i class="dropdown icon"></i>
+   Layout
+  </div>
+  <div class="content">
+    <%= form_with(model: @spotlight, local: true, class: "ui form") do |form| %>
+      
+      <div class="field">
+        <%= form.label :layout %>
+        <%= form.text_area :layout %>
+      </div>  
+      
+      <div class="actions">
+        <%= form.submit "Update", class: 'ui button green show_loading' %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+
+
 
 <h2> Spotlight search parameters </h2>
-<div class="ui divider"></div>
+
 
 
   <strong>SPARQL</strong>
