@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  get 'queue/index', 'queue/clear'
+
   scope "/:locale" do
     root to: 'home#index'
    
