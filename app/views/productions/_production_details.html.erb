@@ -2,7 +2,7 @@
 
 <% if @production.layout_id  %>
   <div class="ui top mini attached tabular menu">
-    <div class="propSpotlight active item">Filtered</div>
+    <div class="propSpotlight active item">Preview</div>
     <div class="propAll item">All</div>
   </div>
 
@@ -19,6 +19,7 @@
           <% prop = line.dig('label','value') %>
         <% end %>
         <% if line.dig('o','type') != 'literal' %>
+            <% next unless ['en','fr','de'].include?(line.dig('o_label','xml:lang')) %>
             <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o_label','value') %></a>
         <% else %>
             <% next if  line.dig('o','xml:lang') != I18n.locale.to_s %>
