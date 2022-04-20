@@ -9,6 +9,8 @@ class DataSourcesController < ApplicationController
     @data_sources = DataSource.all.order(:name)
     @jobs = if Rails.env.production?
       Sidekiq::Queue.new.size
+    else
+      0
     end
   end
 
@@ -36,11 +38,13 @@ class DataSourcesController < ApplicationController
   def load_rdf
     @jobs = if Rails.env.production?
       Sidekiq::Queue.new.size
+    else
+      0
     end
     if @data_source.type_uri.blank?
       flash[:notice] = "Please add an entity type." 
-    elsif @jobs 
-      flash[:notice] = "Try again later: there are still #{@jobs} beings processed." 
+    elsif @jobs > 0
+      flash[:notice] = "Try again later: still importing #{@jobs} entities." 
     else
       if @data_source.load_rdf
         flash[:notice] = "Queued #{@data_source.uri_count} URIs for background loading."
