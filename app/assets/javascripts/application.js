@@ -20,7 +20,7 @@
 //= require_tree .
 
 
-$( document ).ready(function() {
+$(function() {
   
   $('.ui.accordion')
     .accordion()
@@ -40,5 +40,14 @@ $( document ).ready(function() {
       $(this).addClass("loading");
     });
 
+    $('.show_loading_if_confirmed').on('confirm:complete', function(e, response) {
+      if(response) {
+        // User confirmed
+        $(this).addClass("loading");
+      }
+      else {
+        // User cancelled. Do nothing.
+      }
+    });
 
 });

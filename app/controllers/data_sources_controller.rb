@@ -1,10 +1,15 @@
 class DataSourcesController < ApplicationController
+  require 'sidekiq/api'
   before_action :set_data_source, only: [:show, :apply_upper_ontology,  :load_rdf, :edit, :update, :destroy]
+
 
   # GET /data_sources
   # GET /data_sources.json
   def index
     @data_sources = DataSource.all.order(:name)
+    @jobs = if Rails.env.production?
+      Sidekiq::Queue.new.size
+    end
   end
 
   # GET /data_sources/1
@@ -29,16 +34,21 @@ class DataSourcesController < ApplicationController
 
   # GET /data_sources/1/load_rdf
   def load_rdf
+    @jobs = if Rails.env.production?
+      Sidekiq::Queue.new.size
+    end
     if @data_source.type_uri.blank?
-      flash.now[:notice] = "Please add an entity type." 
+      flash[:notice] = "Please add an entity type." 
+    elsif @jobs 
+      flash[:notice] = "Try again later: there are still #{@jobs} beings processed." 
     else
       if @data_source.load_rdf
-        flash.now[:notice] = "Loading #{@data_source.uri_count} entities..."
+        flash[:notice] = "Queued #{@data_source.uri_count} URIs for background loading."
       else
-        flash.now[:notice] = "Ran into a problem. #{@data_source.errors.messages}"
+        flash[:notice] = "Ran into a problem. #{@data_source.errors.messages}"
       end
     end
-    render 'show'
+    redirect_to @data_source
   end
 
 
