@@ -35,7 +35,7 @@ class DataSourcesController < ApplicationController
       if @data_source.load_rdf
         flash.now[:notice] = "Loading #{@data_source.uri_count} entities..."
       else
-        flash.now[:notice] = "Ran into a problem. #{@data_source.errors}"
+        flash.now[:notice] = "Ran into a problem. #{@data_source.errors.messages}"
       end
     end
     render 'show'

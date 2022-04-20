@@ -27,13 +27,14 @@ class DataSource < ApplicationRecord
       @sample_uri = @uris.first
       begin 
         @sample_graph = RDF::Graph.load(@sample_uri).to_jsonld
+        puts "Sample graph: #{@sample_graph.inspect}"
       rescue => exception
-        puts exception.inspect
+        puts "Exception getting sample uri: #{exception.inspect}"
       end
       return false unless @sample_graph
 
       @uris.each do |uri|
-        BatchContentNegotiationJob.set(queue: "graph-#{self.id}").perform_later(uri,graph_name,self.type_uri)
+        BatchContentNegotiationJob.perform_later(uri, graph_name, self.type_uri)
       end
       self.loaded = Time.now
       self.save

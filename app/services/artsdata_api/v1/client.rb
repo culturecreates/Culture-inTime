@@ -6,11 +6,11 @@ module ArtsdataApi
     # code: 200 is success for SPARQL queries
     # code: 204 is success for SPARQL updates
     class Client
-      API_ENDPOINT = 'http://99.79.129.47'.freeze
-
+      API_ENDPOINT = ENV['GRAPH_API_ENDPOINT'].freeze
+      GRAPH_REPOSITORY = ENV['GRAPH_REPOSITORY'].freeze
       attr_reader :oauth_token
 
-      def initialize(oauth_token: nil, graph_repository: 'culture-in-time')
+      def initialize(oauth_token: nil, graph_repository: GRAPH_REPOSITORY)
         @oauth_token = oauth_token
         @graph_repository = graph_repository
         @logger = Rails.logger
