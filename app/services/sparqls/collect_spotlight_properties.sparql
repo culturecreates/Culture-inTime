@@ -9,6 +9,7 @@ PREFIX schema: <http://schema.org/>
 select distinct (sample(?l_lowercase) as ?l_sample) ?p (count(distinct ?uri) as ?count) where {
     ?uri ?p ?o .
     ?p rdfs:label ?l .
+    filter(lang(?l) = "en")
     bind(lcase(?l) as ?l_lowercase)
     {
         # start of spotlight

@@ -14,13 +14,17 @@
 
         <% if prop !=  line.dig('label','value') %>
           <h2 title='<%= line.dig('p','value') %>'>
-            <%= line.dig('label','value').capitalize   if  line.dig('label','value') %>    
+            <%= line.dig('label','value').capitalize if  line.dig('label','value') %>    
           </h2>
           <% prop = line.dig('label','value') %>
         <% end %>
         <% if line.dig('o','type') != 'literal' %>
+          <% if line.dig('o','type') == 'http://www.w3.org/2001/XMLSchema#dateTime' %>
+            <%= date_time_display(line.dig('o','value')) %> 
+          <% else %>
             <% next unless ['en','fr','de'].include?(line.dig('o_label','xml:lang')) %>
             <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o_label','value') %></a>
+          <% end %>
         <% else %>
             <% next if  line.dig('o','xml:lang') != I18n.locale.to_s %>
             <%= line.dig('o','value')  %>

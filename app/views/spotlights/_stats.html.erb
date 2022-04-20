@@ -4,6 +4,7 @@
     <th>Property</th>
     <th>Count</th>
     <th>URI</th>
+    <th></th>
   </tr></thead>
   <tbody>
     <% properties.each do |prop| %>
@@ -11,6 +12,7 @@
       <td data-label="Property"> <%= prop["l_sample"]["value"].capitalize %></td>
       <td data-label="Count"> <%= prop["count"]["value"] %></td>
       <td data-label="URI"> <%= prop["p"]["value"] %></td>
+      <td><button class="ui button">Add to layout</button> </td>
     </tr>
     <% end %>
   </tbody>
