@@ -21,7 +21,7 @@ class DataSource < ApplicationRecord
       #TODO: get endpoint from sparql SERVICE
       sparql_endpoint = 'http://db.artsdata.ca/repositories/artsdata'
       @uris.each do |uri|
-        BatchUpdateJob.set(queue: "graph-#{self.id}").perform_later(uri, graph_name, self.type_uri, sparql_endpoint)
+        BatchUpdateJob.perform_later(uri, graph_name, self.type_uri, sparql_endpoint) # .set(queue: "graph-#{self.id}")
       end
     else
       @sample_uri = @uris.first
