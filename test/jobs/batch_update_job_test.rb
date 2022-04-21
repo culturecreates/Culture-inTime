@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class BatchUpdateJobTest < ActiveJob::TestCase
+class BatchFederatedUpdateJobTest < ActiveJob::TestCase
   # test "the truth" do
   #   assert true
   # end

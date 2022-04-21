@@ -1,0 +1,29 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+insert {
+    ?uri rdfs:label ?label
+}
+where {
+    # federated query to get labels for wd:P-numbers
+    values ?languages {
+        "en" "fr" "de" 
+    }
+    service <https://query.wikidata.org/sparql> {
+        ?uri rdfs:label ?label .
+        filter(lang(?label) = ?languages )
+    }
+    {
+        # subquery to get all Wikidata properties that need labels  
+        select ?uri
+        where {
+            graph  <graph_placeholder> {
+              ?p a owl:DatatypeProperty .
+                filter(contains(str(?p),"www.wikidata.org/prop/direct/"))
+                bind(URI(concat("http://www.wikidata.org/entity/",strafter(str(?p),"/direct/"))) as ?uri )
+            }
+        }
+    }
+}

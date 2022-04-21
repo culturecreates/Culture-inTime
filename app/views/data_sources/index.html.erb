@@ -9,7 +9,7 @@
     <div class="ui red button">
       <i class="cogs icon"></i> Importing...
     </div>
-    <a class="ui basic red left pointing label">
+    <a id="job_count" class="ui basic red left pointing label">
       <%= @jobs %>
     </a>
   </div>
@@ -55,7 +55,13 @@ to add data sources.
           <%= link_to t('button.show'), data_source, class: "ui button mini green" %>
           <% if cookies[:user] == data_source.email || is_admin? %>
           <%= link_to t('button.edit'), edit_data_source_path(data_source), class: "ui button mini" %>
-          <%= link_to t('button.chain'), new_data_source_path(layer: data_source.id ),  data: { confirm: 'Create supplimentary SPARQL chained to this SPARQL?' }, class: "ui button mini" %>
+
+          <%
+=begin%>
+ <%= link_to t('button.chain'), new_data_source_path(layer: data_source.id ),  data: { confirm: 'Create supplimentary SPARQL chained to this SPARQL?' }, class: "ui button mini" %> 
+<%
+=end%>
+          
           <%= link_to t('button.destroy'), data_source, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button mini red" %>
           <% end %>
         </span>
@@ -68,12 +74,14 @@ to add data sources.
 
 
 <% if cookies[:user] %>
-<%= link_to new_data_source_path, class: "ui button primary" do %>
-<i class="plus icon"></i><%= t('sources')%>
-<% end %>
+  <%= link_to new_data_source_path, class: "ui button primary" do %>
+    <i class="plus icon"></i><%= t('sources')%>
+  <% end %>
 <% end %>
 
-
+<%
+=begin%>
+ 
 <h1 class="header"> <%= t("sparql-supplementary") %></h1>
 <div class="ui divider"></div>
 <table class="ui striped table selectable celled">
@@ -111,3 +119,7 @@ to add data sources.
     <% end %>
   </tbody>
 </table>
+ 
+<%
+=end%>
+

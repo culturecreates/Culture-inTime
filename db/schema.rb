@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_19_014817) do
+ActiveRecord::Schema.define(version: 2022_04_21_152216) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,24 +48,6 @@ ActiveRecord::Schema.define(version: 2022_04_19_014817) do
     t.index ["spotlight_id"], name: "index_data_sources_spotlights_on_spotlight_id"
   end
 
-  create_table "productions", force: :cascade do |t|
-    t.string "label"
-    t.string "location_label"
-    t.string "location_uri"
-    t.datetime "date_of_first_performance"
-    t.string "production_company_uri"
-    t.string "production_company_label"
-    t.string "description"
-    t.string "main_image"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "country"
-    t.string "locality"
-    t.string "production_uri"
-    t.bigint "data_source_id"
-    t.index ["data_source_id"], name: "index_productions_on_data_source_id"
-  end
-
   create_table "spotlights", force: :cascade do |t|
     t.string "title"
     t.string "subtitle"
@@ -81,5 +63,4 @@ ActiveRecord::Schema.define(version: 2022_04_19_014817) do
     t.text "layout"
   end
 
-  add_foreign_key "productions", "data_sources"
 end

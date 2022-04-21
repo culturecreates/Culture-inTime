@@ -4,20 +4,29 @@ PREFIX schema: <http://schema.org/>
 PREFIX cit: <http://culture-in-time.org/ontology/>
 
 
+delete {
+      graph ?graph {
+          ?entity   cit:title ?title ;
+            cit:startDate ?date ;
+            cit:description ?description ;
+            cit:placeName ?place ;
+            cit:image ?image .
+    }
+}
+
 insert {
     graph ?graph {
         ?entity   cit:title ?title ;
             cit:startDate ?date ;
             cit:description ?description ;
             cit:placeName ?place ;
-            cit:placeCountryName ?country ;
             cit:image ?image .
     }
 }
 where {
     
     values ?l {
-        <languages_placeholder> ""
+        <languages_placeholder> "" # include no language
     }
     values  ?graph { <graph_placeholder> }
 

@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
 
-  get 'queue/index', 'queue/clear'
+  get 'queue/index', to: 'queue#index'
+  get 'queue/clear', to: 'queue#clear'
+  get 'queue/check_jobs', to: 'queue#check_jobs'
 
   scope "/:locale" do
     root to: 'home#index'
