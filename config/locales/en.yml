@@ -30,12 +30,13 @@ en:
       data_source:
         name: "Name"
         type_uri: "Type for Upper Ontology"
+        sparql: "SPARQL"
         fetch_method: "Method to fetch data"
         upper_title: "Title"
       spotlight:
         title: "Title"
 # Data source - tips
-  "List URIs in variable ?uri": "List URIs in ?uri"
+  sparql_tip: "Tip: use variable ?uri to list URIs to load"
   "Data source chain": "Data source chain (de)"
 
 # Data source - drop-down values

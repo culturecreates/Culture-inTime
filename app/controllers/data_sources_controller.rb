@@ -37,19 +37,19 @@ class DataSourcesController < ApplicationController
   # GET /data_sources/1/load_rdf
   def load_rdf
     if @data_source.type_uri.blank?
-      flash[:notice] = "Please add an entity type."  
+      flash.now[:notice] = "Please add an entity type."  
     else
       if @data_source.load_rdf(params[:test])
         if params[:test]
-          flash[:notice] = "This will load #{@data_source.uri_count} URIs of type #{@data_source.type_uri}. 
+          flash.now[:notice] = "This will load #{@data_source.uri_count} URIs of type #{@data_source.type_uri}. 
           Estimated time to load is #{helpers.time_estimate(@data_source) }." 
         else
-          flash[:notice] = "Queued #{@data_source.uri_count} URIs for background loading.
+          flash.now[:notice] = "Queued #{@data_source.uri_count} URIs for background loading.
           Estimated time to load is #{helpers.time_estimate(@data_source) }."
         end
         
       else
-        flash[:notice] = "Ran into a problem. #{@data_source.errors.messages}"
+        flash.now[:notice] = "Ran into a problem. #{@data_source.errors.full_messages}"
       end
     end
     render 'show'

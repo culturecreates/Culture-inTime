@@ -105,9 +105,7 @@
 </code>
 </pre>
 
-<p>
-Method to fetch data: <%= @data_source.fetch_method %>
-</p>
+
 <% if cookies[:user] == @data_source.email || is_admin? %>
 <%= link_to 'Edit', edit_data_source_path(@data_source), class: "ui button green" %>
 <% end %>

@@ -7,6 +7,7 @@ class DataSource < ApplicationRecord
     foreign_key: :data_source_id, 
     association_foreign_key: :linked_data_source_id
 
+   validates :name, presence: true
 
   # Method to drop and load data source into a graph
   def load_rdf(test_drive = false)
@@ -14,7 +15,13 @@ class DataSource < ApplicationRecord
     return false unless @response[:code] == 200
 
     @uris = @response[:message].pluck("uri").pluck("value")
-    # RDFGraph.drop(graph_name)
+
+    if @uris.count > 5000
+      self.errors.add(:limit, "Exceeded limit of 5000 URIs. Please break query into smaller groups.")
+      return false 
+    end
+
+    # RDFGraph.drop(graph_name)  # THIS IS VERY SLOW
     if self.fetch_method == "SPARQL_describe"
       if !test_drive
         #TODO: get endpoint from sparql SERVICE
