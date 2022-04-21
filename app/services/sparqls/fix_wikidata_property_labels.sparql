@@ -4,7 +4,7 @@ PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 
 insert {
-    ?uri rdfs:label ?label
+     ?p rdfs:label ?label
 }
 where {
     # federated query to get labels for wd:P-numbers
@@ -20,7 +20,7 @@ where {
         select ?uri
         where {
             graph  <graph_placeholder> {
-              ?p a owl:DatatypeProperty .
+              ?p a owl:ObjectProperty .
                 filter(contains(str(?p),"www.wikidata.org/prop/direct/"))
                 bind(URI(concat("http://www.wikidata.org/entity/",strafter(str(?p),"/direct/"))) as ?uri )
             }
