@@ -17,7 +17,7 @@ where {
     }
     {
         # subquery to get all Wikidata properties that need labels  
-        select ?uri
+        select ?uri ?p
         where {
             graph  <graph_placeholder> {
               ?p a owl:ObjectProperty .
