@@ -16,7 +16,7 @@ class DataSource < ApplicationRecord
     return false unless @response[:code] == 200
 
     @uris = @response[:message].pluck("uri").pluck("value")
-    RDFGraph.drop(graph_name)
+    # RDFGraph.drop(graph_name)
     if self.fetch_method == "SPARQL_describe"
       #TODO: get endpoint from sparql SERVICE
       sparql_endpoint = 'http://db.artsdata.ca/repositories/artsdata'
