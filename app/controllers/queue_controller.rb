@@ -13,11 +13,10 @@ class QueueController < ApplicationController
   end
 
   def check_jobs
-    puts "Checking job count..."
-    # @current = if Rails.env.production?
-    #   Sidekiq::Queue.new.size
-    # else
-    #   0
-    # end
+    @current = if Rails.env.production?
+      Sidekiq::Queue.new.size
+    else
+      0
+    end
   end
 end
