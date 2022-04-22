@@ -41,5 +41,4 @@ where {
            ?uri a <entity_class_placeholder>
        }
     }
-} group by ?startDate ?uri ?image
-order by ?startDate
+} order by ?t

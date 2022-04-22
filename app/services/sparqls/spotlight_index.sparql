@@ -42,5 +42,5 @@ where {
     {
        <spotlight_query_placeholder> a "triple"
     }
-} group by ?startDate ?uri ?image
-order by ?startDate
+} 
+order by ?t
