@@ -76,9 +76,10 @@ class DataSource < ApplicationRecord
   # used by search_rdf 
   # SPARQL to load upper ontology of all entities in graph_name of type type_uri
   def generate_sparql
-    SparqlLoader.load('data_source',[
+    SparqlLoader.load('data_source_index',[
       'graph_placeholder', graph_name,
-      'entity_class_placeholder', self.type_uri
+      'entity_class_placeholder', self.type_uri,
+      'ui_language', I18n.locale.to_s
     ])
   end
 

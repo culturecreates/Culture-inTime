@@ -30,15 +30,15 @@ class Entity
   end
 
 
-  # Class method that returns an light index list of entities
+  # Class method that returns an index list of entities
   def self.load_entities(sparql_results)
     @count = sparql_results.count
     entities = []
     sparql_results.first(20).each do |e|
-      title = e["title"]["value"] || ""
-      description = e.dig("description","value") || ""
+      title = e.dig("title_lang","value") || e["title"]["value"] || ""
+      description = e.dig("description_lang","value") || e.dig("description","value") || ""
       startDate = e.dig("startDate","value") || ""
-      place = e.dig("place","value") || ""
+      place = e.dig("place_lang","value") || e.dig("place","value") || ""
       image = e.dig("image","value") || ""
       entity_uri = e.dig("uri","value") || ""
       entities << Entity.new(title: title, description: description, date: startDate,  place: place, image: image, entity_uri: entity_uri)

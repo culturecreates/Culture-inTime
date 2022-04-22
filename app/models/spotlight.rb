@@ -6,8 +6,9 @@ class Spotlight < ApplicationRecord
 
 
   def generate_sparql
-    SparqlLoader.load('spotlight_productions',[
-      '<spotlight_query_placeholder> a "triple"', self.sparql
+    SparqlLoader.load('spotlight_index',[
+      '<spotlight_query_placeholder> a "triple"', self.sparql,
+      'ui_language', I18n.locale.to_s
     ])
   end
 
