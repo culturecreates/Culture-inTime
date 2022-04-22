@@ -35,12 +35,6 @@
 </div>
 
 
-
-
-
-
-
-
 <h2> Spotlight search parameters </h2>
 
 
@@ -52,7 +46,9 @@
   </pre>
 </code>
 
-<p>
+<%
+=begin%>
+ <p>
   <strong>Start date:</strong>
   <%= @spotlight.start_date %>
 </p>
@@ -70,7 +66,9 @@
 <p>
   <strong>Data Sources:</strong>
   <%= @spotlight.data_sources.map {|d| d.name} %>
-</p>
+</p> 
+<%
+=end%>
 
 <div class="ui divider"></div>
 

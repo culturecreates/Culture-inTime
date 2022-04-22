@@ -23,7 +23,7 @@
             <%= date_display(line.dig('o','value')) %> 
           <% elsif line.dig('o','type') == "typed-literal" %>
             <%= line.dig('o','value') %> 
-          <% elsif line.dig('o','type') == "uri" %>
+          <% elsif line.dig('o','type') == "uri" && line.dig('o_label','value').blank? %>
              <a href='<%= line.dig('o','value') %>'><%= line.dig('o','value') %></a>
           <% else %>
             <% next unless ['en','fr','de'].include?(line.dig('o_label','xml:lang')) || line.dig('o_label','xml:lang').blank? %>
