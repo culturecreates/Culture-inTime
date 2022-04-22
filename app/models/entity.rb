@@ -157,7 +157,7 @@ class Entity
       OPTIONAL { ?p rdfs:label ?label .}
       ?p cit:order ?order .
       filter(?label != "label")
-      filter(?o != "")
+     # filter(?o != "")
     } 
     order by ?order
     SPARQL
