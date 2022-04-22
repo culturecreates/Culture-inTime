@@ -3,8 +3,10 @@ PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX schema: <http://schema.org/>
 PREFIX cit: <http://culture-in-time.org/ontology/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX onto: <http://www.ontotext.com/>
 
 select ?uri (sample(?t) as ?title) (sample(?d) as ?description) (sample(?p) as ?place) (sample(?c) as ?country) ?startDate  ?image
+FROM onto:disable-sameAs
 where {
     ?uri   cit:title ?t .
     OPTIONAL {
