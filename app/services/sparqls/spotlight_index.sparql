@@ -43,3 +43,4 @@ where {
        <spotlight_query_placeholder> a "triple"
     }
 } group by  ?uri 
+order by ?uri

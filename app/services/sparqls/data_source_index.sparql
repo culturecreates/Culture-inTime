@@ -44,3 +44,4 @@ where {
        }
     }
 } group by  ?uri 
+order by ?uri
