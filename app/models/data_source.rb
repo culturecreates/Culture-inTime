@@ -87,7 +87,7 @@ class DataSource < ApplicationRecord
     SparqlLoader.load('apply_upper_ontology', [
       'graph_placeholder', graph_name,
       'type_uri_placeholder' , self.type_uri,
-      '<languages_placeholder>', self.upper_languages.present? ? self.upper_languages.split(",").map {|l| "\"#{l}\"" }.join(" ") : "\"en\"",
+      '<languages_placeholder>', self.upper_languages.present? ? self.upper_languages.split(",").map {|l| "\"#{l}\"" }.join(" ") : "\"en\" \"fr\" \"de\"",
       '<title_prop_placeholder>', self.upper_title.present? ? self.upper_title : "schema:title" ,
       '<date_prop_placeholder>', self.upper_date.present? ? self.upper_date : "schema:startDate",
       '<description_prop_placeholder>', self.upper_description.present? ? self.upper_description : "schema:description",

@@ -89,11 +89,14 @@ class Entity
     graph = RDF::Graph.new
     sparql = <<~SPARQL
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+    PREFIX onto: <http://www.ontotext.com/>
+    
     CONSTRUCT {
       <#{@entity_uri}> ?p ?o .
       ?p rdfs:label ?label .
       ?o rdfs:label ?o_label . 
       } 
+    FROM onto:disable-sameAs
     WHERE { 
       <#{@entity_uri}> ?p ?o . 
       OPTIONAL { ?p rdfs:label ?label_en . filter(lang(?label_en) = "en") }
@@ -102,7 +105,15 @@ class Entity
       OPTIONAL { ?p rdfs:label ?label_no_language . filter(lang(?label_no_language) = "") }
 
       BIND(COALESCE(?label_#{I18n.locale.to_s},?label_en, ?label_fr ,?label_de, ?label_no_language ) as ?label)
-     OPTIONAL { ?o rdfs:label ?o_label . }
+
+      OPTIONAL { ?o rdfs:label ?o_label_en . filter(lang(?o_label_en) = "en") }
+      OPTIONAL { ?o rdfs:label ?o_label_fr . filter(lang(?o_label_fr) = "fr") }
+      OPTIONAL { ?o rdfs:label ?o_label_de . filter(lang(?o_label_de) = "de") }
+      OPTIONAL { ?o rdfs:label ?o_label_no_language . filter(lang(?o_label_no_language) = "") }
+
+      BIND(COALESCE(?o_label_#{I18n.locale.to_s},?o_label_en, ?o_label_fr ,?o_label_de, ?o_label_no_language ) as ?o_label)
+  
+
     }
     SPARQL
     

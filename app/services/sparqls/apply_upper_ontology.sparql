@@ -13,7 +13,6 @@ delete {
             cit:image ?image .
     }
 }
-
 insert {
     graph ?graph {
         ?entity   cit:title ?title ;

@@ -3,6 +3,7 @@ PREFIX wd: <http://www.wikidata.org/entity/>
 PREFIX schema: <http://schema.org/>
 PREFIX cit: <http://culture-in-time.org/ontology/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX onto: <http://www.ontotext.com/>
 
 select ?uri (sample(?t_lang) as ?title_lang)  
             (sample(?d_lang) as ?description_lang)  
@@ -13,6 +14,7 @@ select ?uri (sample(?t_lang) as ?title_lang)
             (sample(?c) as ?country) 
             (sample(?date) as ?startDate) 
             (sample(?img) as ?image) 
+FROM onto:disable-sameAs
 where {
     ?uri   cit:title ?t .
     OPTIONAL {
@@ -42,4 +44,3 @@ where {
        }
     }
 } group by  ?uri 
-order by ?t

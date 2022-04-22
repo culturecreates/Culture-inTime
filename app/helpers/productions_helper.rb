@@ -25,7 +25,7 @@ module ProductionsHelper
     begin
       I18n.l(Date.parse(date_time), format: :long)
     rescue
-      "no date"
+      "-"
     end
    
   end
