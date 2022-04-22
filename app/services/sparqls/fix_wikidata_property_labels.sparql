@@ -20,7 +20,8 @@ where {
         select ?uri ?p
         where {
             graph  <graph_placeholder> {
-              ?p a owl:ObjectProperty .
+                values ?object_type { owl:ObjectProperty owl:DatatypeProperty}
+              ?p a ?object_type .
                 filter(contains(str(?p),"www.wikidata.org/prop/direct/"))
                 bind(URI(concat("http://www.wikidata.org/entity/",strafter(str(?p),"/direct/"))) as ?uri )
             }
