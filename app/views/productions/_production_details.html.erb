@@ -18,18 +18,19 @@
           </h2>
           <% prop = line.dig('label','value') %>
         <% end %>
-
         <% if line.dig('o','type') != 'literal' %>
           <% if line.dig('o','datatype') == 'http://www.w3.org/2001/XMLSchema#dateTime' %>
             <%= date_display(line.dig('o','value')) %> 
           <% elsif line.dig('o','type') == "typed-literal" %>
             <%= line.dig('o','value') %> 
+          <% elsif line.dig('o','type') == "uri" %>
+             <a href='<%= line.dig('o','value') %>'><%= line.dig('o','value') %></a>
           <% else %>
             <% next unless ['en','fr','de'].include?(line.dig('o_label','xml:lang')) || line.dig('o_label','xml:lang').blank? %>
             <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o_label','value') %></a>
           <% end %>
         <% else %>
-            <% next unless line.dig('o','xml:lang') == I18n.locale.to_s %>
+            <% next unless line.dig('o','xml:lang') == I18n.locale.to_s || line.dig('o','xml:lang') == 'en' || line.dig('o','xml:lang').blank? %>
             <%= line.dig('o','value')  %>
           
         <% end %>
