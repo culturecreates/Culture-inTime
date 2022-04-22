@@ -1,8 +1,16 @@
 Rails.application.routes.draw do
 
+
+  # utilities
   get 'queue/index', to: 'queue#index'
   get 'queue/clear', to: 'queue#clear'
   get 'queue/check_jobs', to: 'queue#check_jobs'
+
+  # ajax
+  get 'layout/add_field' , to: 'layout#add_field'  
+  get 'layout/delete_field' , to: 'layout#delete_field' 
+  get 'layout/move_up' , to: 'layout#move_up' 
+  get 'layout/move_down' , to: 'layout#move_down' 
 
   scope "/:locale" do
     root to: 'home#index'

@@ -1,18 +1,16 @@
 
-<table class="ui celled table">
+<table class="ui celled table small compact ">
   <thead><tr> 
-    <th>Property</th>
+    <th>Available Property</th>
     <th>Count</th>
-    <th>URI</th>
     <th></th>
   </tr></thead>
   <tbody>
     <% properties.each do |prop| %>
     <tr>
-      <td data-label="Property"> <%= prop["l_sample"]["value"].capitalize %></td>
+      <td data-label="Property"><h5 class="ui header"> <%= prop["l_sample"]["value"].capitalize %><div class="sub header"><%= prop["p"]["value"] %></div> </h5></td>
       <td data-label="Count"> <%= prop["count"]["value"] %></td>
-      <td data-label="URI"> <%= prop["p"]["value"] %></td>
-      <td><button class="ui button">Add to layout</button> </td>
+      <td><%= link_to "Add to layout" , layout_add_field_path(spotlight: @spotlight, uri: prop["p"]["value"], name: prop["l_sample"]["value"].capitalize), class: "ui mini button", remote: true%></td>
     </tr>
     <% end %>
   </tbody>

@@ -1,0 +1,25 @@
+<table class="ui celled table small compact">
+  <thead><tr> 
+     <th>Layout</th>
+    <th></th>
+  </tr></thead>
+<tbody>
+
+<% layout.fields.each do |field| %>
+<tr>
+  
+  <td><h5 class="ui header"><%= field.first[1]%> <div class="sub header"><%= field.first[0] %></div> </h5></td>
+  <td> 
+  <%= link_to layout_delete_field_path(uri: field.first[0], spotlight: @spotlight),  remote: true do %>
+   <i class="x middle aligned icon"></i> <% end %>
+    <%= link_to layout_move_up_path(uri: field.first[0], spotlight: @spotlight),  remote: true do %>
+   <i class="arrow  circle up middle aligned icon "></i> <% end %>
+   <%= link_to layout_move_down_path(uri: field.first[0], spotlight: @spotlight),  remote: true do %>
+   <i class="arrow  circle down middle aligned icon "></i> <% end %>
+
+   
+   </td>
+</tr>
+<% end %>
+  </tbody>
+</table>
