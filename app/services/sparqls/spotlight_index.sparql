@@ -12,7 +12,7 @@ select ?uri (sample(?t_lang) as ?title_lang)
             (sample(?d) as ?description) 
             (sample(?p) as ?place) 
             (sample(?c) as ?country) 
-            (sample(?start) as ?startDate) 
+            (sample(?date) as ?startDate) 
             (sample(?img) as ?image) 
 FROM onto:disable-sameAs
 where {
@@ -22,7 +22,7 @@ where {
         ?uri cit:title ?t_lang . filter(lang(?t_lang) = "ui_language")
     }
     OPTIONAL {
-        ?uri cit:startDate ?start .
+        ?uri cit:startDate ?date .
     }
     OPTIONAL {
         ?uri cit:description ?d .
@@ -42,5 +42,5 @@ where {
     {
        <spotlight_query_placeholder> a "triple"
     }
-} 
-order by ?t
+} group by  ?uri 
+order by ?date
