@@ -24,7 +24,7 @@ class Spotlight < ApplicationRecord
 
   def remove_line_feed
     # clear the line feed otherwise it will trigger a change in sparql
-    self.sparql.gsub!(/\r/,"")
+    self.sparql.gsub!(/\r/,"")  if self.sparql
   end
 
   def check_if_search_params_changed
@@ -37,8 +37,8 @@ class Spotlight < ApplicationRecord
       return unless (["start_date", "end_date", "query"] & changed_attributes.keys).present?
       puts "#{changed_attributes.keys} changed..."
 
-      start_date_filter = self.start_date.present? ?  " ?uri cit:startDate ?date . filter(?date > \"#{self.start_date.iso8601}\"^^xsd:date) " : "" 
-      end_date_filter = self.end_date.present? ?  " ?uri cit:endDate ?date . filter(?date < \"#{self.end_date.iso8601}\"^^xsd:date) " : "" 
+      start_date_filter = self.start_date.present? ?  " ?uri cit:startDate ?date . filter(?date > \"#{self.start_date.iso8601}T00:00:00Z\"^^xsd:dateTime) " : "" 
+      end_date_filter = self.end_date.present? ?  " ?uri cit:startDate ?date . filter(?date < \"#{self.start_date.iso8601}T00:00:00Z\"^^xsd:dateTime) " : "" 
       query_filter = self.query.present? ?  " ?uri cit:name ?query . filter(contains(lcase(?query), \"#{self.query.downcase}\")) " : "" 
       
       sparql = <<~SPARQL
