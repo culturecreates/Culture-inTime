@@ -37,10 +37,12 @@ class SpotlightsController < ApplicationController
     
     @spotlight = Spotlight.new(spotlight_params)
     puts "Adding data sources...#{params[:spotlight][:data_sources]} "
-    params[:spotlight][:data_sources].each do |k,v|
-      puts "check #{DataSource.find(k).name}"
-      @spotlight.data_sources << DataSource.find(k) if v == "1"
-   end
+    if params[:spotlight][:data_sources]
+      params[:spotlight][:data_sources].each do |k,v|
+        puts "check #{DataSource.find(k).name}"
+        @spotlight.data_sources << DataSource.find(k) if v == "1"
+      end
+    end
 
     respond_to do |format|
       if @spotlight.save

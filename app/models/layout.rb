@@ -21,7 +21,7 @@ class Layout
     
     fields = []
     query.execute(graph) do |solution|
-      fields << {solution.uri.value => solution.name.value, order:  solution.order.value }
+      fields << {solution.uri.value => solution.name.value, order:  solution.order.value.to_i }
     end
     fields.sort_by! { |f| f[:order] }
     puts "fields: #{fields}"
@@ -50,7 +50,7 @@ class Layout
 
   def move_up(uri)
     index = @fields.index { |f| f.first[0] == uri } 
-    if index
+    if index > 0
       obj = @fields.delete_at(index)
       @fields.insert(index - 1,obj)
     end
