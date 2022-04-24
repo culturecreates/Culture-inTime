@@ -25,6 +25,10 @@ $(function() {
     .accordion()
   ;
 
+  $('select.dropdown')
+    .dropdown()
+  ;
+
   MemberStack.onReady.then(function(member) {   
     // check if member is logged in   
     if (member.loggedIn)  {

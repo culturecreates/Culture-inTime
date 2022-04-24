@@ -36,47 +36,6 @@
     <%= form.text_field :location %>
   </div>
 
-<div class="ui divider"></div>
-   <h2> Spotlight search configuration </h2>
-
-  <div class="field">
-    <%= form.label :sparql  %> List URIs in variable ?uri 
-     <%= form.text_area :sparql, rows: 10 %>
-  </div>
-<%
-=begin%>
- 
-  <div class="field">
-    <%= form.label :start_date %>
-    <%= form.text_field :start_date, placeholder: "YYYY-MM-DD"  %>
-  </div>
-
-  <div class="field">
-    <%= form.label :end_date %>
-    <%= form.text_field :end_date, placeholder: "YYYY-MM-DD" %>
-  </div>
-
-  <div class="field">
-   <%= form.label  "Search terms (Production Name, Venue, Country, Production Company)" %>
-   
-    <%= form.text_field :query %>
-  </div>
-
-  <div class="field">
-    Data sources 
- 
-  <% @data_sources.each do |t| %>
-  <div class="inline field">
-    <%= form.check_box "data_sources[#{t.id}]"  %>
-    <%= form.label t.name  %>
-  </div>
-  <% end %>
-
-  </div> 
-<%
-=end%>
-
-
   <div class="actions">
     <%= form.submit "Submit", class: 'ui button green show_loading' %>
   </div>

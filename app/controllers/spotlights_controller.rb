@@ -11,6 +11,7 @@ class SpotlightsController < ApplicationController
   # GET /spotlights/1.json
   def show
     @layout = Layout.new(@spotlight.layout)
+    @data_sources = DataSource.all
   end
 
   # GET /spotlights/1/stats
