@@ -35,6 +35,7 @@ en:
         upper_title: "Title"
       spotlight:
         title: "Title"
+        sparql: "SPARQL"
 # Data source - tips
   sparql_tip: "Tip: use variable ?uri to list URIs to load"
   "Data source chain": "Data source chain (de)"
