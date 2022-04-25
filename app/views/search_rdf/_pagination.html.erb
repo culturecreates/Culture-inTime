@@ -5,7 +5,7 @@
     <i class="left chevron icon"></i>
     <% end %>
     <button class="ui button basic">
-    <%=  params[:page] ||= 1 %>  of <%= @count.to_i / 20 %>
+    <%=  params[:page] ||= 1 %>  of <%= (@count.to_i / 20) + 1 %>
     </button>
     <%= link_to  search_rdf_path(page: params[:page].to_i + 1, spotlight: params[:spotlight], data_source: params[:data_source] ), class: "ui right  icon button #{"disabled" if  params[:page].to_i * 20 >=  @count}" do %>
     <i class="right chevron icon"> </i>
