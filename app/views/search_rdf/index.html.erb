@@ -2,7 +2,7 @@
   <h1 class="ui header"><%= params[:query] %> <%= ' - ' if params[:query].present? %> <%= @count %> <%= t("results") %></h1>  
   <div class="ui divider"></div>
 
-  <!--%= will_paginate @productions, renderer: WillPaginateSemanticUi::ActionView::Renderer %-->
+  <%= render partial: "pagination" %>
 
   <div class="ui divided link items">
     <% @entities.each do |entity| %>
@@ -25,6 +25,7 @@
       </a>
     <% end %>
   </div>
+    <%= render partial: "pagination" %>
 
 
 </div>

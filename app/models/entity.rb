@@ -33,8 +33,17 @@ class Entity
   # Class method that returns an index list of entities
   def self.load_entities(sparql_results)
     @count = sparql_results.count
+    
+    @sparql_results = sparql_results
+    self
+  end
+
+  def self.paginate(**params)
     entities = []
-    sparql_results.first(20).each do |e|
+    @page = params[:page] ||= 1
+    start_offset = 20*(@page.to_i - 1)
+    end_offset = 20*(@page.to_i) - 1
+    @sparql_results[start_offset..end_offset].each do |e|
       title = e.dig("title_lang","value") || e["title"]["value"] || ""
       description = e.dig("description_lang","value") || e.dig("description","value") || ""
       startDate = e.dig("startDate","value") || ""

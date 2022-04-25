@@ -17,8 +17,6 @@ Rails.application.routes.draw do
    
     get '/search', to: 'search#index'
     get '/search_rdf', to: 'search_rdf#index'
-    get '/search_rdf/spotlight', to: 'search_rdf#spotlight'
-    get '/search_rdf/data_source', to: 'search_rdf#data_source'
 
     get '/productions/show', to: 'productions#show'
     
