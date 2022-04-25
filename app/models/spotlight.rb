@@ -38,14 +38,16 @@ class Spotlight < ApplicationRecord
       puts "#{changed_attributes.keys} changed..."
 
       start_date_filter = self.start_date.present? ?  " ?uri cit:startDate ?date . filter(?date > \"#{self.start_date.iso8601}T00:00:00Z\"^^xsd:dateTime) " : "" 
-      end_date_filter = self.end_date.present? ?  " ?uri cit:startDate ?date . filter(?date < \"#{self.start_date.iso8601}T00:00:00Z\"^^xsd:dateTime) " : "" 
-      query_filter = self.query.present? ?  " ?uri cit:name ?query . filter(contains(lcase(?query), \"#{self.query.downcase}\")) " : "" 
+      end_date_filter = self.end_date.present? ?  " ?uri cit:startDate ?date . filter(?date < \"#{self.end_date.iso8601}T00:00:00Z\"^^xsd:dateTime) " : "" 
+      query_filter = self.query.present? ?  " optional { ?uri ?upper_prop  ?query . filter(contains(lcase(?query),\"#{self.query.downcase}\")) }" : "" 
       
       sparql = <<~SPARQL
-      select ?uri where {
+      select distinct ?uri where {
+        values ?upper_prop { cit:title cit:description cit:placeName }
         #{start_date_filter}
         #{end_date_filter}
         #{query_filter}
+        filter (bound(?uri))
       }
       SPARQL
   
