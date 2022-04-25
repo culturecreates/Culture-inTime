@@ -44,10 +44,10 @@ class Spotlight < ApplicationRecord
       sparql = <<~SPARQL
       select distinct ?uri where {
         values ?upper_prop { cit:title cit:description cit:placeName }
+        filter (bound(?uri))
         #{start_date_filter}
         #{end_date_filter}
         #{query_filter}
-        filter (bound(?uri))
       }
       SPARQL
   

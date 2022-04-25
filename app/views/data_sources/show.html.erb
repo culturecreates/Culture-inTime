@@ -15,21 +15,21 @@
 
 <p>
   <%  if @data_source.layers.count == 0 %>
-    <%  if @data_source.loaded %>
-      <div class="ui labeled button" tabindex="0">
-        <div class="ui tertiary button"> <i class="calendar icon"></i> Cached on</div>
-        <div class="ui basic tertiary left pointing label"><%= @data_source.loaded %></div>
-      </div>
-    <% end %>
-    <%= link_to "Test", load_rdf_data_source_path(test: true), class: "ui button primary basic show_loading" %>
-    <%= link_to "Import", load_rdf_data_source_path, class: "ui button primary show_loading_if_confirmed", data: { confirm: "This will load everything in \"#{@data_source.name}\". Are you sure?" } %>
-    <%= link_to "Apply Upper Ontology", apply_upper_ontology_data_source_path, class: "ui button secondary show_loading" %>
-    <% if @data_source.loaded.present? %>
-     <%= link_to 'View all', search_rdf_data_source_path(data_source:@data_source.id), class: "ui button tertiary" %>
-    <% end %>
+  <%  if @data_source.loaded %>
+  <div class="ui labeled button" tabindex="0">
+    <div class="ui tertiary button"> <i class="calendar icon"></i> Cached on</div>
+    <div class="ui basic tertiary left pointing label"><%= @data_source.loaded %></div>
+  </div>
+  <% end %>
+  <%= link_to "Test", load_rdf_data_source_path(test: true), class: "ui button primary basic show_loading" %>
+  <%= link_to "Import", load_rdf_data_source_path, class: "ui button primary show_loading_if_confirmed", data: { confirm: "This will load everything in \"#{@data_source.name}\". Are you sure?" } %>
+  <%= link_to "Apply Upper Ontology", apply_upper_ontology_data_source_path, class: "ui button secondary show_loading" %>
+  <% if @data_source.loaded.present? %>
+  <%= link_to 'View all', search_rdf_data_source_path(data_source:@data_source.id), class: "ui button tertiary" %>
+  <% end %>
 
   <% else %>
-    Chained to layers: <%= @data_source.layers.map {|l| l.name }.join(", ") %>
+  Chained to layers: <%= @data_source.layers.map {|l| l.name }.join(", ") %>
   <% end %>
 </p>
 
@@ -37,66 +37,66 @@
 
 
 <% if @data_source.sample_graph  %>
-  <div class="ui styled accordion" style="width:100%;">
-    <div class="title">
-      <i class="dropdown icon"></i>
-        Sample JSON-LD for <a href="<%=  @data_source.sample_uri %>"><%=  @data_source.sample_uri %></a>
-    </div>
-    <div class="content">
-      <pre class="transition hidden">
+<div class="ui styled accordion" style="width:100%;">
+  <div class="title">
+    <i class="dropdown icon"></i>
+    Sample JSON-LD for <a href="<%=  @data_source.sample_uri %>"><%=  @data_source.sample_uri %></a>
+  </div>
+  <div class="content">
+    <pre class="transition hidden">
       <code>
         <%=  @data_source.sample_graph %>
       </code>
       </pre>
-    </div>
   </div>
+</div>
 <% end %>
 
 <div class="ui styled accordion" style="width:100%;">
-    <div class="title">
-      <i class="dropdown icon"></i>
-        Upper Ontology </a>
-    </div>
-    <div class="content">
-      <p> <%= @data_source.type_uri %></p>
-      <%= form_with(model: @data_source, local: true, class: "ui form") do |form| %>
-        <div class="three fields">
-        <div class="field">
-          <%= form.label :upper_title %>
-          <%= form.text_field :upper_title, placeholder: "schema:name" %>
-        </div>  
-        <div class="field">
-          <%= form.label :upper_description %>
-          <%= form.text_field :upper_description, placeholder: "schema:description" %>
-        </div>   
-          <div class="field">
-          <%= form.label :upper_date %>
-          <%= form.text_field :upper_date, placeholder: "schema:startDate" %>
-        </div>   
-        </div>  
-        <div class="three fields">
-          <div class="field">
-          <%= form.label :upper_image %>
-          <%= form.text_field :upper_image, placeholder: "schema:image" %>
-        </div>   
-        
-        <div class="field">
-          <%= form.label :upper_place %>
-          <%= form.text_field :upper_place, placeholder: "schema:location/schema:name" %>
-        </div>   
-  
-        <div class="field">
-          <%= form.label :upper_languages%>
-          <%= form.text_field :upper_languages, placeholder: "en,fr,de" %>
-        </div>   
-        
-        </div> 
-        <div class="actions">
-          <%= form.submit "Update", class: 'ui button green show_loading' %>
-        </div>
-      <% end %>
-    </div>
+  <div class="title">
+    <i class="dropdown icon"></i>
+    Upper Ontology </a>
   </div>
+  <div class="content">
+    <p> <%= @data_source.type_uri %></p>
+    <%= form_with(model: @data_source, local: true, class: "ui form") do |form| %>
+    <div class="three fields">
+      <div class="field">
+        <%= form.label :upper_title %>
+        <%= form.text_field :upper_title, placeholder: "schema:name" %>
+      </div>
+      <div class="field">
+        <%= form.label :upper_description %>
+        <%= form.text_field :upper_description, placeholder: "schema:description" %>
+      </div>
+      <div class="field">
+        <%= form.label :upper_date %>
+        <%= form.text_field :upper_date, placeholder: "schema:startDate" %>
+      </div>
+    </div>
+    <div class="three fields">
+      <div class="field">
+        <%= form.label :upper_image %>
+        <%= form.text_field :upper_image, placeholder: "schema:image" %>
+      </div>
+
+      <div class="field">
+        <%= form.label :upper_place %>
+        <%= form.text_field :upper_place, placeholder: "schema:location/schema:name" %>
+      </div>
+
+      <div class="field">
+        <%= form.label :upper_languages%>
+        <%= form.text_field :upper_languages, placeholder: "en,fr,de" %>
+      </div>
+
+    </div>
+    <div class="actions">
+      <%= form.submit "Update", class: 'ui button green show_loading' %>
+    </div>
+    <% end %>
+  </div>
+</div>
 
 
 <pre>
