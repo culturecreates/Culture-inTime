@@ -1,0 +1,17 @@
+
+<table class="ui celled table small compact ">
+  <thead><tr> 
+    <th>Available Properties</th>
+    <th>Count</th>
+    <th></th>
+  </tr></thead>
+  <tbody>
+    <% properties.each do |prop| %>
+    <tr>
+      <td data-label="Property"><h5 class="ui header"> <%= prop["l_sample"]["value"].capitalize %><div class="sub header"><%= prop["p"]["value"] %></div> </h5></td>
+      <td data-label="Count"> <%= prop["count"]["value"] %></td>
+      <td><%= link_to "Add to preview" , layout_add_field_path(spotlight: @spotlight, uri: prop["p"]["value"], name: prop["l_sample"]["value"].capitalize), class: "ui mini button", remote: true%></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

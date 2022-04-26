@@ -1,12 +1,12 @@
 
 <div class="ui link cards app-cards">
   <% production_list.each do |production| %>
-    <a class="card" href="<%= production_path(production) %>">
+    <a class="card" href="<%= productions_show_path %>?uri=<%= production.entity_uri %>">
       <div class="image">
         <img src="<%= production_image(production) %>">
       </div>
       <div class="content">
-        <div class="header"><%= production.label %></div>
+        <div class="header"><%= production.title %></div>
         <div class="meta"><%= date_display(production.date_of_first_performance) %></div>
         <div class="description"> <%= truncate(strip_tags(production.description), length: 100, seperator: /\w+/) %></div>
       </div>

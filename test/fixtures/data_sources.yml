@@ -5,6 +5,15 @@ one:
   sparql: MyString
   email: MyString
   loaded: 2021-04-08 21:04:12
+  upper_title: schema:name
+  upper_description: schema:upper_description
+  type_uri: http://schema.org/Event
+  upper_date: wdt:P1191
+  upper_image: schema:image
+  upper_place: wdt:P276/schema:name
+  upper_country: wdt:P276/wdt:P17/schema:name
+  upper_languages: en,de
+  upper_prefix: "wdt: <http://www.wikidata.org/prop/direct/>, schema: <http://schema.org/>"
 
 two:
   name: MyString

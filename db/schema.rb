@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_17_013559) do
+ActiveRecord::Schema.define(version: 2022_04_21_152216) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -29,6 +29,16 @@ ActiveRecord::Schema.define(version: 2021_04_17_013559) do
     t.datetime "loaded"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "type_uri"
+    t.string "upper_title"
+    t.string "upper_description"
+    t.string "upper_date"
+    t.string "upper_image"
+    t.string "upper_place"
+    t.string "upper_country"
+    t.string "upper_languages"
+    t.string "upper_prefix"
+    t.string "fetch_method"
   end
 
   create_table "data_sources_spotlights", id: false, force: :cascade do |t|
@@ -36,24 +46,6 @@ ActiveRecord::Schema.define(version: 2021_04_17_013559) do
     t.bigint "spotlight_id"
     t.index ["data_source_id"], name: "index_data_sources_spotlights_on_data_source_id"
     t.index ["spotlight_id"], name: "index_data_sources_spotlights_on_spotlight_id"
-  end
-
-  create_table "productions", force: :cascade do |t|
-    t.string "label"
-    t.string "location_label"
-    t.string "location_uri"
-    t.datetime "date_of_first_performance"
-    t.string "production_company_uri"
-    t.string "production_company_label"
-    t.string "description"
-    t.string "main_image"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "country"
-    t.string "locality"
-    t.string "production_uri"
-    t.bigint "data_source_id"
-    t.index ["data_source_id"], name: "index_productions_on_data_source_id"
   end
 
   create_table "spotlights", force: :cascade do |t|
@@ -67,7 +59,8 @@ ActiveRecord::Schema.define(version: 2021_04_17_013559) do
     t.string "query"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "sparql"
+    t.text "layout"
   end
 
-  add_foreign_key "productions", "data_sources"
 end

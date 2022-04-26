@@ -1,0 +1,13 @@
+<h1>Job Queue</h1>
+
+
+<h2> Current </h2>
+<%= @current %> <%= link_to "clear", queue_clear_path %>
+<h2>History</h2>
+processed
+<%= debug (@history.processed) %>
+failed
+<%= debug (@history.failed) %>
+
+<h2>Stats</h2>
+<%= debug (@stats.pretty_inspect) %>
