@@ -1,41 +1,5 @@
-# Files in the config/locales directory are used for internationalization
-# and are automatically loaded by Rails. If you want to use locales other
-# than English, add the necessary files in this directory.
-#
-# To use the locales, use `I18n.t`:
-#
-#     I18n.t 'hello'
-#
-# In views, this is aliased to just `t`:
-#
-#     <%= t('hello') %>
-#
-# To use a different locale, set it with `I18n.locale`:
-#
-#     I18n.locale = :es
-#
-# This would use the information in config/locales/es.yml.
-#
-# The following keys must be escaped otherwise they will not be retrieved by
-# the default I18n backend:
-#
-# true, false, on, off, yes, no
-#
-# Instead, surround them with single quotes.
-#
-# en:
-#   'true': 'foo'
-#
-# To learn more, please read the Rails Internationalization guide
-# available at http://guides.rubyonrails.org/i18n.html.
-
 en:
   spotlights: "Spotlights"
-  productions: "Productions"
-  people: "People"
-  works: "Works"
-  places: "Places"
-  organizations: "Organisations"
   newly-added: "Newly Added"
   sources: "Sources"
   login: "Log in"
@@ -43,13 +7,66 @@ en:
   results: "Results"
   sparql-top: "SPARQL - Top level entities"
   sparql-supplementary: "SPARQL - Supplementary data"
-  show: "Show"
-  edit: "Edit"
-  chain: "Chain"
-  destroy: "Destroy"
-  name: "Name"
-  author: "Author"
-  cached: "Cached on"
-  chained-to-source: "Chained to source"
+  button:
+    show: "Show"
+    edit: "Edit"
+    chain: "Chain"
+    destroy: "Delete"
+    update: "Update"
+  table:
+    name: "Name"
+    author: "Author"
+    cached: "Cached on"
+    chained-to-source: "Chained to source"
 
+# Forms
+  helpers:
+    label:
+      data_source:
+        name: "Name"
+        type_uri: "Type for Upper Ontology"
+        sparql: "SPARQL"
+        fetch_method: "Method to fetch data"
+        upper_title: "Title"
+      spotlight:
+        title: "Title"
+        sparql: "SPARQL"
+# Data source - tips
+  sparql_tip: "Tip: use variable ?uri to list URIs to load"
+  "Data source chain": "Data source chain (de)"
 
+# Data source - drop-down values
+  content-negotiation: "Automatic content negotiation"
+  SPARQL-describe: "SPARQL describe"
+
+# Date and time
+  date:
+    formats:
+      default: "%d %b %Y"
+      long: "%d %b %Y"
+      abbr_day: "%d %b %Y - %a"
+
+    abbr_month_names:
+      -
+      - Jan
+      - Feb
+      - Mär
+      - Apr
+      - May
+      - Jun
+      - Jul
+      - Aug
+      - Sep
+      - Oct
+      - Nov
+      - Dec
+
+    abbr_day_names:
+      -
+      - Mon
+      - Tues
+      - Wed
+      - Thurs
+      - Fri
+      - Sat
+      - Sun

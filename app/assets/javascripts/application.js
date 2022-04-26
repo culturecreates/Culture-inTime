@@ -20,14 +20,16 @@
 //= require_tree .
 
 
-$( document ).ready(function() {
-  
+$(function() {
   $('.ui.accordion')
     .accordion()
   ;
 
-  MemberStack.onReady.then(function(member) {   
+  $('select.dropdown')
+    .dropdown()
+  ;
 
+  MemberStack.onReady.then(function(member) {   
     // check if member is logged in   
     if (member.loggedIn)  {
       Cookies.set('user', member["email"])
@@ -35,10 +37,19 @@ $( document ).ready(function() {
       Cookies.remove('user')
     }  });
 
-    // Load Productions button should indicate loading
-    $('.show_loading').on("click",function() {
-      $(this).addClass("loading");
-    });
+  // Load Productions button should indicate loading
+  $('.show_loading').on("click",function() {
+    $(this).addClass("loading");
+  });
 
+  $('.show_loading_if_confirmed').on('confirm:complete', function(e, response) {
+    if(response) {
+      // User confirmed
+      $(this).addClass("loading");
+    }
+    else {
+      // User cancelled. Do nothing.
+    }
+  });
 
 });
