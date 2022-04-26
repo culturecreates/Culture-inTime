@@ -1,11 +1,6 @@
 de:
-  spotlights: "Galerie"
-  productions: "Produktions"
-  people: "People"
-  works: "Works"
-  places: "Places"
-  organizations: "Organisations"
-  newly-added: "Neu Hinzugefügt"
+  spotlights: "Spotlights"
+  newly-added: "Neu hinzugefügt"
   sources: "Datenquellen"
   login: "Anmelden"
   signup: "Registrieren"  
@@ -13,18 +8,18 @@ de:
   sparql-top: "SPARQL - Instanzen der obersten Ebene"
   sparql-supplementary: "SPARQL - Zusätzliche Daten"
   button:
-    edit: "Edit"
-    show: "Show"
-    chain: "Chain"
-    destroy: "Destroy"
+    edit: "Bearbeiten"
+    show: "Anzeigen"
+    chain: "Verknüpfen"
+    destroy: "Löschen"
     update: "Update"
   table:
     name: "Name"
-    author: "Author"
-    cached: "Cached on"
-    chained-to-source: "Chained to source"
+    author: "Autor"
+    cached: "Gespeichert am"
+    chained-to-source: "Mit Datenquelle verknüpft"
 
-# Form labels
+# Forms
   helpers:
     label:
       data_source:
