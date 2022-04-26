@@ -1,10 +1,12 @@
 # Class to load SPARQL from local files
 class SparqlLoader
  
-  def self.load(filename, str_to_replace = '', value = '' )
-    File
-      .read("app/services/sparqls/#{filename}.sparql")
-      .gsub(str_to_replace, value)
+  def self.load(filename, substitute_list = [])
+    f = File.read("app/services/sparqls/#{filename}.sparql")
+    substitute_list.each_slice(2) do |a, b|
+      f.gsub!(a.to_s, b.to_s)
+    end
+    f
   end
 
   def self.load_url(url, str_to_replace = '', value = '' )

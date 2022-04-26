@@ -1,10 +1,17 @@
 class DataSourcesController < ApplicationController
-  before_action :set_data_source, only: [:show, :load,  :load_rdf, :edit, :update, :destroy]
+  require 'sidekiq/api'
+  before_action :set_data_source, only: [:show, :apply_upper_ontology,  :load_rdf, :edit, :update, :destroy]
+
 
   # GET /data_sources
   # GET /data_sources.json
   def index
     @data_sources = DataSource.all.order(:name)
+    @jobs = if Rails.env.production?
+      Sidekiq::Queue.new.size
+    else
+      0
+    end
   end
 
   # GET /data_sources/1
@@ -12,28 +19,38 @@ class DataSourcesController < ApplicationController
   def show
   end
 
-  # GET /data_sources/1/load
-  def load
-    loader = LoadProductions.new
-    loader.source(@data_source)
-    if loader.error?
-      redirect_to @data_source, notice: "Ran into a problem. #{loader.errors}"
+  # GET /data_sources/1/apply_upper_ontology
+  def apply_upper_ontology
+    if @data_source.upper_title.blank?
+      flash.now[:notice] = "Error: need a title property in upper ontology." 
     else
-      redirect_to @data_source, notice: "#{loader.count} returned by SPARQL, #{ Production.where(data_source: @data_source).count } loaded into cache. Cache errors: #{loader.cache_errors}"
+      response = @data_source.apply_upper_ontology
+      if response[:code] == 204
+        flash.now[:notice] = "Upper ontology applied!"
+      else
+        flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not apply upper ontology."
+      end
     end
+    render 'show'
   end
 
   # GET /data_sources/1/load_rdf
   def load_rdf
-    loader = LoadRDF.new
-    loader.source(@data_source)
-    @sample_graph = loader.sample
-    @sample_uri = loader.sample_uri
-    if loader.error?
-      flash.now[:notice] = "Ran into a problem. #{loader.errors}"
-      render 'show', notice: "Ran into a problem. #{loader.errors}"
+    if @data_source.type_uri.blank?
+      flash.now[:notice] = "Please add an entity type."  
     else
-      flash.now[:notice] = "#{loader.count} URIs returned by SPARQL. Errors: #{loader.cache_errors}"
+      if @data_source.load_rdf(params[:test])
+        if params[:test]
+          flash.now[:notice] = "This will load #{@data_source.uri_count} URIs of type #{@data_source.type_uri}. 
+          Estimated time to load is #{helpers.time_estimate(@data_source) }." 
+        else
+          flash.now[:notice] = "Queued #{@data_source.uri_count} URIs for background loading.
+          Estimated time to load is #{helpers.time_estimate(@data_source) }."
+        end
+        
+      else
+        flash.now[:notice] = "Ran into a problem. #{@data_source.errors.full_messages}"
+      end
     end
     render 'show'
   end
@@ -57,9 +74,11 @@ class DataSourcesController < ApplicationController
     @data_source = DataSource.new(data_source_params)
 
     puts "Adding data sources...#{params[:data_source][:data_sources]} "
-    params[:data_source][:data_sources].each do |k,v|
-    @data_source.layers << DataSource.find(k) if v == "1"
-  end
+    if  params[:data_source][:data_sources]
+      params[:data_source][:data_sources].each do |k,v|
+        @data_source.layers << DataSource.find(k) if v == "1"
+      end
+    end
 
     respond_to do |format|
       if @data_source.save
@@ -105,6 +124,6 @@ class DataSourcesController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def data_source_params
-    params.require(:data_source).permit(:name, :sparql, :email, :loaded, :data_sources)
+    params.require(:data_source).permit(:fetch_method, :upper_prefix, :upper_title, :upper_description, :upper_date, :upper_image, :upper_place, :upper_country, :upper_languages, :type_uri, :name, :sparql, :email, :loaded, :data_sources)
   end
 end

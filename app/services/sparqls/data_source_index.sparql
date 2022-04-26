@@ -1,0 +1,47 @@
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX schema: <http://schema.org/>
+PREFIX cit: <http://culture-in-time.org/ontology/>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX onto: <http://www.ontotext.com/>
+
+select ?uri (sample(?t_lang) as ?title_lang)  
+            (sample(?d_lang) as ?description_lang)  
+            (sample(?p_lang) as ?place_lang) 
+            (sample(?t) as ?title) 
+            (sample(?d) as ?description) 
+            (sample(?p) as ?place) 
+            (sample(?c) as ?country) 
+            (sample(?date) as ?startDate) 
+            (sample(?img) as ?image) 
+FROM onto:disable-sameAs
+where {
+    ?uri   cit:title ?t .
+    OPTIONAL {
+        ?uri cit:title ?t_lang . filter(lang(?t_lang) = "ui_language")
+    }
+    OPTIONAL {
+        ?uri cit:startDate ?date .
+    }
+    OPTIONAL {
+        ?uri cit:description ?d .
+    }
+    OPTIONAL {
+        ?uri cit:description ?d_lang . filter(lang(?d_lang) = "ui_language")
+    }
+    OPTIONAL {
+        ?uri cit:placeName ?p .
+    }
+    OPTIONAL {
+        ?uri cit:placeName ?p_lang .  filter(lang(?p_lang) = "ui_language")
+    }
+    OPTIONAL {
+        ?uri cit:image ?img .
+    }
+    {
+       graph <graph_placeholder> {
+           ?uri a <entity_class_placeholder>
+       }
+    }
+} group by  ?uri 
+order by ?uri

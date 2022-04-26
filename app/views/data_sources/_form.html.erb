@@ -2,7 +2,6 @@
   <% if data_source.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(data_source.errors.count, "error") %> prohibited this data_source from being saved:</h2>
-
       <ul>
       <% data_source.errors.full_messages.each do |message| %>
         <li><%= message %></li>
@@ -11,33 +10,63 @@
     </div>
   <% end %>
 
+
   <div class="field">
     <%= form.label :name %>
     <%= form.text_field :name %>
   </div>
 
   <div class="field">
-    <%= form.label :sparql %>
-    <%= form.text_area :sparql, rows: 40 %>
+    <%= form.label :type_uri %>
+    <%= form.text_field :type_uri %>
   </div>
 
   <div class="field">
+    <%= form.label :sparql %> <%= t "sparql_tip"  %>
+    <%= form.text_area :sparql, rows: 14 %>
+  </div>
+
+  <div class="field">
+    <%= form.label :email %>
     <% readonly = true unless is_admin? %>
     <%= form.email_field :email, value: cookies[:user], readonly: readonly %>
    </div>
-
-  <div class="field">
-  Data sources to chain:
+<%
+=begin%>
  
-  <% @data_sources.each do |t| %>
-  <div class="inline field">
-    <%= form.check_box "data_sources[#{t.id}]"  %>
-    <%= form.label t.name  %>
-  </div>
-  <% end %>
+  <div class="ui styled accordion" style="width:100%;">
+    <div class="title">
+      <i class="dropdown icon"></i>
+        <%= t "Data source chain" %> 
+    </div>
+    <div class="content">
+      <div class="field">
+        <% @data_sources.each do |t| %>
+          <% next if t.name.empty? %>
+          <div class="inline field">
+            <%= form.check_box "data_sources[#{t.id}]"  %>
+            <%= form.label t.name  %>
+          </div>
+        <% end %> 
+      </div>
+    </div>
+  </div> 
+<%
+=end%>
+
+ <br>
+
+<%
+=begin%>
+ <div class="field">
+ <%= form.label :fetch_method %>
+ <%= form.select :fetch_method, [ [t("content-negotiation"), :content_negotiation],[t("SPARQL-describe"), :SPARQL_describe]], class: 'ui dropdown' %>
+</div> 
+<%
+=end%>
 
   <div class="actions">
-    <%= form.submit "Update", class: 'ui button green show_loading' %>
+    <%= form.submit t("button.update"), class: 'ui button green show_loading' %>
   </div>
 
 <% end %>

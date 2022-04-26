@@ -1,5 +1,5 @@
 class SpotlightsController < ApplicationController
-  before_action :set_spotlight, only: [:show, :edit, :update, :destroy]
+  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats]
 
   # GET /spotlights
   # GET /spotlights.json
@@ -10,6 +10,14 @@ class SpotlightsController < ApplicationController
   # GET /spotlights/1
   # GET /spotlights/1.json
   def show
+    @layout = Layout.new(@spotlight.layout)
+    @data_sources = DataSource.all
+  end
+
+  # GET /spotlights/1/stats
+  def stats
+    results = RDFGraph.execute(@spotlight.generate_sparql_properties)
+    @properties = results[:message]
   end
 
   # GET /spotlights/new
@@ -30,10 +38,12 @@ class SpotlightsController < ApplicationController
     
     @spotlight = Spotlight.new(spotlight_params)
     puts "Adding data sources...#{params[:spotlight][:data_sources]} "
-    params[:spotlight][:data_sources].each do |k,v|
-      puts "check #{DataSource.find(k).name}"
-      @spotlight.data_sources << DataSource.find(k) if v == "1"
-   end
+    if params[:spotlight][:data_sources]
+      params[:spotlight][:data_sources].each do |k,v|
+        puts "check #{DataSource.find(k).name}"
+        @spotlight.data_sources << DataSource.find(k) if v == "1"
+      end
+    end
 
     respond_to do |format|
       if @spotlight.save
@@ -78,6 +88,6 @@ class SpotlightsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def spotlight_params
-      params.require(:spotlight).permit(:title, :subtitle, :image, :description, :location, :start_date, :end_date, :query, :data_sources )
+      params.require(:spotlight).permit(:layout, :sparql, :title, :subtitle, :image, :description, :location, :start_date, :end_date, :query, :data_sources )
     end
 end

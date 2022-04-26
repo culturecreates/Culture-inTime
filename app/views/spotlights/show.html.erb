@@ -1,34 +1,57 @@
-<p id="notice"><%= notice %></p>
-
-
 <%= render partial: "spotlight_cards", locals: { spotlight_list: [@spotlight] } %>
 
-
-<h2> Spotlight search parameters </h2>
 <div class="ui divider"></div>
-<p>
-  <strong>Start date:</strong>
-  <%= @spotlight.start_date %>
+<p id="notice">
+  <% if notice %>
+  <div class="ui info message">
+    <div class="header">
+      <%= notice %>
+    </div>
+  </div>
+  <% end %>
 </p>
 
-<p>
-  <strong>End date:</strong>
-  <%= @spotlight.end_date %>
-</p>
+<div class="ui styled accordion" style="width:100%;">
+  <div class="title">
+    <i class="dropdown icon"></i>
+    Search parameters
+  </div>
+  <div class="content">
+    <%= render partial: "sparql_display" %>
+  </div>
+</div>
 
-<p>
-  <strong>Query:</strong>
-  <%= @spotlight.query %>
-</p>
+<div class="ui styled accordion" style="width:100%;">
+  <div class="title">
+    <i class="dropdown icon"></i>
+    Preview layout 
+  </div>
+  <div class="content">
+  <h3>Select and order properties to preview</h3>
+    <div class="ui vertically divided grid fluid">
+      <div class="two column row">
+        <div class="column">
+          <div id="stats">
+            <%= link_to "Load stats", stats_spotlight_path(@spotlight), remote: true, class: "ui button" %>
+          </div>
+        </div>
+        <div class="column">
+          <div id="layout_div">
+            <%= render partial: "layout/layout_display", locals: {layout: @layout} %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<p>
-  <strong>Data Sources:</strong>
-<%= @spotlight.data_sources.map {|d| d.name} %>
-</p>
+
 
 <div class="ui divider"></div>
 
-<%= link_to 'Edit', edit_spotlight_path(@spotlight), class: "ui button primary" %> 
+
+
+<%= link_to 'Edit', edit_spotlight_path(@spotlight), class: "ui button primary" %>
 <%= link_to 'Back', spotlights_path, class: "ui button secondary" %>
 
- <%= link_to 'Destroy', @spotlight, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button red" %>
+<%= link_to 'Destroy', @spotlight, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button red" %>

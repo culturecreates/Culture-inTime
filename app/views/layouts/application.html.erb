@@ -10,7 +10,7 @@
       <%= render partial: "layouts/memberstack_translation_german" %>
     <% end %>
   
-    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= stylesheet_link_tag  'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application' %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -31,9 +31,9 @@
   <body>
     <div id="top-nav" data-turbolinks-permanent class="ui container">
       <div class="ui stackable menu">
-        <%= link_to t('Culture inTime'), root_path, class: "header item" %>
+        <%= link_to t('Culture in-Time'), root_path, class: "header item" %>
         <%= link_to t('spotlights'), spotlights_path, class: "item" %>
-        <%= link_to t('productions'), productions_path, class: "item" %>
+       
        <%= link_to t('sources'), data_sources_path, class: "item" %>
         
         <div class="right menu">
@@ -43,9 +43,9 @@
          
             <i class="dropdown icon"></i>
             <div class="menu">
-              <%= link_to "English", root_path(locale: :en), class: "item" %>
-              <%= link_to "Français", root_path(locale: :fr), class: "item" %>
-              <%= link_to "Deutsch", root_path(locale: :de), class: "item" %>
+              <%= link_to "English", request.original_url.sub("/#{I18n.locale}","/en")  , class: "item" %>
+              <%= link_to "Français", request.original_url.sub("/#{I18n.locale}","/fr"), class: "item" %>
+              <%= link_to "Deutsch", request.original_url.sub("/#{I18n.locale}","/de"), class: "item" %>
             
             </div>
           </div>

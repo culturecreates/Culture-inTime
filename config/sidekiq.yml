@@ -1,0 +1,4 @@
+# config/sidekiq.yml
+---
+:verbose: false
+:timeout: 60

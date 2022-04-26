@@ -1,0 +1,21 @@
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX cit: <http://culture-in-time.org/ontology/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX schema: <http://schema.org/>
+
+select distinct (sample(?l_lowercase) as ?l_sample) ?p (count(distinct ?uri) as ?count) where {
+    ?uri ?p ?o .
+    ?p rdfs:label ?l .
+    filter(lang(?l) = "en")
+    bind(lcase(?l) as ?l_lowercase)
+    {
+        # start of spotlight
+         <spotlight_query_placeholder> a "triple"
+        # end of spotlight
+    }
+} 
+group by ?p 
+order by DESC(?count) ?l_sample

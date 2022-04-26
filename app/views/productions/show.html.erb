@@ -5,12 +5,12 @@
         <img src="<%= production_image(@production) %>">
       </div>
       <div class="content">
-        <h1 class="header"><%= @production.label %></h1>
+       <h1 class="header"><%= @production.title.present? ? @production.title :  @production.entity_uri%></h1>
         <div class="meta">
           <span class="cinema"> <%= date_display(@production.date_of_first_performance) %> </span>
         </div>
         <div class="extra">
-          <a href="<%=@production.production_uri %>">
+          <a href="<%=@production.entity_uri %>">
             <div class="ui right floated primary button">
               Data Source
               <i class="right chevron icon"></i>
@@ -21,33 +21,12 @@
             <%= @production.location_label %>
           </div>
         </div>
-        <div class="meta">
-          <span class="cinema"> <%= @production.locality %>, <%= @production.country %></span>
-        </div>
-
-        <%= render 'production_details'%>
+        
+         <%= render 'production_details'%>
 
       </div>
     </div>
   </div>
-
-  <% if @production.production_company_label.present? %>
-    <div class="ui divider"></div>
-    <h2 class="header">Production Company</h2>
-    <div class="extra">
-      <a href="<%=@production.production_company_uri %>">
-        <div class="ui right floated primary button">
-          Visit Company
-          <i class="right chevron icon"></i>
-        </div>
-      </a>
-      <span class="version"> <a
-          href="<%=  @production.production_company_uri %>"><%= @production.production_company_label %></a></span>
-    </div>
-
-    <br>
-  <% end %>
-
   <div class="ui divider"></div>
 
   <h2 class="header">Description</h2>
@@ -63,5 +42,19 @@
     <img src="https://dummyimage.com/420x320/7f7fff/333333.png&text=Sample 2">
     <img src="https://dummyimage.com/420x320/7fff7f/333333.png&text=Sample 3">
     <img src="https://dummyimage.com/420x320/7f7f7f/333333.png&text=Sample 4">
+  </div>
+ 
+    <div class="ui styled accordion" style="width:100%;">
+    <div class="title">
+      <i class="dropdown icon"></i>
+        JSON-LD
+    </div>
+    <div class="content">
+      <pre class="transition hidden">
+      <code>
+         <%= @production.graph.dump(:jsonld) %>
+      </code>
+      </pre>
+    </div>
   </div>
 </div>

@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.5.8'
+ruby '2.7.2'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.2.0'
@@ -50,6 +50,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'figaro'
 end
 
 group :development do
@@ -80,7 +81,10 @@ gem 'httparty'
 gem 'jquery-rails'
 
 
-gem 'rdf', '~> 3.1.1'
-gem 'json-ld', '~> 3.0.2'
+gem 'rdf', '~> 3.1.7'
+gem 'json-ld', '~> 3.1.4'
 gem 'sparql', '~> 3.1.3'
 gem 'nokogiri'
+gem 'rdf-turtle'
+
+gem 'sidekiq'
