@@ -21,11 +21,11 @@
     <div class="ui basic tertiary left pointing label"><%= @data_source.loaded %></div>
   </div>
   <% end %>
-  <%= link_to "Test", load_rdf_data_source_path(test: true), class: "ui button primary basic show_loading" %>
-  <%= link_to "Import", load_rdf_data_source_path, class: "ui button primary show_loading_if_confirmed", data: { confirm: "This will load everything in \"#{@data_source.name}\". Are you sure?" } %>
-  <%= link_to "Apply Upper Ontology", apply_upper_ontology_data_source_path, class: "ui button secondary show_loading" %>
+  <%= link_to t("button.test"), load_rdf_data_source_path(test: true), class: "ui button primary basic show_loading" %>
+  <%= link_to t("button.import"), load_rdf_data_source_path, class: "ui button primary show_loading_if_confirmed", data: { confirm: "This will load everything in \"#{@data_source.name}\". Are you sure?" } %>
+  <%= link_to t("button.apply_upper_ontology"), apply_upper_ontology_data_source_path, class: "ui button secondary show_loading" %>
   <% if @data_source.loaded.present? %>
-  <%= link_to 'View all', search_rdf_path(data_source: @data_source.id), class: "ui button tertiary" %>
+  <%= link_to t("button.view_all"), search_rdf_path(data_source: @data_source.id), class: "ui button tertiary" %>
   <% end %>
 
   <% else %>
@@ -107,6 +107,6 @@
 
 
 <% if cookies[:user] == @data_source.email || is_admin? %>
-<%= link_to 'Edit', edit_data_source_path(@data_source), class: "ui button green" %>
+<%= link_to t('button.edit'), edit_data_source_path(@data_source), class: "ui button green" %>
 <% end %>
-<%= link_to 'Back', data_sources_path, class: "ui button black" %>
+<%= link_to t('button.back'), data_sources_path, class: "ui button black" %>

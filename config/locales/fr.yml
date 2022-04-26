@@ -12,6 +12,12 @@ fr:
     edit: "Modifier"
     chain: "Rattacher"
     destroy: "Supprimer"
+    update:
+    back:
+    test: 
+    import:
+    apply_upper_ontology: 
+    view_all: 
   table:
     name: "Nom"
     author: "Auteur"
@@ -22,17 +28,37 @@ fr:
   helpers:
     label:
       data_source:
-        name: "Name"
+        name: 
         type_uri: "Type for Upper Ontology"
         sparql: "SPARQL"
+        email: 
         fetch_method: "Method to fetch data"
-        upper_title: "Title"
+        upper_title:
+        upper_description: 
+        upper_date:
+        upper_image: 
+        upper_place: 
+        upper_languages: 
       spotlight:
-        title: "Title"
+        title: 
+        subtitle: 
+        image:
+        description:
+        location:
+        start_date:
+        end_date:
+        query:
         sparql: "SPARQL"
-# Data source - tips
+
+# Data sources
   sparql_tip: "Tip: use variable ?uri to list URIs to load"
-  "Data source chain": "Data source chain (de)"
+  "Data source chain": 
+  content-negotiation: "Automatic content negotiation"
+  SPARQL-describe: "SPARQL describe"
+
+# Spotlights
+  search_parameters: 
+  preview_layout:
 
 # Date and time
   date:

@@ -14,7 +14,7 @@
 <div class="ui styled accordion" style="width:100%;">
   <div class="title">
     <i class="dropdown icon"></i>
-    Search parameters
+    <%= t("search_parameters") %> 
   </div>
   <div class="content">
     <%= render partial: "sparql_display" %>
@@ -24,10 +24,9 @@
 <div class="ui styled accordion" style="width:100%;">
   <div class="title">
     <i class="dropdown icon"></i>
-    Preview layout 
+    <%= t("preview_layout") %> 
   </div>
   <div class="content">
-  <h3>Select and order properties to preview</h3>
     <div class="ui vertically divided grid fluid">
       <div class="two column row">
         <div class="column">
@@ -51,7 +50,7 @@
 
 
 
-<%= link_to 'Edit', edit_spotlight_path(@spotlight), class: "ui button primary" %>
-<%= link_to 'Back', spotlights_path, class: "ui button secondary" %>
+<%= link_to t('button.edit'), edit_spotlight_path(@spotlight), class: "ui button primary" %>
+<%= link_to t('button.back'), spotlights_path, class: "ui button secondary" %>
 
-<%= link_to 'Destroy', @spotlight, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button red" %>
+<%= link_to t('button.destroy'), @spotlight, method: :delete, data: { confirm: 'Are you sure?' }, class: "ui button red" %>
