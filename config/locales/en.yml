@@ -47,9 +47,10 @@ en:
         location:
         start_date:
         end_date:
-        query:
+        query: "Search term"
         sparql: "SPARQL"
-        
+        data_source: 
+
 # Data sources
   sparql_tip: "Tip: use variable ?uri to list URIs to load"
   "Data source chain": 

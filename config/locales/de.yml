@@ -47,8 +47,10 @@ de:
         location:
         start_date:
         end_date:
-        query:
+        query: "Search term"
         sparql: "SPARQL"
+        data_source: 
+        
 # Data source
   "List URIs in variable ?uri": "List URIs in ?uri"
   "Data source chain": "Data source chain (de)"
