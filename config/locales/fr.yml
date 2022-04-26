@@ -1,6 +1,40 @@
 fr:
-  spotlights: "Collections"
+  spotlights: "En vedette"
+  newly-added: "Nouvellement ajoutée"
+  sources: "Sources de données"
+  login: "Se connecter"
+  signup: "S'inscrire"
+  results: "Résultats"
+  sparql-top: "SPARQL - entités de premier niveau"
+  sparql-supplementary: "SPARQL - données supplémentaires"
+  button:
+    show: "Afficher"
+    edit: "Modifier"
+    chain: "Rattacher"
+    destroy: "Supprimer"
+  table:
+    name: "Nom"
+    author: "Auteur"
+    cached: "Enregistré le"
+    chained-to-source: "Rattaché à la source de données"
+    
+# Forms
+  helpers:
+    label:
+      data_source:
+        name: "Name"
+        type_uri: "Type for Upper Ontology"
+        sparql: "SPARQL"
+        fetch_method: "Method to fetch data"
+        upper_title: "Title"
+      spotlight:
+        title: "Title"
+        sparql: "SPARQL"
+# Data source - tips
+  sparql_tip: "Tip: use variable ?uri to list URIs to load"
+  "Data source chain": "Data source chain (de)"
 
+# Date and time
   date:
     formats:
       default: "%d %b %Y"
