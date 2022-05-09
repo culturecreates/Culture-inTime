@@ -17,10 +17,13 @@ class DataSource < ApplicationRecord
     data = @response[:message]
 
     if data.first.blank? 
-      self.errors.add(:base, "No URIs in variable ?uri", message: "Please use the variable ?uri in your SELECT  to return a list of URIs.")
+      self.errors.add(:base, "No results.", message: "The SPARQL has not returned any results.")
       return false 
     end
-
+    if !data.first.has_key?("uri")
+      self.errors.add(:base, "Missing ?uri variable.", message: "Please use the variable ?uri in your SELECT to return a list of URIs.")
+      return false 
+    end
     @uris = data.pluck("uri").pluck("value")
 
     if @uris.count > 5000
