@@ -14,10 +14,17 @@ class DataSource < ApplicationRecord
     @response = RDFGraph.execute(self.sparql)
     return false unless @response[:code] == 200
 
-    @uris = @response[:message].pluck("uri").pluck("value")
+    data = @response[:message]
+
+    if data.first.blank? 
+      self.errors.add(:base, "No URIs in variable ?uri", message: "Please use the variable ?uri in your SELECT  to return a list of URIs.")
+      return false 
+    end
+
+    @uris = data.pluck("uri").pluck("value")
 
     if @uris.count > 5000
-      self.errors.add(:limit, "Exceeded limit of 5000 URIs. Please break query into smaller groups.")
+      self.errors.add(:base, "Exceeded limit of 5000 URIs. Please break query into smaller groups.")
       return false 
     end
 
