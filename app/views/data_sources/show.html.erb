@@ -99,11 +99,9 @@
 </div>
 
 
-<pre>
- <code>
-  <%= @data_source.sparql %>
-</code>
-</pre>
+<br>
+<%= render partial: "layouts/sparql_code", locals: {data: @data_source.sparql.html_safe , attributes: "readonly"} %>
+<br>
 
 
 <% if cookies[:user] == @data_source.email || is_admin? %>
