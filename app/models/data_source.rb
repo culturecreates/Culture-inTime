@@ -26,8 +26,8 @@ class DataSource < ApplicationRecord
     end
     @uris = data.pluck("uri").pluck("value")
 
-    if @uris.count > 5000
-      self.errors.add(:base, "Exceeded limit of 5000 URIs. Please break query into smaller groups.")
+    if @uris.count > 200
+      self.errors.add(:base, "Exceeded limit of 200 URIs. Please break query into smaller groups.")
       return false 
     end
 
