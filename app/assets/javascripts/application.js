@@ -16,8 +16,11 @@
 
 // Loads all Semantic javascripts
 //= require semantic-ui
+//= require codemirror
+//= require codemirror/modes/sparql
 
 //= require_tree .
+
 
 
 $(function() {

@@ -21,22 +21,12 @@
     <%= form.text_field :type_uri %>
   </div>
 
-  <%
-=begin%>
+
  <div class="field">
     <%= form.label :sparql %> <%= t "sparql_tip"  %>
     <%= form.text_area :sparql, rows: 14 %>
   </div> 
-<%
-=end%>
 
-
-  <div class="field">
-    <%= form.label :sparql %> <%= t "sparql_tip"  %>
-    <input type="text" name="data_source[sparql]" id="data_source_sparql">
-      <%= render partial: "layouts/sparql_code", locals: {data: @data_source.sparql.html_safe , attributes: ""} %>
-    </input>
-  </div>
 
   <div class="field">
     <%= form.label :email %>

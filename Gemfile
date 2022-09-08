@@ -88,3 +88,5 @@ gem 'nokogiri'
 gem 'rdf-turtle'
 
 gem 'sidekiq'
+
+gem 'codemirror-rails'
