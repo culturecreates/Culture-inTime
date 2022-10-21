@@ -73,7 +73,7 @@ class DataSourcesController < ApplicationController
     @data_sources = DataSource.all
     @data_source = DataSource.new(data_source_params)
 
-    puts "Adding data sources...#{params[:data_source][:data_sources]} "
+ 
     if  params[:data_source][:data_sources]
       params[:data_source][:data_sources].each do |k,v|
         @data_source.layers << DataSource.find(k) if v == "1"

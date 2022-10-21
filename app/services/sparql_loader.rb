@@ -21,6 +21,7 @@ class SparqlLoader
       substitute_list.each_slice(2) do |a, b|
         f.gsub!(a.to_s, b.to_s)
       end
+      f
     else
       { error: result.code, message: result.body.truncate(100).squish }
     end
