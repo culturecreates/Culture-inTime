@@ -1,4 +1,4 @@
-# Class to load SPARQL from local files
+# Class to load SPARQL from local or remote files
 class SparqlLoader
  
   def self.load(filename, substitute_list = [])
@@ -9,7 +9,7 @@ class SparqlLoader
     f
   end
 
-  def self.load_url(url, str_to_replace = '', value = '' )
+  def self.load_url(url,  substitute_list = [] )
     begin
       result = HTTParty.get(url)
     rescue => exception
@@ -17,7 +17,10 @@ class SparqlLoader
     end
     result = HTTParty.get(url)
     if result.code == 200
-      result.body.gsub(str_to_replace, value)
+      f = result.body
+      substitute_list.each_slice(2) do |a, b|
+        f.gsub!(a.to_s, b.to_s)
+      end
     else
       { error: result.code, message: result.body.truncate(100).squish }
     end
