@@ -104,10 +104,33 @@ class Entity
       <#{@entity_uri}> ?p ?o .
       ?p rdfs:label ?label .
       ?o rdfs:label ?o_label . 
+      ?stat ?p2 ?o2 . 
+      ?p2 rdfs:label ?p2_label_en .
+
       } 
     FROM onto:disable-sameAs
     WHERE { 
       <#{@entity_uri}> ?p ?o . 
+
+
+
+
+        OPTIONAL {
+          <#{@entity_uri}>  ?p ?stat .
+          ?stat ?p2 ?o2 . 
+          filter(contains(str(?p),"/prop/P")) # only follow down /prop/ and not /prop/direct/
+          
+          bind(URI(concat("http://www.wikidata.org/prop/direct/P",strafter(str(?p2),"/P"))) as ?prop_dir  )
+          ?prop_dir rdfs:label ?p2_label_en . 
+
+
+
+          filter(lang(?p2_label_en) = "en")
+      }
+      
+  
+      
+      
       OPTIONAL { ?p rdfs:label ?label_en . filter(lang(?label_en) = "en") }
       OPTIONAL { ?p rdfs:label ?label_fr . filter(lang(?label_fr) = "fr") }
       OPTIONAL { ?p rdfs:label ?label_de . filter(lang(?label_de) = "de") }
@@ -122,7 +145,6 @@ class Entity
 
       BIND(COALESCE(?o_label_#{I18n.locale.to_s},?o_label_en, ?o_label_fr ,?o_label_de, ?o_label_no_language ) as ?o_label)
   
-
     }
     SPARQL
     
@@ -138,17 +160,29 @@ class Entity
     query = SPARQL.parse(<<~SPARQL)
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX cit:  <http://culture-in-time.org/ontology/>
-    SELECT distinct ?label ?p ?o ?o_label
+    SELECT distinct ?label ?p ?o  ?o_label ?qual_label  ?qual_o
     WHERE { 
+    # values ?p {<http://www.wikidata.org/prop/P10527>   <http://www.wikidata.org/prop/P485>}
       ?s ?p ?o  .
+      ?o ?qual_p ?qual_o . 
+      OPTIONAL {
+        ?qual_p rdfs:label ?qual_label .
+      }
+
       OPTIONAL { ?o rdfs:label ?o_label . } 
-      OPTIONAL { ?p rdfs:label ?label  . } 
-     # filter(Bound(?label))
-     filter(?label != "label")
-   #   filter(?o != "")
+      
+      # only prop/direct have labels
+      bind(URI(concat("http://www.wikidata.org/prop/direct/P",strafter(str(?p),"/P"))) as ?prop_dir )
+      ?prop_dir rdfs:label ?label  . 
+
+      filter(?label != "label")
+
+      
       bind(LCASE(?label) as ?label_lowercase)
+
+    
     } 
-    order by ?label_lowercase
+    order by ?p   # to group properties together
     SPARQL
 
     @properties_with_labels ||= query.execute(graph).to_json
