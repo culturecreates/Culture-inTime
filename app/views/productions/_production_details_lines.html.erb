@@ -5,38 +5,31 @@
   <% @prop = line.dig('label','value') %>
 <% end %>
 
-<% if  line.dig('label','value') !=  line.dig('qual_label','value') && !line.dig('p','value').include?("prop/statement") # remove duplicates todo: move to sparql %>
+
 <% if line.dig('o','type') != 'literal' %>
-  <% if line.dig('o','datatype') == 'http://www.w3.org/2001/XMLSchema#dateTime' %>
-    <%= date_display(line.dig('o','value')) %>
+  <% if line.dig('o','datatype') == 'http://www.w3.org/2001/XMLSchema#dateTime' %> 
+    <%= date_display(line.dig('o','value')) %> <br>
   <% elsif line.dig('o','type') == "typed-literal" %>
-    <%= line.dig('o','value') %>
+    <%= line.dig('o','value') %> <br>
   <% elsif line.dig('o','type') == "uri" %>
-   
     <% if line.dig('qual_label','value').present? %>
-        - <%= line.dig('qual_label','value') %> : <%= line.dig('qual_o','value') %>
-        <% else %>
-         <% if line.dig('o_label','value').present? %>
-      <a href='<%= line.dig('o','value') %>'><%= line.dig('o_label','value') %></a>
-    <% else %>
-      <a href='<%= line.dig('o','value') %>'><%= line.dig('o','value') %></a>
+        - <%= line.dig('qual_label','value') %> : <%= line.dig('qual_o','value') %> <br>
     <% end %>
+   
+    <% if line.dig('o_label','value').present? %>
+      <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o_label','value') %></a><br>
+    <% elsif !line.dig('o','value').include?("/entity/statement/Q")  %>
+      <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o','value') %></a><br>
     <% end %>
- 
-  <% elsif line.dig('o','type') == "uri" && line.dig('o_label','value').blank? %>
-    <a href='<%= line.dig('o','value') %>'><%= line.dig('o','value') %></a>
   <% else %>
-    <% if ['en','fr','de'].include?(line.dig('o_label','xml:lang')) || line.dig('o_label','xml:lang').blank? %>
-      <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o_label','value') %></a>
-    <% end %>
+    <a href='?uri=<%= line.dig('o','value') %>'> <%= line.dig('o','value')  %></a> <br>
   <% end %>
 <% else %>
   <% if line.dig('o','xml:lang') == I18n.locale.to_s || line.dig('o','xml:lang') == 'en' || line.dig('o','xml:lang').blank? %>
-    <%= line.dig('o','value')  %>
+    <%= line.dig('o','value')  %> 
   <% else %>
     <%= line.dig('o','value')  %>
     <%= "@" + line.dig('o','xml:lang') if line.dig('o','xml:lang') %>
   <% end %>
-<% end %>
-<br>
+  <br>
 <% end %>

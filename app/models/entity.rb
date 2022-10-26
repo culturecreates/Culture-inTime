@@ -119,7 +119,7 @@ class Entity
           <#{@entity_uri}>  ?p ?stat .
           ?stat ?p2 ?o2 . 
           filter(contains(str(?p),"/prop/P")) # only follow down /prop/ and not /prop/direct/
-          
+          filter(contains(str(?p2),"/prop/qualifier/")) # only follow /qualifier
           bind(URI(concat("http://www.wikidata.org/prop/direct/P",strafter(str(?p2),"/P"))) as ?prop_dir  )
           ?prop_dir rdfs:label ?p2_label_en . 
 
@@ -162,12 +162,16 @@ class Entity
     PREFIX cit:  <http://culture-in-time.org/ontology/>
     SELECT distinct ?label ?p ?o  ?o_label ?qual_label  ?qual_o
     WHERE { 
-    # values ?p {<http://www.wikidata.org/prop/P10527>   <http://www.wikidata.org/prop/P485>}
+      values ?qual_p {<http://www.wikidata.org/prop/qualifier/P217> <http://www.wikidata.org/prop/qualifier/P1810>}
+  
       ?s ?p ?o  .
-      ?o ?qual_p ?qual_o . 
+      
       OPTIONAL {
+        ?o ?qual_p ?qual_o . 
         ?qual_p rdfs:label ?qual_label .
       }
+     
+     
 
       OPTIONAL { ?o rdfs:label ?o_label . } 
       
@@ -182,7 +186,7 @@ class Entity
 
     
     } 
-    order by ?p   # to group properties together
+    order by ?label_lowercase  ?qual_o  # to group properties together
     SPARQL
 
     @properties_with_labels ||= query.execute(graph).to_json
