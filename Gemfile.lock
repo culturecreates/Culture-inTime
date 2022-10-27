@@ -340,7 +340,7 @@ DEPENDENCIES
   will_paginate_semantic_ui
 
 RUBY VERSION
-   ruby 2.7.2p137
+   ruby 2.7.6p219
 
 BUNDLED WITH
    1.17.3
