@@ -122,8 +122,7 @@ GEM
       multi_json (~> 1.14)
       rack (~> 2.0)
       rdf (~> 3.1)
-    libv8-node (16.10.0.0)
-    libv8-node (16.10.0.0-x86_64-darwin-19)
+    libv8-node (16.10.0.0-x86_64-linux)
     link_header (0.0.8)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
@@ -156,6 +155,8 @@ GEM
       mini_portile2 (~> 2.8.0)
       racc (~> 1.4)
     nokogiri (1.13.9-x86_64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.13.9-x86_64-linux)
       racc (~> 1.4)
     oj (3.13.21)
     pg (1.4.4)
@@ -303,6 +304,7 @@ GEM
 PLATFORMS
   ruby
   x86_64-darwin-19
+  x86_64-linux
 
 DEPENDENCIES
   bootsnap (>= 1.1.0)
@@ -319,7 +321,7 @@ DEPENDENCIES
   jquery-rails
   json-ld (~> 3.1.4)
   listen (>= 3.0.5, < 3.2)
-  mini_racer
+  mini_racer (~> 0.6.2)
   nokogiri
   oj
   pg (>= 0.18, < 2.0)
