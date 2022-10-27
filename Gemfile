@@ -14,7 +14,7 @@ gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-gem 'mini_racer', platforms: :ruby
+gem 'mini_racer'
 
 # Use React for search UI
 gem "react_on_rails", "11.0.0"
@@ -87,6 +87,6 @@ gem 'sparql', '~> 3.1.3'
 gem 'nokogiri'
 gem 'rdf-turtle'
 
-gem 'sidekiq'
+gem 'sidekiq', '<7'
 
 gem 'codemirror-rails'
