@@ -1,35 +1,37 @@
-<% if @prop !=  line.dig('label','value') %>
-  <h2 title='<%= line.dig('p','value') %>'>
-    <%= line.dig('label','value').capitalize if  line.dig('label','value') %>
+<% if @prop !=  line.dig('prop_label','value') %>
+  <h2 title='<%= line.dig('stat_prop','value') %>'>
+    <%= line.dig('prop_label','value').capitalize if  line.dig('prop_label','value') %>
   </h2>
-  <% @prop = line.dig('label','value') %>
+  <% @prop = line.dig('prop_label','value') %>
 <% end %>
 
 
-<% if line.dig('o','type') != 'literal' %>
-  <% if line.dig('o','datatype') == 'http://www.w3.org/2001/XMLSchema#dateTime' %> 
-    <%= date_display(line.dig('o','value')) %> <br>
-  <% elsif line.dig('o','type') == "typed-literal" %>
-    <%= line.dig('o','value') %> <br>
-  <% elsif line.dig('o','type') == "uri" %>
-    <% if line.dig('qual_label','value').present? %>
-        - <%= line.dig('qual_label','value') %> : <%= line.dig('qual_o','value') %> <br>
+ 
+<% if line.dig('stat_obj','type') != 'literal' %>
+  <% if line.dig('stat_obj','datatype') == 'http://www.w3.org/2001/XMLSchema#dateTime' %> 
+    <%= date_display(line.dig('stat_obj','value')) %> <br>
+  <% elsif line.dig('stat_obj','type') == "typed-literal" %>
+    <%= line.dig('obj_label','value') %> <br>
+  <% elsif line.dig('stat_obj','type') == "uri" %>
+    <% if @obj != line.dig('stat_obj','value') %>
+      <% if line.dig('obj_label','value').present? %>
+        <a href='?uri=<%= line.dig('stat_obj','value') %>'><%= line.dig('obj_label','value') %></a><br>
+      <% else %>
+          <a href='?uri=<%= line.dig('stat_obj','value') %>'><%= line.dig('stat_obj','value') %></a><br>
+      <% end %>
+      <% @obj = line.dig('stat_obj','value') %>
     <% end %>
-   
-    <% if line.dig('o_label','value').present? %>
-      <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o_label','value') %></a><br>
-    <% elsif !line.dig('o','value').include?("/entity/statement/Q")  %>
-      <a href='?uri=<%= line.dig('o','value') %>'><%= line.dig('o','value') %></a><br>
+    <% if line.dig('qual_label','value').present? %>
+        - <%= line.dig('qual_label','value') %> : <%= line.dig('qual_obj','value') %> <br>
     <% end %>
   <% else %>
     <a href='?uri=<%= line.dig('o','value') %>'> <%= line.dig('o','value')  %></a> <br>
   <% end %>
 <% else %>
-  <% if line.dig('o','xml:lang') == I18n.locale.to_s || line.dig('o','xml:lang') == 'en' || line.dig('o','xml:lang').blank? %>
-    <%= line.dig('o','value')  %> 
-  <% else %>
-    <%= line.dig('o','value')  %>
-    <%= "@" + line.dig('o','xml:lang') if line.dig('o','xml:lang') %>
-  <% end %>
+ 
+    <%= line.dig('stat_obj','value')  %>
+    <%= "@" + line.dig('stat_obj','xml:lang') if line.dig('stat_obj','xml:lang') %>
+  
   <br>
-<% end %>
+<% end %> 
+

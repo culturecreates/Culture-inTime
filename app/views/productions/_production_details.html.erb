@@ -2,12 +2,18 @@
 
 <% @prop = '' #avoids repeating the property title when there is a list %>
 
+
 <% if @production.layout_id  %>
   <div class="ui top mini attached tabular menu">
     <div class="propSpotlight active item">Preview</div>
     <div class="propAll item">All</div>
   </div>
   <div class="propSpotlight ui bottom attached  active tab segment">
+   <%
+=begin%>
+ <code><%= @production.graph.to_turtle %> </code> 
+<%
+=end%>
     <div class="meta">
       <% JSON.parse(@production.properties_with_labels_layout)["results"]["bindings"].each do |line| %>
       <%= render partial: 'production_details_lines', locals: { line: line, layout: true  }%>
@@ -15,23 +21,24 @@
     </div>
   </div>
   <div class="propAll ui bottom attached  <%= "active" if !@production.layout_id %> tab segment">
-  
+   <%
+=begin%>
+ <code><%= JSON.parse(@production.properties_with_labels) %> </code> 
+<%
+=end%>
     <div class="meta">
    
       <% JSON.parse(@production.properties_with_labels)["results"]["bindings"].each do |line| %>
-      <%= render partial: 'production_details_lines', locals: { line: line, layout: false }%>
+        <%= render partial: 'production_details_lines', locals: { line: line, layout: false }%>
       <% end %>
     </div>
   </div>
 
 <% else %>
 
-  <%
-=begin%>
- <code><%= JSON.parse(@production.properties_with_labels) %> </code>
+
    
-<%
-=end%>
+
   <div class="meta">
     <% JSON.parse(@production.properties_with_labels)["results"]["bindings"].each do |line| %>
     <%= render partial: 'production_details_lines', locals: { line: line, layout: false }%>

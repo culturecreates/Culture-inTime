@@ -6,10 +6,14 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 
-select distinct (sample(?l_lowercase) as ?l_sample) ?p (count(distinct ?uri) as ?count) where {
+select distinct (sample(?l_lowercase) as ?l_sample) ?ps (count(distinct ?uri) as ?count) where {
     ?uri ?p ?o .
-    ?p rdfs:label ?l .
+    filter(contains(str(?p),"/prop/P"))
+    ?o ?ps ?o2 .
+    filter(contains(str(?ps),"/prop/statement/P") || contains(str(?ps),"/prop/qualifier/P"))
+    ?ps rdfs:label ?l .
     filter(lang(?l) = "en")
+
     bind(lcase(?l) as ?l_lowercase)
     {
         # start of spotlight
@@ -17,5 +21,5 @@ select distinct (sample(?l_lowercase) as ?l_sample) ?p (count(distinct ?uri) as 
         # end of spotlight
     }
 } 
-group by ?p 
+group by ?ps 
 order by DESC(?count) ?l_sample
