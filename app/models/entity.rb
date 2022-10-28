@@ -202,6 +202,7 @@ class Entity
             ?stat ?qual_prop ?qual_obj 
             filter(contains(str(?qual_prop),"/prop/qualifier/"))  # only follow qualifiers
             ?qual_prop rdfs:label ?qual_label . 
+            filter(!contains(str(?qual_obj),"http://www.wikidata.org/value/")) # Unneeded statement for dateTime
         }
         
         optional { ?stat_prop rdfs:label ?prop_label . }
