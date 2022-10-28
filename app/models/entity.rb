@@ -211,7 +211,7 @@ class Entity
       bind(LCASE(?prop_label) as ?label_lowercase)
     
     } 
-    order by ?label_lowercase   ?obj_label  # to group properties together
+    order by ?label_lowercase   ?obj_label ?qual_prop # to group properties together
     SPARQL
 
     @properties_with_labels ||= query.execute(graph).to_json

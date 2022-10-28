@@ -2,7 +2,7 @@
   <h2 title='<%= line.dig('stat_prop','value') %>'>
     <%= line.dig('prop_label','value').capitalize if  line.dig('prop_label','value') %>
   </h2>
-  <% @prop = line.dig('prop_label','value') %>
+ 
 <% end %>
 
 
@@ -14,24 +14,48 @@
     <%= line.dig('obj_label','value') %> <br>
   <% elsif line.dig('stat_obj','type') == "uri" %>
     <% if @obj != line.dig('stat_obj','value') %>
+      <% if line.dig('qual_label','value').present?  &&  @prop == line.dig('prop_label','value')%>
+        <br>
+      <% end %>
       <% if line.dig('obj_label','value').present? %>
-        <a href='?uri=<%= line.dig('stat_obj','value') %>'><%= line.dig('obj_label','value') %></a><br>
+        <a href='?uri=<%= line.dig('stat_obj','value') %>'><%= line.dig('obj_label','value') %></a> <br>
       <% else %>
-          <a href='?uri=<%= line.dig('stat_obj','value') %>'><%= line.dig('stat_obj','value') %></a><br>
+          <a href='?uri=<%= line.dig('stat_obj','value') %>'><%= line.dig('stat_obj','value') %></a>
+          <a href='<%= line.dig('stat_obj','value') %>'><i class="external square alternate icon"></i></a><br>
       <% end %>
       <% @obj = line.dig('stat_obj','value') %>
     <% end %>
     <% if line.dig('qual_label','value').present? %>
-        - <%= line.dig('qual_label','value') %> : <%= line.dig('qual_obj','value') %> <br>
+      
+        <div class="ui basic label">
+          <%= line.dig('qual_label','value') %> :
+          <div class="detail">
+          
+            <% if line.dig('qual_obj','value').start_with?("http") %>
+            <a href='?uri=<%= line.dig('qual_obj','value') %>'> <%= line.dig('qual_obj','value') %></a>
+            <a href='<%= line.dig('qual_obj','value') %>'><i class="external square alternate icon"></i></a>
+             <% else %>
+               <%= line.dig('qual_obj','value') %>
+            <% end %>
+          </div>
+        </div>
+    <br>
     <% end %>
   <% else %>
-    <a href='?uri=<%= line.dig('o','value') %>'> <%= line.dig('o','value')  %></a> <br>
+    <a href='?uri=<%= line.dig('stat_obj','value') %>'> <%= line.dig('stat_obj','value')  %></a> 
+    <a href='<%= line.dig('stat_obj','value') %>'><i class="external square alternate icon"></i></a><br>
   <% end %>
 <% else %>
  
     <%= line.dig('stat_obj','value')  %>
     <%= "@" + line.dig('stat_obj','xml:lang') if line.dig('stat_obj','xml:lang') %>
-  
+    <% if line.dig('stat_obj','value').start_with?("http") %>
+         <a href='<%= line.dig('stat_obj','value') %>'><i class="external square alternate icon"></i></a>
+    <% end %>
   <br>
 <% end %> 
+
+<% if @prop !=  line.dig('prop_label','value') %>
+ <% @prop = line.dig('prop_label','value') %>
+ <% end %> 
 
