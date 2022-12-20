@@ -1,0 +1,1 @@
+json.array! @entities, partial: "search_rdf/resource", as: :resource
