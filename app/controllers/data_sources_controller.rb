@@ -47,7 +47,6 @@ class DataSourcesController < ApplicationController
           flash.now[:notice] = "Queued #{@data_source.uri_count} URIs for background loading.
           Estimated time to load is #{helpers.time_estimate(@data_source) }."
         end
-        
       else
         flash.now[:notice] = "Ran into a problem. #{@data_source.errors.full_messages}"
       end

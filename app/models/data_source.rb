@@ -9,7 +9,7 @@ class DataSource < ApplicationRecord
 
    validates :name, presence: true
 
-  # Method to drop and load data source into a graph
+  # Method to load data source into a graph
   def load_rdf(test_drive = false)
     @response = RDFGraph.execute(self.sparql)
     return false unless @response[:code] == 200
@@ -31,7 +31,9 @@ class DataSource < ApplicationRecord
       return false 
     end
 
-    # RDFGraph.drop(graph_name)  # THIS IS VERY SLOW
+    # There are 2 methods to load data: 
+    # 1. URI dereferencing. This can be used with Wikidata and Musicbrainz.
+    # 2. SPARQL_describe which uses SPARQL Describe on a sparql endpoint. This is useful when the URIs are not dereferenceable.
     if self.fetch_method == "SPARQL_describe"
       if !test_drive
         #TODO: get endpoint from sparql SERVICE
@@ -51,13 +53,9 @@ class DataSource < ApplicationRecord
       return false unless @sample_graph
 
       if !test_drive
-        @uris.each do |uri|
-          BatchContentNegotiationJob.perform_later(uri, graph_name, self.type_uri)
-        end
+        SetupContentNegotiationJob.perform_later(@uris, graph_name, self.type_uri)
         self.loaded = Time.now
         self.save
-        BatchUpdateJob.perform_later(generate_fix_wikidata_labels_sparql)
-        BatchUpdateJob.perform_later(generate_upper_ontology_sparql)
       end
     end
     return true
