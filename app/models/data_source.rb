@@ -31,6 +31,7 @@ class DataSource < ApplicationRecord
     end
     @uris = data.pluck("uri").pluck("value")
 
+    # This limit is set in the GraphDB respository as the "Limit query results"
     if @uris.count >= 100000
       self.errors.add(:base, "Exceeded limit of 100,000 URIs. Please break query into smaller groups.")
       return false 
