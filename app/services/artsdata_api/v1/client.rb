@@ -20,12 +20,18 @@ module ArtsdataApi
       # Returns JSON
       def execute_sparql(sparql)
         @logger.info "sparql: #{sparql.truncate(8000).squish}"
-        data = request_json(
-          http_method: :post,
-          endpoint: "/repositories/#{@graph_repository}",
-          params: { 'query': escape_sparql(sparql) }
-        )
-
+        begin
+          data = request_json(
+            http_method: :post,
+            endpoint: "/repositories/#{@graph_repository}",
+            params: { 'query': escape_sparql(sparql) }
+          )
+        rescue => exception
+         
+          data = OpenStruct.new({status: 500, body:"Error in connection: #{exception.inspect}"})
+          
+        end
+    
         msg = if data.status == 200
                 j = Oj.load(data.body)
                 j['results']['bindings']
@@ -116,6 +122,7 @@ module ArtsdataApi
       def request_json(http_method:, endpoint:, params: {})
         client.headers['Accept'] = 'application/json'
         client.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+
         client.public_send(http_method, endpoint, params)
       end
 

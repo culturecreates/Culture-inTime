@@ -12,7 +12,12 @@ class DataSource < ApplicationRecord
   # Method to load data source into a graph
   def load_rdf(test_drive = false)
     @response = RDFGraph.execute(self.sparql)
-    return false unless @response[:code] == 200
+
+    if @response[:code] != 200
+      self.errors.add(:base, "#{@response[:message]}")
+      return false
+    end
+
 
     data = @response[:message]
 
@@ -26,8 +31,8 @@ class DataSource < ApplicationRecord
     end
     @uris = data.pluck("uri").pluck("value")
 
-    if @uris.count > 20000
-      self.errors.add(:base, "Exceeded limit of 20,000 URIs. Please break query into smaller groups.")
+    if @uris.count >= 100000
+      self.errors.add(:base, "Exceeded limit of 100,000 URIs. Please break query into smaller groups.")
       return false 
     end
 
