@@ -24,7 +24,7 @@ class Layout
       fields << {solution.uri.value => solution.name.value, order:  solution.order.value.to_i }
     end
     fields.sort_by! { |f| f[:order] }
-    puts "fields: #{fields}"
+    # puts "fields: #{fields}"
     fields
   end
 

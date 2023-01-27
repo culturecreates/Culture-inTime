@@ -4,7 +4,7 @@ class LayoutController < ApplicationController
     @spotlight = Spotlight.find(params[:spotlight])
     @layout = Layout.new(@spotlight.layout)
     if @layout.add_field(params[:uri],params[:name])
-      puts "saving fields:#{@layout.turtle}"
+      # puts "saving fields:#{@layout.turtle}"
       @spotlight.layout = @layout.turtle
       @spotlight.save
     end

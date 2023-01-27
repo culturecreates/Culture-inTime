@@ -52,7 +52,7 @@ class DataSource < ApplicationRecord
       @sample_uri = @uris.first
       begin 
         @sample_graph = RDF::Graph.load(@sample_uri).to_jsonld
-        puts "Sample graph loaded"
+        # puts "Sample graph loaded"
       rescue => exception
         puts "Exception getting sample uri: #{exception.inspect}"
       end

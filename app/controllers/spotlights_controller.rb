@@ -40,7 +40,7 @@ class SpotlightsController < ApplicationController
    
     if params[:spotlight][:data_sources]
       params[:spotlight][:data_sources].each do |k,v|
-        puts "check #{DataSource.find(k).name}"
+        # puts "check #{DataSource.find(k).name}"
         @spotlight.data_sources << DataSource.find(k) if v == "1"
       end
     end

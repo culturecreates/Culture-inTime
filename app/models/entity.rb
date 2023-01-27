@@ -23,6 +23,7 @@ class Entity
     spotlight = Spotlight.find(spotlight_id)
     results = RDFGraph.execute(spotlight.generate_sparql)
     load_entities(results[:message])
+    # puts "results[:message] #{results[:message]}"
   end
 
   def self.count
@@ -89,6 +90,20 @@ class Entity
 
   def graph
     @graph ||= load_graph
+  end
+
+  def framed_graph
+    frame_json = {  "@context"=> {
+      "@vocab" =>"http://schema.org/",
+      "cit"=>"http://culture-in-time.org/ontology/",
+      "description"=>{"@id" =>"cit:description","@language"=>"en"}
+    },
+     "@explicit"=> true,
+     "@id"=>"http://www.wikidata.org/entity/Q1039299",
+     "cit:description" =>{ "@language"=> "en", "@value"=> {}}
+    }
+     
+    JSON::LD::API.frame( JSON.parse(graph.to_jsonld),  JSON.parse(frame_json.to_json))
   end
 
   # Loads details of a URI in graph format
