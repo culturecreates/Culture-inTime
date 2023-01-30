@@ -1,4 +1,4 @@
-<%= render partial: "spotlight_cards", locals: { spotlight_list: [@spotlight] } %>
+<%= render partial: "spotlight_card", locals: { spotlight: @spotlight} %>
 
 <div class="ui divider"></div>
 <p id="notice">
@@ -41,6 +41,16 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="ui styled accordion" style="width:100%;">
+  <div class="title">
+    <i class="dropdown icon"></i>
+    <%= t("api") %> 
+  </div>
+  <div class="content">
+    <%= render partial: "api_display" %>
   </div>
 </div>
 

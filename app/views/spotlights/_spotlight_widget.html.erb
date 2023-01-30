@@ -1,0 +1,88 @@
+<h3> Spotlight Widget</h3>
+First 5 results using Spotlight API.
+<div class="display-widget"></div>
+
+<script>
+
+  const widgetDiv = document.querySelector(".display-widget");
+  const query = "<%= search_rdf_url(spotlight: @spotlight.id, format: :json, limit:5) %>"
+
+  async function loadSpotlight() {
+    const res = await fetch(query);
+    const json = await res.json();
+    return json
+  }
+
+  loadSpotlight().then(entities => {
+     console.log(entities);
+     const ul=document.createElement('ul');
+     ul.classList.add("list-group");
+     entities.forEach((entity) => {
+      const length = 46;
+      const trimmedString = entity.description.length > length ? 
+                    entity.description.substring(0, length - 3) + "..." : 
+                    entity.description;
+      const li = document.createElement("li");
+      ul.appendChild(li);
+      // const im = document.createElement("img");
+      // im.src = entity.image;
+    
+      li.innerHTML=`<img src="${entity.image}"><div class="list-item"><div class="item-title">${entity.title}</div><div class="item-description">${trimmedString}</div></div>`;
+      // li.appendChild(im);
+
+    
+     
+    });
+     widgetDiv.appendChild(ul);
+});
+</script>
+
+ <style>
+        /* body {
+            background-color: #fff;
+            color: #333;
+            font: 1.2em / 1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+            padding: 0;
+            margin: 1em;
+        } */
+
+        .list-group {
+           background-color: #fff;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            border: 1px solid #ccc;
+            border-radius: .5em;
+            width: 20em;
+        }
+
+        .list-group li {
+            border-top: 1px solid #ccc;
+            /* padding: .5em; */
+            display: flex;
+            /* justify-content: space-between; */
+            justify-content: flex-start; 
+            align-items: center;
+        }
+
+        .list-group li:first-child {
+            border-top: 0;
+        }
+
+        .list-group img {
+            border-radius: 1em;
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            padding: .8em;
+        }
+
+        .list-item {
+           display: flex;
+           flex-direction: column;
+        }
+
+           .item-title {
+            font-weight: bold;
+        }
+    </style>

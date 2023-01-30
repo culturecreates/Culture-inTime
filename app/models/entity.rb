@@ -1,11 +1,11 @@
 
 class Entity
-  attr_accessor :title, :description, :date_of_first_performance, :location_label, :main_image, :entity_uri, :layout_id
+  attr_accessor :title, :description, :date_entity, :location_label, :main_image, :entity_uri, :layout_id
 
   def initialize(**h) 
     @title = h[:title]
     @description = h[:description]
-    @date_of_first_performance = h[:date]
+    @date_entity = h[:date]
     @location_label = h[:place]
     @main_image = h[:image]
     @entity_uri = h[:entity_uri]
@@ -42,8 +42,9 @@ class Entity
   def self.paginate(**params)
     entities = []
     @page = params[:page] ||= 1
-    start_offset = 20*(@page.to_i - 1)
-    end_offset = 20*(@page.to_i) - 1
+    limit = params[:limit] ||= 20
+    start_offset = limit.to_i*(@page.to_i - 1)
+    end_offset = limit.to_i*(@page.to_i) - 1
     @sparql_results[start_offset..end_offset].each do |e|
       title = e.dig("title_lang","value") || e["title"]["value"] || ""
       description = e.dig("description_lang","value") || e.dig("description","value") || ""
@@ -65,7 +66,7 @@ class Entity
     if solution 
       entity.title = solution.title if solution.bound?(:title)
       entity.description = solution.description.value if solution.bound?(:description)
-      entity.date_of_first_performance = solution.startDate.value if solution.bound?(:startDate)
+      entity.date_entity = solution.startDate.value if solution.bound?(:startDate)
       entity.location_label = solution.placeName if  solution.bound?(:placeName)
       entity.main_image = solution.image if  solution.bound?(:image)
     end
@@ -95,12 +96,11 @@ class Entity
   def framed_graph
     frame_json = {  "@context"=> {
       "@vocab" =>"http://schema.org/",
-      "cit"=>"http://culture-in-time.org/ontology/",
-      "description"=>{"@id" =>"cit:description","@language"=>"en"}
+      "cit"=>"http://culture-in-time.org/ontology/"
     },
      "@explicit"=> true,
-     "@id"=>"http://www.wikidata.org/entity/Q1039299",
-     "cit:description" =>{ "@language"=> "en", "@value"=> {}}
+     "cit:description" =>{"@language"=> "en", "@value"=> {}},
+     "http://www.wikidata.org/prop/P31" => {}
     }
      
     JSON::LD::API.frame( JSON.parse(graph.to_jsonld),  JSON.parse(frame_json.to_json))

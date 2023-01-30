@@ -1,0 +1,57 @@
+<%= form_with(model: @spotlight, local: true, class: "ui form") do |form| %>
+<% if @spotlight.errors.any? %>
+<div id="error_explanation">
+  <h2><%= pluralize(@spotlight.errors.count, "error") %> prohibited this spotlight from being saved:</h2>
+
+  <ul>
+    <% @spotlight.errors.full_messages.each do |message| %>
+    <li><%= message %></li>
+    <% end %>
+  </ul>
+</div>
+<% end %>
+
+<div class="ui vertically divided grid fluid">
+  <div class="two column row">
+    <div class="column">
+   <p> API Endpoint <br>
+    <a href="<%= search_rdf_url(spotlight: @spotlight.id, format: :json) %>"><%= search_rdf_url(spotlight: @spotlight.id, format: :json) %></a>
+    </p>
+      <div class="field">
+        <%= form.label "Language" %>
+        <%= form.text_field :query, placeholder: "Language" %>
+      </div>
+      <div class="field"> 
+        <%= form.label "Frame"  %> 
+        <%= form.text_area :sparql, rows: 10 %>
+      </div>
+     
+
+          <!-- form.check_box "data_sources[#{t.id}]"  -->
+      <div class="actions">
+        <%= form.submit "Submit", class: 'ui button green show_loading' %>
+      </div>
+  
+    </div>
+
+
+    <div class="column">
+     <%= render partial: "spotlight_widget", locals: { spotlight: @spotlight} %>
+
+      <h3>To install widget</h3>
+      
+       <pre>
+       
+        <div class="spotlght-widget"></div>
+       
+       </pre>
+        
+
+    </div>
+
+
+    
+  </div>
+</div>
+
+<% end %>

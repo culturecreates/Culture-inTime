@@ -2,37 +2,6 @@
 
 <div class="ui special link four stackable cards spotlight-cards">
 <% spotlight_list.each do |spotlight| %>
-  <div class="ui card">
-    <a class="blurring dimmable image" href="<%= format_query(spotlight) %>">
-     <div class="ui dimmer">
-        <div class="content">
-          <div class="center">
-            <div class="ui inverted button">Add Friend</div>
-          </div>
-        </div>
-      </div>
-      <img src="<%= spotlight.image %>">
-    </a>
-    <div class="content">
-      <a class="header" href="<%= format_query(spotlight) %>"><%= spotlight.title %></a>
-      <div class="meta"><%= spotlight.subtitle %></div>
-     <br>
-      <a class="description" href="<%= format_query(spotlight) %>"><%= spotlight.description %> </a>
-  
-    </div>
-    <div class="extra content">
-      <span>
-        <i class="arrow alternate circle down outline icon"></i> <%= spotlight.location %>
-      </span>
-      <% if cookies[:user] %>
-        <span class="right floated edit">
-        <%= link_to spotlight_path(spotlight) do %>
-          <i class="edit icon"></i>
-        <% end %>
-         
-        </span>
-         <% end %>
-    </div>
-  </div>
+   <%= render partial: "/spotlights/spotlight_card", locals: { spotlight: spotlight } %>
   <% end %>
 </div>

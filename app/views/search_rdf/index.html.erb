@@ -13,7 +13,7 @@
         <div class="content">
           <div class="header"><%= entity.title %></div>
           <div class="meta">
-            <span><%= date_display(entity.date_of_first_performance) %></span>
+            <span><%= date_display(entity.date_entity) %></span>
           </div>
           <div class="description">
             <p><%= truncate strip_tags(entity.description), length: 250, seperator: /\w+/ %></p>

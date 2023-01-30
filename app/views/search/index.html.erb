@@ -13,7 +13,7 @@
         <div class="content">
           <div class="header"><%= production.label %></div>
           <div class="meta">
-            <span><%= date_display(production.date_of_first_performance) %></span>
+            <span><%= date_display(production.date_entity) %></span>
           </div>
           <div class="description">
             <p><%= truncate strip_tags(production.description), length: 250, seperator: /\w+/ %></p>
