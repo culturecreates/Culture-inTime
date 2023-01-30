@@ -1,8 +1,8 @@
 json.uri @production.entity_uri
 json.date @production.date_entity
 json.description @production.description
-json.frame @production.framed_graph
-json.graph JSON.parse(@production.graph.to_jsonld)
+json.framed_graph @production.framed_graph
+json.original_graph JSON.parse(@production.graph.to_jsonld)
 
 
 

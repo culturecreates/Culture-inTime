@@ -75,9 +75,11 @@ class Entity
 
   def layout(spotlight_id)
     @layout_id = spotlight_id
-    layout_turtle = Spotlight.find(spotlight_id).layout
+    spotlight = Spotlight.find(spotlight_id)
+    layout_turtle = spotlight.layout
     graph.from_ttl(layout_turtle, prefixes: {rdf: RDF.to_uri, cit: "<http://culture-in-time.org/ontology/>"})
- 
+
+    @spotlight_frame = spotlight.frame
   end
 
 
@@ -94,16 +96,24 @@ class Entity
   end
 
   def framed_graph
-    frame_json = {  "@context"=> {
-      "@vocab" =>"http://schema.org/",
-      "cit"=>"http://culture-in-time.org/ontology/"
-    },
-     "@explicit"=> true,
-     "cit:description" =>{"@language"=> "en", "@value"=> {}},
-     "http://www.wikidata.org/prop/P31" => {}
-    }
-     
-    JSON::LD::API.frame( JSON.parse(graph.to_jsonld),  JSON.parse(frame_json.to_json))
+    # frame_json = {  "@context"=> {
+    #   "@vocab" =>"http://schema.org/",
+    #   "cit"=>"http://culture-in-time.org/ontology/"
+    # },
+    #  "@explicit"=> true,
+    #  "cit:description" =>{"@language"=> "en", "@value"=> {}},
+    #  "http://www.wikidata.org/prop/P31" => {}
+    # }
+    begin
+      frame_json = JSON.parse(@spotlight_frame)
+    rescue => exception
+      Rails.logger.error exception
+    end
+      
+    if frame_json.class == Hash
+      puts "framing......"
+     JSON::LD::API.frame( JSON.parse(graph.to_jsonld), frame_json)
+    end
   end
 
   # Loads details of a URI in graph format
