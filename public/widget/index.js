@@ -1,11 +1,7 @@
-<h3> Spotlight Widget</h3>
 
-<div class="spotlight-widget"></div>
-
-<script>
 
   const widgetDiv = document.querySelector(".spotlight-widget");
-  const query = "<%= search_rdf_url(spotlight: @spotlight.id, format: :json, limit: 5, locale:@spotlight.language) %>"
+  const query = "<%= search_rdf_url(spotlight: @spotlight.id, format: :json, limit:5) %>"
 
   async function loadSpotlight() {
     const res = await fetch(query);
@@ -24,12 +20,14 @@
                     entity.description;
       const li = document.createElement("li");
       ul.appendChild(li);
+      // const im = document.createElement("img");
+      // im.src = entity.image;
+    
       li.innerHTML=`<img src="${entity.image}"><div class="list-item"><div class="item-title">${entity.title}</div><div class="item-description">${trimmedString}</div></div>`;
+      // li.appendChild(im);
+
+    
+     
     });
      widgetDiv.appendChild(ul);
 });
-</script>
-
-<link href="/widget/index.css" rel="stylesheet">
-
-

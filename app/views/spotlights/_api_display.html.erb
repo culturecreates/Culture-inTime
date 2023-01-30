@@ -14,20 +14,19 @@
 <div class="ui vertically divided grid fluid">
   <div class="two column row">
     <div class="column">
-   <p> API Endpoint <br>
-    <a href="<%= search_rdf_url(spotlight: @spotlight.id, format: :json) %>"><%= search_rdf_url(spotlight: @spotlight.id, format: :json) %></a>
-    </p>
+    <div class="field">
+   <label> API Endpoint </label>
+    <input type="text" value="<%= search_rdf_url(spotlight: @spotlight.id, format: :json, locale: "de") %>">
+    </div>
       <div class="field">
-        <%= form.label "Language" %>
-        <%= form.text_field :query, placeholder: "Language" %>
+        <%= form.label :language %>
+        <%= form.text_field :language, placeholder: "Language" %>
       </div>
       <div class="field"> 
         <%= form.label "Frame"  %> 
-        <%= form.text_area :sparql, rows: 10 %>
+        <%= form.text_area :frame, rows: 10 %>
       </div>
      
-
-          <!-- form.check_box "data_sources[#{t.id}]"  -->
       <div class="actions">
         <%= form.submit "Submit", class: 'ui button green show_loading' %>
       </div>
@@ -39,12 +38,19 @@
      <%= render partial: "spotlight_widget", locals: { spotlight: @spotlight} %>
 
       <h3>To install widget</h3>
-      
-       <pre>
-       
-        <div class="spotlght-widget"></div>
-       
-       </pre>
+      <p>Copy/paste the following into your website.
+<pre><p><%="<div 
+class='spotlight-widget' 
+data-spotlight='#{@spotlight.id}' 
+data-limit=5 
+data-locale='#{@spotlight.language}' 
+data-endpoint='#{root_url[0..-4]}'>
+</div>"%>
+<br>
+<%="<script defer='defer' src='#{root_url[0..-4]}/widget/index.js'></script>"%>
+<%="<link href='#{root_url[0..-4]}/widget/index.css' rel='stylesheet'>"%>
+</p>
+</pre>
         
 
     </div>

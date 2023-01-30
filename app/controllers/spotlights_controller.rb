@@ -88,6 +88,6 @@ class SpotlightsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def spotlight_params
-      params.require(:spotlight).permit(:layout, :sparql, :title, :subtitle, :image, :description, :location, :start_date, :end_date, :query, data_source_ids: [] )
+      params.require(:spotlight).permit(:layout, :sparql, :title, :subtitle, :image, :description, :location, :start_date, :end_date, :query, :language, :frame, data_source_ids: [])
     end
 end
