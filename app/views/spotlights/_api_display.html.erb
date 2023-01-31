@@ -16,7 +16,7 @@
     <div class="column">
     <div class="field">
    <label> API Endpoint </label>
-    <input type="text" value="<%= search_rdf_url(spotlight: @spotlight.id, format: :json, locale: "de") %>">
+    <input type="text" value="<%= search_rdf_url(spotlight: @spotlight.id, format: :json, locale: @spotlight.language || "en") %>">
     </div>
       <div class="field">
         <%= form.label :language %>
@@ -43,7 +43,7 @@
 class='spotlight-widget' 
 data-spotlight='#{@spotlight.id}' 
 data-limit=5 
-data-locale='#{@spotlight.language}' 
+data-locale='#{@spotlight.language || "en"}' 
 data-endpoint='#{root_url[0..-4]}'>
 </div>"%>
 <br>
