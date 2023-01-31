@@ -96,3 +96,5 @@ gem "net-http"
 gem "net-smtp"
 gem "net-imap"
 gem "uri", "0.10.0"
+
+gem 'rack-cors'
