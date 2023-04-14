@@ -36,12 +36,11 @@
 
 <% else %>
 
-
-   
-
   <div class="meta">
-    <% JSON.parse(@production.properties_with_labels)["results"]["bindings"].each do |line| %>
-    <%= render partial: 'production_details_lines', locals: { line: line, layout: false }%>
-    <% end %>
+   <% @production.entity_properties.first.each do |prop, value| %>
+     <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } unless prop == "@id"%>
+   <% end %>
+
+  
   </div>
 <% end %>

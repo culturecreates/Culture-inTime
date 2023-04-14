@@ -34,4 +34,13 @@ module ProductionsHelper
     Time.zone = 'Eastern Time (US & Canada)'
     I18n.l(date_time.in_time_zone, format: :long)
   end
+
+  def display_label(id)
+    query = RDF::Query.new do
+      pattern [RDF::URI(id), :p, :o]
+    end
+    @production.graph.query(query).first.to_h[:o] || id
+
+
+  end
 end

@@ -158,10 +158,50 @@ class Entity
     graph
   end
 
+
+  def load_graph
+    sparql = <<~SPARQL
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+      PREFIX onto: <http://www.ontotext.com/>
+      CONSTRUCT {
+        ?s ?p ?o  .
+        <<?s ?p ?o>> ?a ?b .
+        ?o rdfs:label ?obj_label .
+        ?p rdfs:label ?prop_label .
+      }
+      WHERE {
+        values ?s { <#{@entity_uri}> }
+        ?s ?p ?o  .
+        OPTIONAL {
+          <<?s ?p ?o>> ?a ?b .
+        }
+        filter(contains(str(?p),"/prop/direct/"))
+
+        OPTIONAL {
+          ?o rdfs:label ?obj_label .
+          filter(lang(?obj_label) = "#{I18n.locale.to_s}")
+        }
+        OPTIONAL {
+          ?p rdfs:label ?prop_label .
+          filter(lang(?prop_label) = "#{I18n.locale.to_s}")
+        }
+      }
+      SPARQL
+    response = RDFGraph.construct_turtle_star(sparql)
+    if response[:code] == 200
+      graph = RDF::Graph.new do |graph|
+        RDF::Turtle::Reader.new(response[:message], rdfstar: true) {|reader| graph << reader}
+      end
+    end
+    graph
+  end
+
+
+
   # Loads details of a URI from WIKIDATA in graph format
   # Input: Production URI string
   # Output: RDF Graph
-  def load_graph
+  def load_graph_old
     graph = RDF::Graph.new
     sparql = <<~SPARQL
       PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
@@ -210,6 +250,13 @@ class Entity
       graph << JSON::LD::API.toRdf(response[:message])
     end
     graph
+  end
+
+
+  def entity_properties
+    # to do: pass in uri @id to pass to frame
+    JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == "http://www.wikidata.org/entity/Q110835489"}
+  
   end
 
   def properties_with_labels

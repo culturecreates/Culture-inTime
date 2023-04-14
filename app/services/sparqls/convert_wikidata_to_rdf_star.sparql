@@ -1,0 +1,31 @@
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+
+insert {
+    graph  <graph_placeholder> {
+    <<?s ?wdt ?o>> ?pq ?qualifier .
+    <<?s ?wdt ?o>> prov:wasDerivedFrom ?reference .
+    }
+} 
+where {
+    graph <graph_placeholder> {
+        ?s ?wdt ?o .
+        filter(contains(str(?wdt),"/prop/direct/"))
+
+        # switch predicate prefix from wdt: to p:
+        bind(URI(concat("http://www.wikidata.org/prop/",strafter(str(?wdt),"/prop/direct/"))) as ?p )
+        ?s ?p ?statement .
+
+        # qualifiers
+        OPTIONAL {
+            ?statement ?pq ?qualifier .
+            filter(contains(str(?pq),"/prop/qualifier/"))
+        }
+
+        # references
+        OPTIONAL {
+            ?statement prov:wasDerivedFrom ?reference .
+        }
+       
+    }
+}

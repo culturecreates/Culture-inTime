@@ -68,7 +68,10 @@ class DataSource < ApplicationRecord
   end
 
   def apply_upper_ontology
-    BatchUpdateJob.perform_now(generate_upper_ontology_sparql)
+    BatchUpdateJob.perform_now(apply_upper_ontology_sparql)
+
+    # TODO: remove later once graphs are all converted to rdr star
+    BatchUpdateJob.perform_now(convert_wikidata_to_rdf_star_sparql)
   end
 
   def sample_graph
@@ -97,7 +100,7 @@ class DataSource < ApplicationRecord
     ])
   end
 
-  def generate_upper_ontology_sparql
+  def apply_upper_ontology_sparql
     SparqlLoader.load('apply_upper_ontology', [
       'graph_placeholder', graph_name,
       'type_uri_placeholder' , self.type_uri,
@@ -110,8 +113,14 @@ class DataSource < ApplicationRecord
     ])
   end
 
-  def generate_fix_wikidata_labels_sparql
+  def fix_wikidata_property_labels_sparql
     SparqlLoader.load('fix_wikidata_property_labels', [
+      'graph_placeholder', graph_name
+    ])
+  end
+
+  def convert_wikidata_to_rdf_star_sparql
+    SparqlLoader.load('convert_wikidata_to_rdf_star', [
       'graph_placeholder', graph_name
     ])
   end

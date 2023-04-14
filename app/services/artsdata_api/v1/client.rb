@@ -61,6 +61,19 @@ module ArtsdataApi
         { code: data.status, message: msg }
       end
 
+      # Send SPARQL construct query to endpoint
+      # Returns TURTLE
+      def execute_construct_turtle_star_sparql(sparql)
+        @logger.info "sparql: #{sparql.truncate(8000).squish}"
+        data = request_turtle_star(
+          http_method: :post,
+          endpoint: "/repositories/#{@graph_repository}",
+          params: { 'query': escape_sparql(sparql) }
+        )
+
+        { code: data.status, message: data.body }
+      end
+
       # Send update SPARQL to '/statements' endpoint
       def execute_update_sparql(sparql)
         @logger.info "sparql update: #{sparql.truncate(8000).squish}"
@@ -132,10 +145,10 @@ module ArtsdataApi
         client.public_send(http_method, endpoint, params)
       end
 
-      def request_turtle(http_method:, endpoint:, params: {})
-        client.headers['Accept'] = 'text/turtle'
-        response = client.public_send(http_method, endpoint, params)
-        response.body
+      def request_turtle_star(http_method:, endpoint:, params: {})
+        client.headers['Accept'] = 'text/x-turtlestar'
+        client.headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
+        client.public_send(http_method, endpoint, params)
       end
 
       # Use with graph-store API

@@ -1,0 +1,20 @@
+<h2 title='<%= prop %>'>
+    <%= display_label(prop) %>    
+</h2>
+
+<% value.each do |statement| %>
+
+
+<% if statement["@id"] %>
+
+  <a href='<%= statement["@id"] %>'>
+    <%= display_label(statement["@id"]) %> 
+  </a> 
+  <% if statement["@annotation"] %>
+    <br><%= statement["@annotation"]%> 
+  <% end %>
+<% else %>
+<%= statement %>
+<% end %>
+</p>
+<% end %>

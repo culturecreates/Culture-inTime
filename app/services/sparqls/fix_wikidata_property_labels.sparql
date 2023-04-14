@@ -27,11 +27,10 @@ where {
                 }
                 filter(!bound(?label))
           
-                filter(contains(str(?p),"prop/statement/P") || contains(str(?p),"prop/qualifier/P") )
+              filter(contains(str(?p),"prop/statement/P") || contains(str(?p),"prop/qualifier/P") )
               filter(!bound(?label))
             bind(URI(concat("http://www.wikidata.org/entity/P",strafter(str(?p),"/P"))) as ?uri)
             
-            }
         }
     }
 }
