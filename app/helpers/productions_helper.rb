@@ -51,8 +51,10 @@ module ProductionsHelper
   def display_literal(literal)
     if literal["@language"]
       "#{literal['@value'].capitalize} @#{literal['@language']}" 
-    else
+    elsif  literal["@value"]
       literal["@value"]
+    else
+      literal
     end
   end
 

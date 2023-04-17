@@ -10,7 +10,6 @@
     <% else %>
       <a> <%= display_literal(statement) %></a><br>
     <% end %>
-
     <% if statement["@annotation"] %>
       <%= render partial: "production_annotation" , locals: {annotations: statement["@annotation"] }%>
     <% end %>

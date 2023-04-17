@@ -12,7 +12,7 @@
     <div class="meta">
     <% display_props = @production.entity_properties.first.each %>
       <% display_props.each do |prop, value| %>
-        <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } if prop.start_with? "http://www.wikidata"%>
+        <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } if (prop.start_with?("http://www.wikidata") && !prop.start_with?("http://www.wikidata.org/prop/direct-normalized")) %>
       <% end %>
     </div>
   </div>
