@@ -3,12 +3,13 @@
 </h2>
 
 <% value.each do |statement| %>
+
   <% if statement["@id"] %>
-    <a href='<%= statement["@id"] %>'>
+    <a href='show?uri=<%= statement["@id"] %>'>
       <%= display_label(statement["@id"]) %> 
     </a> 
   <% else %>
-   <a> <%= display_literal(statement) %></a>
+   <a> <%= display_literal(statement) %></a><br>
   <% end %>
 
   <% if statement["@annotation"] %>

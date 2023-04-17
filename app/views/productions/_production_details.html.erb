@@ -1,7 +1,6 @@
 <div class="ui divider"></div>
 
-<% @prop = '' #avoids repeating the property title when there is a list %>
-
+<% return unless @production.graph.count > 0 %>
 
 <% if @production.layout_id  %>
   <div class="ui top mini attached tabular menu">
@@ -9,28 +8,19 @@
     <div class="propAll item">All</div>
   </div>
   <div class="propSpotlight ui bottom attached  active tab segment">
-   <%
-=begin%>
- <code><%= @production.graph.to_turtle %> </code> 
-<%
-=end%>
+
     <div class="meta">
-      <% JSON.parse(@production.properties_with_labels_layout)["results"]["bindings"].each do |line| %>
-      <%= render partial: 'production_details_lines', locals: { line: line, layout: true  }%>
+      <% @production.spotlight_properties.first.each do |prop, value| %>
+        <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } unless prop == "@id" ||  prop == "@type"%>
       <% end %>
     </div>
   </div>
   <div class="propAll ui bottom attached  <%= "active" if !@production.layout_id %> tab segment">
-   <%
-=begin%>
- <code><%= JSON.parse(@production.properties_with_labels) %> </code> 
-<%
-=end%>
-    <div class="meta">
    
-      <% JSON.parse(@production.properties_with_labels)["results"]["bindings"].each do |line| %>
-        <%= render partial: 'production_details_lines', locals: { line: line, layout: false }%>
-      <% end %>
+    <div class="meta">
+    <% @production.entity_properties.first.each do |prop, value| %>
+      <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } unless prop == "@id" ||  prop == "@type"%>
+    <% end %>
     </div>
   </div>
 
@@ -38,7 +28,7 @@
 
   <div class="meta">
    <% @production.entity_properties.first.each do |prop, value| %>
-     <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } unless prop == "@id"%>
+     <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } unless prop == "@id" ||  prop == "@type"%>
    <% end %>
 
   

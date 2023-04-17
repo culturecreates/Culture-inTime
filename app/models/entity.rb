@@ -76,10 +76,9 @@ class Entity
   def layout(spotlight_id)
     @layout_id = spotlight_id
     spotlight = Spotlight.find(spotlight_id)
+    @spotlight_frame = spotlight.frame
     layout_turtle = spotlight.layout
     graph.from_ttl(layout_turtle, prefixes: {rdf: RDF.to_uri, cit: "<http://culture-in-time.org/ontology/>"})
-
-    @spotlight_frame = spotlight.frame
   end
 
 
@@ -116,47 +115,6 @@ class Entity
     end
   end
 
-  # Loads details of a URI in graph format
-  # Input: Production URI string
-  # Output: RDF Graph
-  def load_graph_non_wikidata
-    graph = RDF::Graph.new
-    sparql = <<~SPARQL
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
-    PREFIX onto: <http://www.ontotext.com/>
-    
-    CONSTRUCT {
-      <#{@entity_uri}> ?p ?o  .
-      ?p rdfs:label ?label .
-      ?o rdfs:label ?o_label . 
-      } 
-    FROM onto:disable-sameAs
-    WHERE { 
-      <#{@entity_uri}> ?p ?o.
- 
-      bind(URI(concat("http://www.wikidata.org/prop/direct/P",strafter(str(?p),"/P"))) as ?prop_dir  )
-      OPTIONAL {  ?prop_dir rdfs:label ?label_en . filter(lang(?label_en) = "en") }
-      OPTIONAL {  ?prop_dir rdfs:label ?label_fr . filter(lang(?label_fr) = "fr") }
-      OPTIONAL {  ?prop_dir rdfs:label ?label_de . filter(lang(?label_de) = "de") }
-      OPTIONAL {  ?prop_dir rdfs:label ?label_no_language . filter(lang(?label_no_language) = "") }
-
-      BIND(COALESCE(?label_#{I18n.locale.to_s},?label_en, ?label_fr ,?label_de, ?label_no_language ) as ?label)
-
-      OPTIONAL { ?o rdfs:label ?o_label_en . filter(lang(?o_label_en) = "en") }
-      OPTIONAL { ?o rdfs:label ?o_label_fr . filter(lang(?o_label_fr) = "fr") }
-      OPTIONAL { ?o rdfs:label ?o_label_de . filter(lang(?o_label_de) = "de") }
-      OPTIONAL { ?o rdfs:label ?o_label_no_language . filter(lang(?o_label_no_language) = "") }
-
-      BIND(COALESCE(?o_label_#{I18n.locale.to_s},?o_label_en, ?o_label_fr ,?o_label_de, ?o_label_no_language ) as ?o_label)
-    }
-    SPARQL
-    
-    response = RDFGraph.construct(sparql)
-    if response[:code] == 200
-      graph << JSON::LD::API.toRdf(response[:message])
-    end
-    graph
-  end
 
 
   def load_graph
@@ -178,14 +136,14 @@ class Entity
       WHERE {
         values ?s { <#{@entity_uri}> }
         ?s ?p ?o  .
-        filter(contains(str(?p),"/prop/direct/"))
+        filter(!contains(str(?p),"/prop/P"))
         OPTIONAL {
           ?o rdfs:label ?obj_label .
           filter(lang(?obj_label) = "#{I18n.locale.to_s}")
         }
         OPTIONAL {
           ?p rdfs:label ?prop_label .
-          filter(lang(?prop_label) = "#{I18n.locale.to_s}")
+          filter(lang(?prop_label) = "#{I18n.locale.to_s}" || "")
         }
 
         OPTIONAL {
@@ -229,131 +187,79 @@ class Entity
   end
 
 
-
-  # Loads details of a URI from WIKIDATA in graph format
-  # Input: Production URI string
-  # Output: RDF Graph
-  def load_graph_old
-    graph = RDF::Graph.new
-    sparql = <<~SPARQL
-      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
-      PREFIX onto: <http://www.ontotext.com/>
-      CONSTRUCT {
-          ?s ?p ?stat .
-          ?s ?cit_prop ?cit_obj .
-          ?stat ?stat_prop ?stat_obj .
-          ?stat ?qual_prop ?qual_obj .
-          ?qual_prop rdfs:label ?qual_label .
-          ?stat_obj rdfs:label ?obj_label .
-          ?stat_prop rdfs:label ?prop_label .
-      }  
-      #select  ?s  ?p ?stat   ?stat_prop ?stat_obj ?prop_label  ?obj_label ?qual_obj  ?qual_label
-      WHERE {
-        {
-
-        }
-          values ?s { <#{@entity_uri}> }
-          ?s ?cit_prop ?cit_obj .
-          filter(contains(str(?cit_prop),"http://culture-in-time.org"))
-          ?s ?p ?stat .
-          ?stat ?stat_prop ?stat_obj .
-          filter(contains(str(?p),"/prop/P")) # only follow down /prop/ and not /prop/direct/
-          filter(contains(str(?stat_prop),"/prop/statement/"))
-          OPTIONAL {
-              ?stat ?qual_prop ?qual_obj 
-              filter(contains(str(?qual_prop),"/prop/qualifier/"))
-              ?qual_prop rdfs:label ?qual_label .
-              filter(lang(?qual_label) = "#{I18n.locale.to_s}")
-          }
-          OPTIONAL {
-              ?stat_obj rdfs:label ?obj_label .
-              filter(lang(?obj_label) = "#{I18n.locale.to_s}")
-          }
-          OPTIONAL {
-              bind(URI(concat("http://www.wikidata.org/prop/direct/P",strafter(str(?stat_prop),"/P"))) as ?prop_dir )
-              ?prop_dir rdfs:label ?prop_label .
-              filter(lang(?prop_label) = "#{I18n.locale.to_s}")
-          }
-      }
-      SPARQL
-    
-    response = RDFGraph.construct(sparql)
-    if response[:code] == 200
-      graph << JSON::LD::API.toRdf(response[:message])
-    end
-    graph
-  end
-
-
   def entity_properties
     # todo: use sparql or framing to avoid looping  
     JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == @entity_uri}
   
   end
 
-  def properties_with_labels
-    query = SPARQL.parse(<<~SPARQL)
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX cit:  <http://culture-in-time.org/ontology/>
-    select  distinct ?stat_prop ?stat_obj ?prop_label  ?obj_label ?qual_obj  ?qual_label
-    WHERE {
-      <#{@entity_uri}> ?p ?stat .
-        ?stat ?stat_prop ?stat_obj .
-        filter(contains(str(?p),"/prop/P")) # only follow down /prop/ and not /prop/direct/
-        filter(contains(str(?stat_prop),"/prop/statement/"))  # only follow statements
-        filter(!contains(str(?stat_obj),"http://www.wikidata.org/value/")) # Unneeded statement for dateTime
-        OPTIONAL {
-            ?stat ?qual_prop ?qual_obj 
-            filter(contains(str(?qual_prop),"/prop/qualifier/"))  # only follow qualifiers
-            ?qual_prop rdfs:label ?qual_label . 
-            filter(!contains(str(?qual_obj),"http://www.wikidata.org/value/")) # Unneeded statement for dateTime
-        }
-        
-        optional { ?stat_prop rdfs:label ?prop_label . }
-        optional {  ?stat_obj rdfs:label ?obj_label . }
-  
-      bind(LCASE(?prop_label) as ?label_lowercase)
-    
-    } 
-    order by ?label_lowercase   ?obj_label ?qual_prop # to group properties together
-    SPARQL
-
-    @properties_with_labels ||= query.execute(graph).to_json
-    
+  def spotlight_properties
+    JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == @entity_uri}
   end
 
-  def properties_with_labels_layout
-    query = SPARQL.parse(<<~SPARQL)
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX cit:  <http://culture-in-time.org/ontology/>
-    select  distinct ?stat_prop ?order ?stat_obj ?prop_label  ?obj_label ?qual_obj  ?qual_label
-    WHERE {
-      <#{@entity_uri}> ?p ?stat .
-        ?stat ?stat_prop ?stat_obj .
-        ?stat_prop cit:order ?order .
-        filter(contains(str(?p),"/prop/P")) # only follow down /prop/ and not /prop/direct/
-        filter(contains(str(?stat_prop),"/prop/statement/"))  # only follow statements
-        filter(!contains(str(?stat_obj),"http://www.wikidata.org/value/")) # Unneeded statement for dateTime
-        OPTIONAL {
-            ?stat ?qual_prop ?qual_obj 
-            filter(contains(str(?qual_prop),"/prop/qualifier/"))  # only follow qualifiers
-            ?qual_prop rdfs:label ?qual_label . 
-            ?qual_prop cit:order ?order2 .
-        }
+  # def properties_with_labels
+  #   query = SPARQL.parse(<<~SPARQL)
+  #   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  #   PREFIX cit:  <http://culture-in-time.org/ontology/>
+  #   select  distinct ?stat_prop ?stat_obj ?prop_label  ?obj_label ?qual_obj  ?qual_label
+  #   WHERE {
+  #     <#{@entity_uri}> ?p ?stat .
+  #       ?stat ?stat_prop ?stat_obj .
+  #       filter(contains(str(?p),"/prop/P")) # only follow down /prop/ and not /prop/direct/
+  #       filter(contains(str(?stat_prop),"/prop/statement/"))  # only follow statements
+  #       filter(!contains(str(?stat_obj),"http://www.wikidata.org/value/")) # Unneeded statement for dateTime
+  #       OPTIONAL {
+  #           ?stat ?qual_prop ?qual_obj 
+  #           filter(contains(str(?qual_prop),"/prop/qualifier/"))  # only follow qualifiers
+  #           ?qual_prop rdfs:label ?qual_label . 
+  #           filter(!contains(str(?qual_obj),"http://www.wikidata.org/value/")) # Unneeded statement for dateTime
+  #       }
         
-        optional { ?stat_prop rdfs:label ?prop_label . }
-        optional {  ?stat_obj rdfs:label ?obj_label . }
+  #       optional { ?stat_prop rdfs:label ?prop_label . }
+  #       optional {  ?stat_obj rdfs:label ?obj_label . }
   
-      bind(LCASE(?prop_label) as ?label_lowercase)
+  #     bind(LCASE(?prop_label) as ?label_lowercase)
     
-    } 
-    
-    order by ?order   ?obj_label 
-    SPARQL
+  #   } 
+  #   order by ?label_lowercase   ?obj_label ?qual_prop # to group properties together
+  #   SPARQL
 
-    @properties_with_labels_layout ||= query.execute(graph).to_json
+  #   @properties_with_labels ||= query.execute(graph).to_json
     
-  end
+  # end
+
+  # def properties_with_labels_layout
+  #   query = SPARQL.parse(<<~SPARQL)
+  #   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+  #   PREFIX cit:  <http://culture-in-time.org/ontology/>
+  #   select  distinct ?stat_prop ?order ?stat_obj ?prop_label  ?obj_label ?qual_obj  ?qual_label
+  #   WHERE {
+  #     <#{@entity_uri}> ?p ?stat .
+  #       ?stat ?stat_prop ?stat_obj .
+  #       ?stat_prop cit:order ?order .
+  #       filter(contains(str(?p),"/prop/P")) # only follow down /prop/ and not /prop/direct/
+  #       filter(contains(str(?stat_prop),"/prop/statement/"))  # only follow statements
+  #       filter(!contains(str(?stat_obj),"http://www.wikidata.org/value/")) # Unneeded statement for dateTime
+  #       OPTIONAL {
+  #           ?stat ?qual_prop ?qual_obj 
+  #           filter(contains(str(?qual_prop),"/prop/qualifier/"))  # only follow qualifiers
+  #           ?qual_prop rdfs:label ?qual_label . 
+  #           ?qual_prop cit:order ?order2 .
+  #       }
+        
+  #       optional { ?stat_prop rdfs:label ?prop_label . }
+  #       optional {  ?stat_obj rdfs:label ?obj_label . }
+  
+  #     bind(LCASE(?prop_label) as ?label_lowercase)
+    
+  #   } 
+    
+  #   order by ?order   ?obj_label 
+  #   SPARQL
+
+  #   @properties_with_labels_layout ||= query.execute(graph).to_json
+    
+  # end
 
   def upper_ontology_query
     cit = RDF::Vocabulary.new("http://culture-in-time.org/ontology/")
