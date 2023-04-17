@@ -75,6 +75,46 @@ class DataSource < ApplicationRecord
     BatchUpdateJob.perform_now(convert_wikidata_to_rdf_star_sparql)
   end
 
+  def load_secondary
+     # Dereference all objects of any type
+
+    sparql = <<~SPARQL
+      select distinct ?uri 
+      where {
+        ?s a <#{self.type_uri}> .
+        ?s ?p ?uri  .
+        ?uri a <http://wikiba.se/ontology#Item> .
+        ?uri a ?type .
+        MINUS {
+          ?uri <http://www.wikidata.org/prop/direct/P31> ?sometype .
+        }
+      }
+    SPARQL
+
+    @response = RDFGraph.execute(sparql)
+
+    if @response[:code] != 200
+      self.errors.add(:base, "#{@response[:message]}")
+      return false
+    end
+
+    data = @response[:message]
+
+    if data.first.blank? 
+      self.errors.add(:base, "No results.", message: "The SPARQL has not returned any results.")
+      return false 
+    end
+    @uris = data.pluck("uri").pluck("value")
+
+    # This limit is set in the GraphDB respository as the "Limit query results"
+    if @uris.count >= 100000
+      self.errors.add(:base, "Exceeded limit of 100,000 URIs. Please break query into smaller groups.")
+      return false 
+    end
+
+    SetupSecondaryContentNegotiationJob.perform_later(@uris, graph_name)
+  end
+
   def sample_graph
     return @sample_graph
   end
