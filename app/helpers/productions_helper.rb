@@ -37,11 +37,12 @@ module ProductionsHelper
 
   def display_label(id)
     query = RDF::Query.new do
-      pattern [RDF::URI(id), :p, :o]
+      pattern [RDF::URI(id), RDF::URI("http://www.w3.org/2000/01/rdf-schema#label"), :label]
     end
+    query << RDF::Query::Pattern.new(RDF::URI(id), RDF::URI("http://schema.org/name"), :name, optional: true)
     solution = @production.graph.query(query)
     if solution.count > 0
-      return solution.first[:o].value.capitalize
+      return solution.first[:label].value.capitalize
     else 
       return id
     end

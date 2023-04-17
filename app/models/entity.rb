@@ -60,16 +60,7 @@ class Entity
   # Class method that returns full graph of individual entity
   def self.find(entity_uri)
     entity = Entity.new(entity_uri: entity_uri)
-
-    # load upper ontology into entity
-    solution =  entity.upper_ontology_query.execute(entity.graph).first
-    if solution 
-      entity.title = solution.title if solution.bound?(:title)
-      entity.description = solution.description.value if solution.bound?(:description)
-      entity.date_entity = solution.startDate.value if solution.bound?(:startDate)
-      entity.location_label = solution.placeName if  solution.bound?(:placeName)
-      entity.main_image = solution.image if  solution.bound?(:image)
-    end
+    entity.graph
     entity
   end
 
@@ -113,6 +104,23 @@ class Entity
       puts "framing......"
      JSON::LD::API.frame( JSON.parse(graph.to_jsonld), frame_json)
     end
+  end
+
+
+  def entity_properties
+    # todo: use sparql or framing to avoid looping  
+    JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == @entity_uri}
+  
+  end
+
+  def spotlight_properties
+    frame_file = "app/services/frames/entity.jsonld"
+    frame = JSON.parse(File.read(frame_file))
+    input = JSON.parse(graph.dump(:jsonld))
+
+    JSON::LD::API.frame( input, frame)
+
+    #JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == @entity_uri}
   end
 
 
@@ -179,23 +187,16 @@ class Entity
       SPARQL
     response = RDFGraph.construct_turtle_star(sparql)
     if response[:code] == 200
-      graph = RDF::Graph.new do |graph|
+      RDF::Graph.new do |graph|
         RDF::Turtle::Reader.new(response[:message], rdfstar: true) {|reader| graph << reader}
       end
+    else
+      RDF::Graph.new
     end
-    graph
+    
   end
 
 
-  def entity_properties
-    # todo: use sparql or framing to avoid looping  
-    JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == @entity_uri}
-  
-  end
-
-  def spotlight_properties
-    JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == @entity_uri}
-  end
 
   # def properties_with_labels
   #   query = SPARQL.parse(<<~SPARQL)
@@ -261,18 +262,20 @@ class Entity
     
   # end
 
-  def upper_ontology_query
-    cit = RDF::Vocabulary.new("http://culture-in-time.org/ontology/")
-    query = RDF::Query.new({
-      production: {
-        cit.title => :title,
-      }
-    }, **{})
-  
-    query << RDF::Query::Pattern.new(:production, cit.placeName, :placeName, optional: true)
-    query << RDF::Query::Pattern.new(:production, cit.image, :image, optional: true)
-    query << RDF::Query::Pattern.new(:production, cit.description, :description, optional: true)
-    query << RDF::Query::Pattern.new(:production, cit.startDate, :startDate, optional: true)
-    query
-  end
+  # def upper_ontology_query
+  #   cit = RDF::Vocabulary.new("http://culture-in-time.org/ontology/")
+  #   schema = RDF::Vocabulary.new("http://schema.org/")
+  #   query = RDF::Query.new({
+  #     production: {
+  #       :a => :b
+  #     }
+  #   }, **{})
+  #   query << RDF::Query::Pattern.new(:production, cit.title, :title, optional: true)
+  #   query << RDF::Query::Pattern.new(:production, schema.name, :title_schema, optional: true)
+  #   query << RDF::Query::Pattern.new(:production, cit.placeName, :placeName, optional: true)
+  #   query << RDF::Query::Pattern.new(:production, cit.image, :image, optional: true)
+  #   query << RDF::Query::Pattern.new(:production, cit.description, :description, optional: true)
+  #   query << RDF::Query::Pattern.new(:production, cit.startDate, :startDate, optional: true)
+  #   query
+  # end
 end

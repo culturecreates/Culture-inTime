@@ -10,7 +10,8 @@
   <div class="propSpotlight ui bottom attached  active tab segment">
 
     <div class="meta">
-      <% @production.spotlight_properties.first.each do |prop, value| %>
+    <%= display_props = @production.spotlight_properties %>
+      <% display_props.each do |prop, value| %>
         <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } unless prop == "@id" ||  prop == "@type"%>
       <% end %>
     </div>
