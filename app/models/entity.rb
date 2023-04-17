@@ -118,7 +118,7 @@ class Entity
     frame = JSON.parse(File.read(frame_file))
     input = JSON.parse(graph.dump(:jsonld))
 
-    JSON::LD::API.frame( input, frame)
+    JSON::LD::API.frame( input, frame, rdfstar: true)
 
     #JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == @entity_uri}
   end

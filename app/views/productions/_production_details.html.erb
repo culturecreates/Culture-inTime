@@ -10,9 +10,9 @@
   <div class="propSpotlight ui bottom attached  active tab segment">
 
     <div class="meta">
-    <%= display_props = @production.spotlight_properties %>
+    <% display_props = @production.entity_properties.first.each %>
       <% display_props.each do |prop, value| %>
-        <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } unless prop == "@id" ||  prop == "@type"%>
+        <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } if prop.start_with? "http://www.wikidata"%>
       <% end %>
     </div>
   </div>
@@ -20,7 +20,7 @@
    
     <div class="meta">
     <% @production.entity_properties.first.each do |prop, value| %>
-      <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } unless prop == "@id" %>
+      <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value }  %>
     <% end %>
     </div>
   </div>
@@ -29,7 +29,7 @@
 
   <div class="meta">
    <% @production.entity_properties.first.each do |prop, value| %>
-     <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } unless prop == "@id" ||  prop == "@type"%>
+     <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value }  if prop.start_with? "http://www.wikidata" %>
    <% end %>
 
   

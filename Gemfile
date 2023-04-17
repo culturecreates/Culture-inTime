@@ -82,8 +82,8 @@ gem 'httparty'
 gem 'jquery-rails'
 
 
-gem 'rdf', '~> 3.1.7'
-gem 'json-ld', '~> 3.1.4'
+gem 'rdf', '~> 3.2'
+gem 'json-ld', '~> 3.2.4'
 gem 'sparql', '~> 3.1.3'
 gem 'nokogiri'
 gem 'rdf-turtle'

@@ -3,10 +3,9 @@
 </h2>
 <% if value.class == Array %>
   <% value.each do |statement| %>
-
     <% if statement["@id"] %>
       <a href='show?uri=<%= statement["@id"] %>'>
-        <%= display_label(statement["@id"]) %> 
+        <%= display_label(statement["@id"]) %> <br>
       </a> 
     <% else %>
       <a> <%= display_literal(statement) %></a><br>
@@ -17,6 +16,6 @@
     <% end %>
   <% end %>
 <% else %>
-  <%= value %>
+  <%= value %><br>
 <% end %>
 
