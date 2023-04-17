@@ -19,7 +19,7 @@ where {
         # subquery to get all Wikidata properties that need labels  
         select distinct ?uri ?p
         where {
-            values ?object_type { owl:ObjectProperty owl:DatatypeProperty}
+            values ?object_type { owl:ObjectProperty owl:DatatypeProperty  <http://wikiba.se/ontology#Reference>}
             ?p a ?object_type .
             ?sub ?p ?obj .  # Is being used
                 OPTIONAL {
@@ -27,7 +27,7 @@ where {
                 }
                 filter(!bound(?label))
           
-              filter(contains(str(?p),"prop/statement/P") || contains(str(?p),"prop/qualifier/P") )
+              filter(contains(str(?p),"prop/direct/P") || contains(str(?p),"prop/qualifier/P") || contains(str(?p),"prop/reference/P"))
               filter(!bound(?label))
             bind(URI(concat("http://www.wikidata.org/entity/P",strafter(str(?p),"/P"))) as ?uri)
             

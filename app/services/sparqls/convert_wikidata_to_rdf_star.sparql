@@ -14,7 +14,9 @@ where {
 
         # switch predicate prefix from wdt: to p:
         bind(URI(concat("http://www.wikidata.org/prop/",strafter(str(?wdt),"/prop/direct/"))) as ?p )
+        bind(URI(concat("http://www.wikidata.org/prop/statement/",strafter(str(?wdt),"/prop/direct/"))) as ?ps )
         ?s ?p ?statement .
+        ?statement  ?ps ?o .
 
         # qualifiers
         OPTIONAL {

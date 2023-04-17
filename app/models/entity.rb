@@ -166,17 +166,19 @@ class Entity
       CONSTRUCT {
         ?s ?p ?o  .
         <<?s ?p ?o>> ?a ?b .
-        ?o rdfs:label ?obj_label .
+        <<?s ?p ?o>> <http://www.w3.org/ns/prov#wasDerivedFrom> ?c .
+        ?c ?cp ?co .
+        ?cp rdfs:label ?cp_label .
+        ?co rdfs:label ?co_label .
         ?p rdfs:label ?prop_label .
+        ?o rdfs:label ?obj_label .
+        ?a rdfs:label ?a_label .
+        ?b rdfs:label ?b_label .
       }
       WHERE {
         values ?s { <#{@entity_uri}> }
         ?s ?p ?o  .
-        OPTIONAL {
-          <<?s ?p ?o>> ?a ?b .
-        }
         filter(contains(str(?p),"/prop/direct/"))
-
         OPTIONAL {
           ?o rdfs:label ?obj_label .
           filter(lang(?obj_label) = "#{I18n.locale.to_s}")
@@ -184,6 +186,36 @@ class Entity
         OPTIONAL {
           ?p rdfs:label ?prop_label .
           filter(lang(?prop_label) = "#{I18n.locale.to_s}")
+        }
+
+        OPTIONAL {
+          <<?s ?p ?o>> ?a ?b .
+        }
+        OPTIONAL {
+          <<?s ?p ?o>> ?a ?b .
+          ?a rdfs:label ?a_label . 
+          filter(lang(?a_label) = "#{I18n.locale.to_s}")
+        }
+        OPTIONAL {
+          <<?s ?p ?o>> ?a ?b .
+          ?b rdfs:label ?b_label .
+          filter(lang(?b_label) = "#{I18n.locale.to_s}")
+        }
+        OPTIONAL {
+          <<?s ?p ?o>> <http://www.w3.org/ns/prov#wasDerivedFrom> ?c .
+          ?c ?cp ?co .
+        }
+        OPTIONAL {
+          <<?s ?p ?o>> <http://www.w3.org/ns/prov#wasDerivedFrom> ?c .
+          ?c ?cp ?co .
+          ?cp rdfs:label ?cp_label .
+          filter(lang(?cp_label) = "#{I18n.locale.to_s}")
+        }
+        OPTIONAL {
+          <<?s ?p ?o>> <http://www.w3.org/ns/prov#wasDerivedFrom> ?c .
+          ?c ?cp ?co .
+          ?co rdfs:label ?co_label .
+          filter(lang(?co_label) = "#{I18n.locale.to_s}")
         }
       }
       SPARQL
@@ -254,8 +286,8 @@ class Entity
 
 
   def entity_properties
-    # to do: pass in uri @id to pass to frame
-    JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == "http://www.wikidata.org/entity/Q110835489"}
+    # todo: use sparql or framing to avoid looping  
+    JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == @entity_uri}
   
   end
 

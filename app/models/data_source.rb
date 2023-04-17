@@ -71,6 +71,7 @@ class DataSource < ApplicationRecord
     BatchUpdateJob.perform_now(apply_upper_ontology_sparql)
 
     # TODO: remove later once graphs are all converted to rdr star
+    BatchUpdateJob.perform_now(fix_wikidata_property_labels_sparql)
     BatchUpdateJob.perform_now(convert_wikidata_to_rdf_star_sparql)
   end
 

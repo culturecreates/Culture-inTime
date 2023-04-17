@@ -39,8 +39,26 @@ module ProductionsHelper
     query = RDF::Query.new do
       pattern [RDF::URI(id), :p, :o]
     end
-    @production.graph.query(query).first.to_h[:o] || id
+    solution = @production.graph.query(query)
+    if solution.count > 0
+      return solution.first[:o].value.capitalize
+    else 
+      return id
+    end
+  end
 
+  def display_literal(literal)
+    if literal["@language"]
+      "#{literal['@value']} @#{literal['@language']}" 
+    else
+      literal["@value"] 
+    end
+  end
 
+  def display_reference(id)
+    query = RDF::Query.new do
+      pattern [RDF::URI(id), :p, :o]
+    end
+    @production.graph.query(query)
   end
 end

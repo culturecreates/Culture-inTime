@@ -3,18 +3,17 @@
 </h2>
 
 <% value.each do |statement| %>
-
-
-<% if statement["@id"] %>
-
-  <a href='<%= statement["@id"] %>'>
-    <%= display_label(statement["@id"]) %> 
-  </a> 
-  <% if statement["@annotation"] %>
-    <br><%= statement["@annotation"]%> 
+  <% if statement["@id"] %>
+    <a href='<%= statement["@id"] %>'>
+      <%= display_label(statement["@id"]) %> 
+    </a> 
+  <% else %>
+   <a> <%= display_literal(statement) %></a>
   <% end %>
-<% else %>
-<%= statement %>
-<% end %>
-</p>
+
+  <% if statement["@annotation"] %>
+    <%= render partial: "production_annotation" , locals: {annotations: statement["@annotation"] }%>
+  <% end %>
+
+
 <% end %>
