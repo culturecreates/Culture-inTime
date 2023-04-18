@@ -20,6 +20,13 @@
       <span>
         <i class="arrow alternate circle down outline icon"></i> <%= spotlight.location %>
       </span>
+       <span class="right floated edit">
+        <%= link_to download_spotlight_path(spotlight, format: :json) do %>
+          <i class="download icon"></i>
+        <% end %>
+         
+        </span>
+
       <% if cookies[:user] %>
         <span class="right floated edit">
         <%= link_to spotlight_path(spotlight) do %>

@@ -23,7 +23,7 @@ Rails.application.routes.draw do
     resources :productions
     resources :spotlights do
       member do
-        get 'stats'
+        get 'stats', 'download'
       end
     end
 

@@ -1,5 +1,5 @@
 class SpotlightsController < ApplicationController
-  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats]
+  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats, :download]
 
   # GET /spotlights
   # GET /spotlights.json
@@ -7,11 +7,23 @@ class SpotlightsController < ApplicationController
     @spotlights = Spotlight.all.order(:title)
   end
 
+
+  
   # GET /spotlights/1
   # GET /spotlights/1.json
   def show
     @layout = Layout.new(@spotlight.layout)
     @data_sources = DataSource.all
+  end
+
+  # GET /spotlights/1.json/download
+  def download
+    data = Entity.spotlight(@spotlight.id)
+    @batch = RDF::Graph.new
+    data.paginate(limit:200).each do |entity|
+      @batch << entity.graph
+    end
+    send_data  JSON.parse(@batch.dump(:jsonld)), :disposition => 'attachment', :filename=>"spotlight.jsonld"
   end
 
   # GET /spotlights/1/stats
