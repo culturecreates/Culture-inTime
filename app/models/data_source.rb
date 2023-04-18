@@ -84,7 +84,6 @@ class DataSource < ApplicationRecord
         ?s a <#{self.type_uri}> .
         ?s ?p ?uri  .
         ?uri a <http://wikiba.se/ontology#Item> .
-        ?uri a ?type .
         MINUS {
           ?uri <http://www.wikidata.org/prop/direct/P31> ?sometype .
         }

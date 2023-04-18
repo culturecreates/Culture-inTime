@@ -46,7 +46,7 @@ class Entity
     start_offset = limit.to_i*(@page.to_i - 1)
     end_offset = limit.to_i*(@page.to_i) - 1
     @sparql_results[start_offset..end_offset].each do |e|
-      title = e.dig("title_lang","value") || e["title"]["value"] || ""
+      title = e.dig("title_lang","value") || e.dig("title","value") || ""
       description = e.dig("description_lang","value") || e.dig("description","value") || ""
       startDate = e.dig("startDate","value") || ""
       place = e.dig("place_lang","value") || e.dig("place","value") || ""

@@ -16,7 +16,8 @@ select ?uri (sample(?t_lang) as ?title_lang)
             (sample(?img) as ?image) 
 FROM onto:disable-sameAs
 where {
-    ?uri   cit:title ?t .
+    OPTIONAL { ?uri   cit:title ?t .
+    }
     OPTIONAL {
         ?uri cit:title ?t_lang . filter(lang(?t_lang) = "ui_language")
     }
