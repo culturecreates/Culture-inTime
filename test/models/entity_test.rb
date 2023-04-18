@@ -8,4 +8,10 @@ class EntityTest < ActiveSupport::TestCase
     expected = 22
     assert_equal  expected, entity.spotlight_properties.count
   end
+
+  test "demo" do
+    entity = Entity.new
+    expected = 22
+    assert_equal  expected, entity.test_frame
+  end
 end

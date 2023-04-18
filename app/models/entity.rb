@@ -116,11 +116,51 @@ class Entity
   def spotlight_properties
     frame_file = "app/services/frames/entity.jsonld"
     frame = JSON.parse(File.read(frame_file))
-    input = JSON.parse(graph.dump(:jsonld))
+    input = JSON.parse(graph.dump(:jsonld), validate: false, standard_prefixes: true)
 
-    JSON::LD::API.frame( input, frame, rdfstar: true)
+    JSON::LD::API.frame( input, frame)
 
     #JSON.parse(graph.dump(:jsonld)).select { |obj| obj["@id"] == @entity_uri}
+  end
+
+  def test_frame
+   
+    input =  JSON.parse %({
+      "@context": {
+        "@base":"http://www.artsdata.ca/resource/",
+        "@vocab":"http://www.artsdata.ca/resource/"
+      },
+      "@graph": [
+        {
+          "@id": "TheShow",
+          "@type": "Performance",
+          "performer": {
+            "@id": "John",
+            "@annotation": {
+                "certainty": 1
+            }
+          }
+        },
+        {
+          "@id": "John",
+          "@type": "Person",
+          "name" : "John Smith"
+        }
+      ]
+    })
+
+    frame = JSON.parse %({
+      "@context": {
+        "@base":"http://www.artsdata.ca/resource/",
+        "@vocab":"http://www.artsdata.ca/resource/"
+       },
+       "@type": "Performance"
+    })
+  
+    result = JSON::LD::API.frame(input, frame, rdfstar: true)
+
+    puts JSON.pretty_generate(result)
+    result
   end
 
 

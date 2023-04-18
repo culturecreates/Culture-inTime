@@ -20,7 +20,9 @@
    
     <div class="meta">
     <% @production.entity_properties.first.each do |prop, value| %>
-      <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value }  %>
+    <% if !prop.include? "/value/"%>
+      <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value }    %>
+      <% end %>
     <% end %>
     </div>
   </div>

@@ -12,7 +12,7 @@
         <div class="content" style="background: #EEEEEE; padding:0.5em;">
           <p class="transition hidden">
               <% display_reference(value.first["@id"]).each do |triple|  %>
-                <% if triple[:p].value != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" %>
+                <% if triple[:p].value != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"  %>
                   <%= display_label(triple[:p].value) %>:  <%= display_label(triple[:o].value) %> <br>
                 <% end %>
               <% end %>
@@ -22,8 +22,10 @@
       </div>
     <% else %>
       <% value.each do |qual| %>
-        <%= display_label(key) %>:  <%= display_label(qual["@id"]) || qual["@value"]  %><br>
+      <% if !key.to_s.include? "/value/"%>
+        <%= display_label(key) %>:  <%= display_label(qual["@id"]) || qual["@value"] %><br>
       <% end %>
+       <% end %>
     <% end %>
   <% end %>
 </div>
