@@ -7,6 +7,7 @@ de:
   results: "Suchergebnisse"
   sparql-top: "SPARQL - Instanzen der obersten Ebene"
   sparql-supplementary: "SPARQL - Zusätzliche Daten"
+  reference: "Fundstelle"
   button:
     edit: "Bearbeiten"
     show: "Anzeigen"

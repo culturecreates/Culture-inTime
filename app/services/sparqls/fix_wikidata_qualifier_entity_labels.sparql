@@ -1,0 +1,38 @@
+
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+insert {
+     ?o rdfs:label ?label
+}
+where {
+    # federated query to get labels
+    values ?languages {
+        "en" "fr" "de" 
+    }
+    service <https://query.wikidata.org/sparql> {
+        ?o rdfs:label ?label .
+        filter(lang(?label) = ?languages )
+    }
+    {
+        # subquery to get all Wikidata annotations entities that need labels 
+        select distinct  ?o 
+        where {
+            values ?languages {
+                "fr" "de" "en" 
+            }
+           
+            ?o a <http://wikiba.se/ontology#Item> .
+            ?s ?p ?o .
+            filter(contains(str(?p),"prop/qualifier/P") || contains(str(?p),"prop/reference/P"))
+            OPTIONAL {
+                ?o  rdfs:label ?label .
+                filter(lang(?label) = ?languages )
+            }
+            filter(!bound(?label))
+        }
+    }
+}

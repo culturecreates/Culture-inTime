@@ -7,6 +7,7 @@ fr:
   results: "Résultats"
   sparql-top: "SPARQL - entités de premier niveau"
   sparql-supplementary: "SPARQL - données supplémentaires"
+  reference: "Référence"
   button:
     show: "Afficher"
     edit: "Modifier"

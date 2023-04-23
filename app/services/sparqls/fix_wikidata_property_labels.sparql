@@ -19,7 +19,7 @@ where {
         # subquery to get all Wikidata properties that need labels  
         select distinct ?uri ?p
         where {
-            values ?object_type { owl:ObjectProperty owl:DatatypeProperty  <http://wikiba.se/ontology#Reference> }
+            values ?object_type { owl:ObjectProperty owl:DatatypeProperty }
             ?p a ?object_type .
             ?sub ?p ?obj .  # Is being used
                 OPTIONAL {
