@@ -42,7 +42,7 @@ module ProductionsHelper
     query << RDF::Query::Pattern.new(RDF::URI(id), RDF::URI("http://schema.org/name"), :name, optional: true)
     solution = @production.graph.query(query)
     if solution.count > 0
-      return solution.first[:label].value.capitalize
+      return solution.first[:label].value
     else 
       return id
     end

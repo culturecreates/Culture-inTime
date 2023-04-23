@@ -7,7 +7,7 @@ en:
   results: "Results"
   sparql-top: "SPARQL - Top level entities"
   sparql-supplementary: "SPARQL - Supplementary data"
-  reference: "Reference"
+  reference: "reference"
   button:
     show: "Show"
     edit: "Edit"
