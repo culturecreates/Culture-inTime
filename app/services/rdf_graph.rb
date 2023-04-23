@@ -13,10 +13,10 @@ class RDFGraph
     artsdata_client.execute_construct_sparql(sparql)
   end
 
-    ## Returns Turtle Star from a construct sparql
-    def self.construct_turtle_star(sparql)
-      artsdata_client.execute_construct_turtle_star_sparql(sparql)
-    end
+  ## Returns Turtle Star from a construct sparql
+  def self.construct_turtle_star(sparql)
+    artsdata_client.execute_construct_turtle_star_sparql(sparql)
+  end
 
   def self.persist(turtle, graph_name)
     artsdata_client.upload_turtle(turtle, graph_name)
