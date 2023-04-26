@@ -69,6 +69,7 @@ group :test do
   #gem 'selenium-webdriver'
   # Easy installation and use of chromedriver to run system tests with Chrome
   #gem 'chromedriver-helper'
+  gem "vcr"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
@@ -86,7 +87,7 @@ gem 'rdf', '~> 3.2'
 gem 'json-ld', '~> 3.2.4'
 gem 'sparql', '~> 3.1.3'
 gem 'nokogiri'
-gem 'rdf-turtle'
+gem 'rdf-turtle', '~> 3.2'
 
 gem 'sidekiq', '<7'
 

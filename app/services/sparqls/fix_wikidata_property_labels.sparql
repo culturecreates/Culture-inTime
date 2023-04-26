@@ -19,18 +19,19 @@ where {
         # subquery to get all Wikidata properties that need labels  
         select distinct ?uri ?p
         where {
-            values ?object_type { owl:ObjectProperty owl:DatatypeProperty }
-            ?p a ?object_type .
-            ?sub ?p ?obj .  # Is being used
-                OPTIONAL {
-                  ?p  rdfs:label ?label .
-                }
-                filter(!bound(?label))
-          
-              filter(contains(str(?p),"prop/direct/P") || contains(str(?p),"prop/qualifier/P") || contains(str(?p),"prop/reference/P"))
-              filter(!bound(?label))
+            graph <graph_placeholder> {
+                values ?object_type { owl:ObjectProperty owl:DatatypeProperty }
+                ?p a ?object_type .
+                ?sub ?p ?obj .  # Is being used
+            }
+            OPTIONAL {
+                ?p  rdfs:label ?label .
+            }
+            filter(contains(str(?p),"prop/direct/P") || contains(str(?p),"prop/qualifier/P") || contains(str(?p),"prop/reference/P"))
+            filter(!bound(?label))
             bind(URI(concat("http://www.wikidata.org/entity/P",strafter(str(?p),"/P"))) as ?uri)
-            
         }
     }
 }
+
+# fix_wikidata_property_labels

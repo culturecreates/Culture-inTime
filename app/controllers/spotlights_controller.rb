@@ -23,7 +23,7 @@ class SpotlightsController < ApplicationController
     data.paginate(limit:200).each do |entity|
       @batch << entity.graph
     end
-    send_data  JSON.parse(@batch.dump(:jsonld)), :disposition => 'attachment', :filename=>"spotlight.jsonld"
+    send_data  @batch.dump(:jsonld, validate: false), :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
   end
 
   # GET /spotlights/1/stats

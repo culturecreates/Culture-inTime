@@ -94,6 +94,7 @@ module ArtsdataApi
           endpoint: "/repositories/#{@graph_repository}/rdf-graphs/service?graph=#{graph_name}",
           params: turtle_data
         )
+        @logger.info "Response: #{data.status} #{data.body}"
         { code: data.status, message: data.body }
         #@client.headers['Content-Type'] = 'text/turtle'
         #response = @client.public_send(:put, "#{txid}?action=ADD", @graph.dump(:ttl, prefixes: {schema: "http://schema.org/"}) )

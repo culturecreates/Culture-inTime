@@ -18,16 +18,16 @@ where {
         filter(lang(?label) = ?languages )
     }
     {
-        # subquery to get all Wikidata annotations entities that need labels 
+        # subquery to get all Wikidata annotated entities that need labels 
         select distinct  ?o 
-        where {
-            values ?languages {
-                "fr" "de" "en" 
+        where { 
+            graph <graph_placeholder> {
+               
+                ?o a <http://wikiba.se/ontology#Item> .
+                ?s ?p ?o .
             }
-           
-            ?o a <http://wikiba.se/ontology#Item> .
-            ?s ?p ?o .
             filter(contains(str(?p),"prop/qualifier/P") || contains(str(?p),"prop/reference/P"))
+            values ?languages {  "fr" "de" "en"  }
             OPTIONAL {
                 ?o  rdfs:label ?label .
                 filter(lang(?label) = ?languages )
@@ -36,3 +36,5 @@ where {
         }
     }
 }
+
+# fix_wikidata_anotated_entity_labels

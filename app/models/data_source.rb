@@ -52,14 +52,18 @@ class DataSource < ApplicationRecord
       @sample_uri = @uris.first
       begin 
         @sample_graph = RDF::Graph.load(@sample_uri).to_jsonld
-        # puts "Sample graph loaded"
+        puts "Sample graph loaded"
       rescue => exception
         puts "Exception getting sample uri: #{exception.inspect}"
       end
       return false unless @sample_graph
 
       if !test_drive
-        SetupContentNegotiationJob.perform_later(@uris, graph_name, self.type_uri)
+        # chunk in smaller arrays incase one fails in the queue
+        # for a list of 100,000 URIs this will queue 200 jobs 
+        @uris.each_slice(200) do |chunk|
+          SetupContentNegotiationJob.perform_later(chunk, graph_name, self.type_uri)
+        end
         self.loaded = Time.now
         self.save
       end
@@ -69,10 +73,15 @@ class DataSource < ApplicationRecord
 
   def apply_upper_ontology
     BatchUpdateJob.perform_now(apply_upper_ontology_sparql)
+  end
 
-    # TODO: remove later once graphs are all converted to rdr star
+  def convert_to_rdf_star 
+    BatchUpdateJob.perform_now(convert_wikidata_to_rdf_star_graph_sparql)
+  end
+
+  def fix_labels 
     BatchUpdateJob.perform_now(fix_wikidata_property_labels_sparql)
-    BatchUpdateJob.perform_now(convert_wikidata_to_rdf_star_sparql)
+    BatchUpdateJob.perform_now(fix_wikidata_anotated_entity_labels_sparql)
   end
 
   def load_secondary
@@ -81,37 +90,52 @@ class DataSource < ApplicationRecord
     sparql = <<~SPARQL
       select distinct ?uri 
       where {
-        ?s a <#{self.type_uri}> .
-        ?s ?p ?uri  .
-        ?uri a <http://wikiba.se/ontology#Item> .
+        graph <#{graph_name}> {
+          ?s a <#{self.type_uri}> .
+          ?s ?p ?uri  .
+          ?uri a <http://wikiba.se/ontology#Item> .
+        }
         MINUS {
           ?uri <http://www.wikidata.org/prop/direct/P31> ?sometype .
+        }
+        MINUS {
+          ?uri <http://www.wikidata.org/prop/direct/P279> ?sometype .
         }
       }
     SPARQL
 
     @response = RDFGraph.execute(sparql)
 
+    puts "######### #{@response}"
     if @response[:code] != 200
+      puts "found error"
       self.errors.add(:base, "#{@response[:message]}")
       return false
     end
 
     data = @response[:message]
 
-    if data.first.blank? 
-      self.errors.add(:base, "No results.", message: "The SPARQL has not returned any results.")
-      return false 
-    end
-    @uris = data.pluck("uri").pluck("value")
+    @secondary_uris = []
 
+    return true unless data.present?
+    
+    @secondary_uris = data.pluck("uri").pluck("value")
+    
     # This limit is set in the GraphDB respository as the "Limit query results"
-    if @uris.count >= 100000
+    if @secondary_uris.count >= 100000
       self.errors.add(:base, "Exceeded limit of 100,000 URIs. Please break query into smaller groups.")
       return false 
     end
-
-    SetupSecondaryContentNegotiationJob.perform_later(@uris, graph_name)
+  
+    # chunk in smaller arrays incase one fails in the queue
+    # for a list of 100,000 URIs this will queue 200 jobs 
+    @secondary_uris.each_slice(200) do |chunk|
+      SetupContentNegotiationJob.perform_later(chunk, graph_name)
+      puts "Batch sent...."
+    end
+  
+    puts "Returning true!"
+    return true
   end
 
   def sample_graph
@@ -122,6 +146,9 @@ class DataSource < ApplicationRecord
     return @uris.count
   end
 
+  def secondary_uri_count
+    return @secondary_uris.count
+  end
   def sample_uri 
     return  @sample_uri
   end
@@ -159,8 +186,16 @@ class DataSource < ApplicationRecord
     ])
   end
 
-  def convert_wikidata_to_rdf_star_sparql
-    SparqlLoader.load('convert_wikidata_to_rdf_star', [
+  def convert_wikidata_to_rdf_star_graph_sparql
+    SparqlLoader.load('convert_wikidata_to_rdf_star_graph', [
+      'graph_placeholder', graph_name
+    ])
+  end
+
+  
+
+  def fix_wikidata_anotated_entity_labels_sparql
+    SparqlLoader.load('fix_wikidata_anotated_entity_labels', [
       'graph_placeholder', graph_name
     ])
   end

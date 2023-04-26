@@ -1,6 +1,6 @@
 class DataSourcesController < ApplicationController
   require 'sidekiq/api'
-  before_action :set_data_source, only: [:show, :apply_upper_ontology, :load_secondary, :load_rdf, :edit, :update, :destroy]
+  before_action :set_data_source, only: [:show, :fix_labels, :convert_to_rdf_star, :apply_upper_ontology, :load_secondary, :load_rdf, :edit, :update, :destroy]
 
 
   # GET /data_sources
@@ -34,16 +34,36 @@ class DataSourcesController < ApplicationController
     render 'show'
   end
 
+  
+  def fix_labels
+    response = @data_source.fix_labels
+    if response[:code] == 204
+      flash.now[:notice] = "Labels loaded!"
+    else
+      flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not load labels."
+    end
+    render 'show'
+  end
+
+  def convert_to_rdf_star
+    response = @data_source.convert_to_rdf_star
+    if response[:code] == 204
+      flash.now[:notice] = "Converted to RDF Star!"
+    else
+      flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not convert to RDF Star."
+    end
+    render 'show'
+  end
+
   # GET /data_sources/1/load_secondary
   def load_secondary
     if @data_source.upper_title.blank?
       flash.now[:notice] = "Error: need a title property in upper ontology." 
     else
       if @data_source.load_secondary
-     
-        flash.now[:notice] = "#{@data_source.uri_count} Secondary nodes loaded!"
+        flash.now[:notice] = "#{@data_source.secondary_uri_count} additional secondary nodes loaded!"
       else
-        flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not load secondard nodes."
+        flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not load secondary nodes."
       end
     end
     render 'show'
