@@ -4,6 +4,7 @@ PREFIX schema: <http://schema.org/>
 PREFIX cit: <http://culture-in-time.org/ontology/>
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX onto: <http://www.ontotext.com/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 select ?uri (sample(?t_lang) as ?title_lang)  
             (sample(?d_lang) as ?description_lang)  
@@ -17,12 +18,10 @@ select ?uri (sample(?t_lang) as ?title_lang)
 FROM onto:disable-sameAs
 where {
     OPTIONAL {
-        ?uri cit:title ?t .
+        ?uri rdfs:label ?t .
      }
-     
-
     OPTIONAL {
-        ?uri schema:name ?t_lang . filter(lang(?t_lang) = "ui_language")
+        ?uri rdfs:label ?t_lang . filter(lang(?t_lang) = "ui_language")
     }
     OPTIONAL {
         ?uri cit:startDate ?date .
