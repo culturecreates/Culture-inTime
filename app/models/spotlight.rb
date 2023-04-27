@@ -6,8 +6,6 @@ class Spotlight < ApplicationRecord
   before_save :remove_sparql_line_feeds, :check_if_search_params_changed
 
 
-
-
   def generate_sparql
     SparqlLoader.load('spotlight_index',[
       '<spotlight_query_placeholder> a "triple"', self.sparql,
@@ -42,11 +40,8 @@ class Spotlight < ApplicationRecord
       
       data_source_filter = if self.data_sources.count 
         <<~SPARQL
-
           values ?graph { #{self.data_sources.map { |s| "<#{s.graph_name}> "}.join } }
-
           values ?type_uri { #{self.data_sources.map { |s|  "<#{s.type_uri}> "}.join } }
-         
           graph ?graph {
             ?uri a ?type_uri
           }

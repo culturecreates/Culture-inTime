@@ -16,10 +16,13 @@ select ?uri (sample(?t_lang) as ?title_lang)
             (sample(?img) as ?image) 
 FROM onto:disable-sameAs
 where {
-    ?uri cit:title ?t .
-    
     OPTIONAL {
-        ?uri cit:title ?t_lang . filter(lang(?t_lang) = "ui_language")
+        ?uri cit:title ?t .
+     }
+     
+
+    OPTIONAL {
+        ?uri schema:name ?t_lang . filter(lang(?t_lang) = "ui_language")
     }
     OPTIONAL {
         ?uri cit:startDate ?date .
@@ -28,7 +31,7 @@ where {
         ?uri cit:description ?d .
     }
     OPTIONAL {
-        ?uri cit:description ?d_lang . filter(lang(?d_lang) = "ui_language")
+        ?uri schema:description ?d_lang . filter(lang(?d_lang) = "ui_language")
     }
     OPTIONAL {
         ?uri cit:placeName ?p .
@@ -37,7 +40,7 @@ where {
         ?uri cit:placeName ?p_lang .  filter(lang(?p_lang) = "ui_language")
     }
     OPTIONAL {
-        ?uri cit:image ?img .
+        ?uri wdt:P18 ?img .
     }
     {
        <spotlight_query_placeholder> a "triple"

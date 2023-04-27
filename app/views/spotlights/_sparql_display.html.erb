@@ -14,6 +14,16 @@
 <div class="ui vertically divided grid fluid">
   <div class="two column row">
     <div class="column">
+     <div class="field">
+        <%= form.label :data_source %> 
+        <select  name="spotlight[data_source_ids][]" multiple="" class="ui dropdown">
+          <option value="">Select Data Source</option>
+          <% @data_sources.each do |t| %>
+            <option <%= "selected" if @spotlight.data_sources.ids.include?(t.id) %> value=<%=  t.id  %>><%=  t.name  %></option>
+          <% end %>
+        </select>
+      </div>
+      
       <div class="field">
         <%= form.label :start_date %>
         <%= form.text_field :start_date, placeholder: "YYYY-MM-DD"  %>
@@ -29,15 +39,7 @@
         <%= form.text_field :query, placeholder: "Title, description, place" %>
       </div>
 
-      <div class="field">
-        <%= form.label :data_source %> 
-        <select  name="spotlight[data_source_ids][]" multiple="" class="ui dropdown">
-          <option value="">Select Data Source</option>
-          <% @data_sources.each do |t| %>
-            <option <%= "selected" if @spotlight.data_sources.ids.include?(t.id) %> value=<%=  t.id  %>><%=  t.name  %></option>
-          <% end %>
-        </select>
-      </div>
+     
 
           <!-- form.check_box "data_sources[#{t.id}]"  -->
       <div class="actions">
