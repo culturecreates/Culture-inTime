@@ -1,0 +1,28 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX onto: <http://www.ontotext.com/>
+
+CONSTRUCT {
+  ?o ?p ?s  .
+  ?p rdfs:label ?prop_label .
+  ?s rdfs:label ?sub_label .
+  ?o rdfs:label ?obj_label .
+  
+}
+WHERE {
+  values ?o { <entity_uri_placeholder> }
+  ?s ?p ?o  .
+  filter(contains(str(?p),"/prop/direct/P"))
+  
+  OPTIONAL {
+    ?s rdfs:label ?sub_label .
+   
+  }
+  OPTIONAL {
+    ?p rdfs:label ?prop_label .
+  }
+
+  OPTIONAL {
+    ?o rdfs:label ?obj_label .
+  }
+
+}

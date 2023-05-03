@@ -18,9 +18,15 @@ Rails.application.routes.draw do
     get '/search', to: 'search#index'
     get '/search_rdf', to: 'search_rdf#index'
 
-    get '/productions/show', to: 'productions#show'
+    #get '/productions/show', to: 'productions#show'
     
-    resources :productions
+    resources :productions do 
+      collection do 
+        get 'show','derived'
+      end
+    end
+
+
     resources :spotlights do
       member do
         get 'stats', 'download'

@@ -17,7 +17,13 @@ class ProductionsController < ApplicationController
     if params[:layout]
       @production.layout(params[:layout])
     end
+  end
 
+  # GET /productions/derived?uri=
+  # Graph of URI in object position
+  def derived 
+    @production = Entity.derived(params[:uri])
+    render 'show'
   end
 
 end
