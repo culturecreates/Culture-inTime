@@ -9,9 +9,13 @@ CONSTRUCT {
   
 }
 WHERE {
-  values ?o { <entity_uri_placeholder> }
-  ?s ?p ?o  .
-  filter(contains(str(?p),"/prop/direct/P"))
+  {
+    select * where {
+      values ?o { <entity_uri_placeholder> }
+        ?s ?p ?o  .
+        filter(contains(str(?p),"/prop/direct/P"))
+    } limit 200
+  }
   
   OPTIONAL {
     ?s rdfs:label ?sub_label .
