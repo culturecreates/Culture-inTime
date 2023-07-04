@@ -1,5 +1,5 @@
 class SpotlightsController < ApplicationController
-  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats, :download]
+  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats, :download, :update_layout]
 
   # GET /spotlights
   # GET /spotlights.json
@@ -14,6 +14,18 @@ class SpotlightsController < ApplicationController
   def show
     @layout = Layout.new(@spotlight.layout)
     @data_sources = DataSource.all
+  end
+
+  # PATCH /spotlights/1/update_layout
+  def update_layout
+    # save layout turtle to graphdb and popup success.
+    turtle = @spotlight.layout
+    layout_id = params[:id]
+    graph_name = helpers.generate_layout_graph_name(layout_id)
+    RDFGraph.drop(graph_name)
+    RDFGraph.persist(turtle, graph_name)
+    redirect_to @spotlight, notice: 'Spotlight layout was successfully updated.'
+   
   end
 
   # GET /spotlights/1.json/download

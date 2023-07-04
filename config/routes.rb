@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     
     resources :productions do 
       collection do 
-        get 'show','derived'
+        get 'show','derived','wikidata'
       end
     end
 
@@ -30,6 +30,7 @@ Rails.application.routes.draw do
     resources :spotlights do
       member do
         get 'stats', 'download'
+        patch 'update_layout'
       end
     end
 

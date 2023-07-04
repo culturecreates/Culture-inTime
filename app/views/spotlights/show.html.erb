@@ -38,7 +38,14 @@
           <div id="layout_div">
             <%= render partial: "layout/layout_display", locals: {layout: @layout} %>
           </div>
+          <div> 
+          <br>
+          <%= link_to "Save", update_layout_spotlight_path(@spotlight), method: :patch, remote: false, class: "ui button primary" %>
+          </div>
         </div>
+       
+              
+          
       </div>
     </div>
   </div>

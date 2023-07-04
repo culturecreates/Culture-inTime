@@ -6,19 +6,28 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX schema: <http://schema.org/>
 
-select distinct (sample(?l_lowercase) as ?l_sample) ?ps (count(distinct ?uri) as ?count) where {
-    ?uri ?p ?o .
-    filter(contains(str(?p),"/prop/P"))
-    ?o ?ps ?o2 .
-    filter(contains(str(?ps),"/prop/statement/P") || contains(str(?ps),"/prop/qualifier/P"))
+select distinct (sample(?l_lowercase) as ?l_sample) ?ps (count(distinct ?uri) as ?count) 
+where {
+    {
+        ?uri ?p ?o .
+        filter(contains(str(?p),"/prop/direct/P"))
+        bind(?p as ?ps)
+    }
+    UNION
+    {
+        OPTIONAL {
+            << ?uri ?p ?o >> ?a ?b .
+        }
+        filter(contains(str(?a),"/prop/qualifier/P"))
+        bind(?a as ?ps)
+    }
+    
     ?ps rdfs:label ?l .
     filter(lang(?l) = "en")
 
     bind(lcase(?l) as ?l_lowercase)
     {
-        # start of spotlight
          <spotlight_query_placeholder> a "triple"
-        # end of spotlight
     }
 } 
 group by ?ps 

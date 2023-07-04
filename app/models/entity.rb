@@ -1,5 +1,7 @@
 
 class Entity
+
+  include ::SpotlightsHelper 
   attr_accessor :title, :description, :date_entity, :location_label, :main_image, :entity_uri, :layout_id
 
   def initialize(**h) 
@@ -9,6 +11,7 @@ class Entity
     @location_label = h[:place]
     @main_image = h[:image]
     @entity_uri = h[:entity_uri]
+    @layout_id = h[:layout_id]
   end
 
   # Class method to find all entities given a DataSource id
@@ -67,17 +70,33 @@ class Entity
   # Class method that returns full graph of entity uri in object position
   def self.derived(entity_uri)
     entity = Entity.new(entity_uri: entity_uri)
-    entity.graph(true)
+    entity.graph(approach: "derived")
     entity
   end
 
-  def layout(spotlight_id)
-    @layout_id = spotlight_id
-    spotlight = Spotlight.find(spotlight_id)
-    @spotlight_frame = spotlight.frame
-    layout_turtle = spotlight.layout
-    graph.from_ttl(layout_turtle, prefixes: {rdf: RDF.to_uri, cit: "<http://culture-in-time.org/ontology/>"})
+  # Class method that returns full graph of a uri 
+  # with wikidata statement nodes instead of RDF Star
+  # with literals in languages chosen by the layout
+  def self.wikidata(entity_uri, layout_id = nil)
+    puts "layout_id: #{layout_id}"
+    
+    language_list = if layout_id 
+                      Spotlight.find(layout_id).language
+                    else
+                      "en"
+                    end
+    entity = Entity.new(entity_uri: entity_uri, layout_id: layout_id)
+    entity.graph(approach: "wikidata", language: language_list)
+    entity
   end
+
+  # TO DELETE
+  # def layout(spotlight_id)
+  #   @layout_id = spotlight_id
+  #   spotlight = Spotlight.find(spotlight_id)
+  #   layout_graph = RDF::Graph.new
+  #   layout_graph.from_ttl(spotlight.layout, prefixes: {rdf: RDF.to_uri, cit: "<http://culture-in-time.org/ontology/>"})
+  # end
 
 
   def method_missing(m,*args,&block)
@@ -88,8 +107,10 @@ class Entity
     end 
   end
 
-  def graph(derived = false)
-    @graph ||= load_graph(derived)
+  def graph(approach: "rdfstar", language: "en")
+    # TODO: this should not call load_graph. 
+    #       Change code to call load_graph explicitly
+    @graph ||= load_graph(approach, language)
   end
 
   def framed_graph
@@ -102,6 +123,10 @@ class Entity
     #  "http://www.wikidata.org/prop/P31" => {}
     # }
     begin
+      if @layout_id
+        spotlight = Spotlight.find(@layout_id)
+        @spotlight_frame = spotlight.frame
+      end
       frame_json = JSON.parse(@spotlight_frame)
     rescue => exception
       Rails.logger.error exception
@@ -172,15 +197,26 @@ class Entity
 
 
 
-  def load_graph(derived = false)
+  def load_graph(approach = "rdfstar", language = "en")
 
-    sparql =  if derived 
+    sparql =  if approach == "derived"
                 SparqlLoader.load('load_derived_graph', [
                   'entity_uri_placeholder', @entity_uri,
-                  'locale_placeholder' , I18n.locale.to_s
+                  'languages_placeholder' , language.split(",").join("\" \"")
+                ])
+              elsif approach == "wikidata"
+                SparqlLoader.load('load_wikidata_graph', [
+                  'entity_uri_placeholder', @entity_uri,
+                  'languages_placeholder' ,   language.split(",").join("\" \"")
+                ])
+              elsif @layout_id
+                SparqlLoader.load('load_rdfstar_graph_layout', [
+                  'entity_uri_placeholder', @entity_uri,
+                  'locale_placeholder' , I18n.locale.to_s,
+                  'layout_graph_placeholder', generate_layout_graph_name(@layout_id) 
                 ])
               else 
-                SparqlLoader.load('load_graph', [
+                SparqlLoader.load('load_rdfstar_graph', [
                   'entity_uri_placeholder', @entity_uri,
                   'locale_placeholder' , I18n.locale.to_s
                 ])

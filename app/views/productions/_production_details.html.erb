@@ -4,36 +4,30 @@
 
 <% if @production.layout_id  %>
   <div class="ui top mini attached tabular menu">
-    <div class="propSpotlight active item">Preview</div>
-    <div class="propAll item">All</div>
+    <div class="propSpotlight active item">Layout</div>
+    <%# <div class="propAll item">All</div> %>
   </div>
   <div class="propSpotlight ui bottom attached  active tab segment">
-
     <div class="meta">
-    <% display_props = @production.entity_properties.first.each %>
+      <% display_props = @production.entity_properties.first.each %>
       <% display_props.each do |prop, value| %>
         <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value } if (prop.start_with?("http://www.wikidata") && !prop.start_with?("http://www.wikidata.org/prop/direct-normalized")) %>
       <% end %>
     </div>
   </div>
   <div class="propAll ui bottom attached  <%= "active" if !@production.layout_id %> tab segment">
-   
     <div class="meta">
-    <% @production.entity_properties.first.each do |prop, value| %>
-    <% if !prop.include? "/value/"%>
-      <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value }    %>
+      <% @production.entity_properties.first.each do |prop, value| %>
+      <% if !prop.include? "/value/"%>
+        <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value }    %>
+        <% end %>
       <% end %>
-    <% end %>
     </div>
   </div>
-
 <% else %>
-
   <div class="meta">
-   <% @production.entity_properties.first.each do |prop, value| %>
-     <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value }  if prop.start_with? "http://www.wikidata" %>
-   <% end %>
-
-  
+    <% @production.entity_properties.first.each do |prop, value| %>
+      <%= render partial: 'rdf_star_details', locals: { prop: prop, value: value }  if prop.start_with? "http://www.wikidata" %>
+    <% end %>
   </div>
 <% end %>

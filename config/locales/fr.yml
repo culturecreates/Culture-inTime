@@ -60,7 +60,7 @@ fr:
 
 # Spotlights
   search_parameters: 
-  preview_layout:
+  preview_layout: "Mise en page"
 
 # Date and time
   date:

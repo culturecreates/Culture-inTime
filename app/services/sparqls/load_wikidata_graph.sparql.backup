@@ -1,0 +1,72 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+#select reduced ?uri ?p ?notLiteral ?a ?b_notLiteral ?b_languageLiteral ?b_literal ?languageLiteral ?literal  ?derived ?b2 ?b3
+construct {
+    ?uri ?p ?notLiteral , ?languageLiteral , ?literal .
+    ?notLiteral ?a  ?b_notLiteral, ?b_languageLiteral , ?b_literal .
+    ?notLiteral <http://www.w3.org/ns/prov#wasDerivedFrom> ?derived .
+    ?derived ?b2 ?b3 .
+     ?p rdfs:label ?prop_label .
+}
+where {
+    values ?uri {
+        <entity_uri_placeholder>
+    }
+    values ?p {
+      rdf:type rdfs:label <http://www.wikidata.org/prop/direct/P31>  <http://www.wikidata.org/prop/P10527> <http://www.wikidata.org/prop/direct/P10527>  <http://www.wikidata.org/prop/direct/P937>
+    }
+    ?uri a <http://wikiba.se/ontology#Item> .
+    ?uri ?p ?o .
+    OPTIONAL {
+        ?p rdfs:label ?prop_label .
+        values ?langs  {"languages_placeholder" }
+        filter(lang(?prop_label) = ?langs)
+    }
+    OPTIONAL {
+        ?uri ?p ?o .
+        filter(!isLiteral(?o))
+        bind(?o as ?notLiteral)
+        optional {
+            ?o ?a ?b .
+            optional {
+                ?o <http://www.w3.org/ns/prov#wasDerivedFrom> ?b .
+                ?b ?b2 ?b3 .
+                bind(?b as ?derived)
+            }
+            optional {
+                ?o ?a ?b .
+                filter(!isLiteral(?b))
+                bind(?b as ?b_notLiteral)
+            }
+            optional {
+                ?o ?a ?b .
+                filter(datatype(?b) = rdf:langString )
+                values ?langs  {
+                    "languages_placeholder"
+                }
+                filter(lang(?b) = ?langs)
+                bind(?b as ?b_languageLiteral)
+            }
+            optional {
+                ?o ?a ?b .
+                filter(datatype(?b) != rdf:langString )
+                filter(isLiteral(?b))
+                bind(?b as ?b_literal)
+            }
+        }
+    }
+    optional {
+        ?uri ?p ?o .
+        filter(datatype(?o) = rdf:langString )
+        values ?langs  {
+            "languages_placeholder"
+        }
+        filter(lang(?o) = ?langs)
+        bind(?o as ?languageLiteral)
+    }
+    optional {
+        ?uri ?p ?o .
+        filter(isLiteral(?o))
+        filter(datatype(?o) != rdf:langString )
+        bind(?o as ?literal)
+    }
+}

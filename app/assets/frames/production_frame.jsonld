@@ -1,0 +1,48 @@
+{
+  "@type": [
+    "ado:PerformingArtsProduction"
+  ],
+  "@embed": "@always",
+  "@context": {
+    "cit": "http://culture-in-time.org/ontology/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "ado": "http://ontology.artsdata.ca/",
+    "wd": "http://www.wikidata.org/entity/",
+    "p": "http://www.wikidata.org/prop/",
+    "cit:description": {
+      "@container": "@language"
+    },
+    "cit:placeName": {
+      "@container": "@language"
+    },
+    "cit:title": {
+      "@container": "@language"
+    },
+    "cit:startDate": {
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "schema": "http://schema.org/",
+    "schema:description": {
+      "@container": "@language"
+    },
+    "schema:name": {
+      "@container": "@language"
+    },
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "rdfs:label": {
+      "@container": "@language"
+    },
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "skos:altLabel": {
+      "@container": "@language"
+    },
+    "skos:prefLabel": {
+      "@container": "@language"
+    },
+    "wdt": "http://www.wikidata.org/prop/direct/",
+    "id": {
+      "@type": "@id",
+      "@id": "@id"
+    }
+  }
+}

@@ -1,0 +1,262 @@
+"framed_graph": {
+  "@id": "http://www.wikidata.org/entity/Q2450477",
+  "@type": "http://wikiba.se/ontology#Item",
+  "http://www.w3.org/2000/01/rdf-schema#label": [
+    {
+      "@language": "en",
+      "@value": "Traute Carlsen"
+    },
+    {
+      "@language": "de",
+      "@value": "Traute Carlsen"
+    },
+    {
+      "@language": "fr",
+      "@value": "Traute Carlsen"
+    }
+  ],
+  "http://www.wikidata.org/prop/direct/P31": {
+    "@id": "http://www.wikidata.org/entity/Q5",
+    "@type": "http://wikiba.se/ontology#Item",
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@language": "en",
+        "@value": "human"
+      },
+      {
+        "@language": "fr",
+        "@value": "être humain"
+      },
+      {
+        "@language": "de",
+        "@value": "Mensch"
+      }
+    ],
+    "http://schema.org/description": {
+      "@language": "en",
+      "@value": "common name of Homo sapiens, unique extant species of the genus Homo, from embryo to adult"
+    },
+    "http://schema.org/name": {
+      "@language": "en",
+      "@value": "human"
+    },
+    "http://www.w3.org/2004/02/skos/core#prefLabel": {
+      "@language": "en",
+      "@value": "human"
+    }
+  },
+  "http://www.wikidata.org/prop/P10527": {
+    "@id": "http://www.wikidata.org/entity/statement/Q2450477-561B95EF-ACB3-42D3-B9B7-352494AE943E",
+    "@type": [
+      "http://wikiba.se/ontology#Statement",
+      "http://wikiba.se/ontology#BestRank"
+    ],
+    "http://www.wikidata.org/prop/qualifier/P1810": "Carlsen, Traute",
+    "http://wikiba.se/ontology#rank": {
+      "@id": "http://wikiba.se/ontology#NormalRank"
+    },
+    "http://www.w3.org/ns/prov#wasDerivedFrom": {
+      "@id": "http://www.wikidata.org/reference/02b3e58463939ff8a3748f3e0a3393546b07a337",
+      "@type": "http://wikiba.se/ontology#Reference",
+      "http://www.wikidata.org/prop/reference/P248": {
+        "@id": "http://www.wikidata.org/entity/Q104173640"
+      },
+      "http://www.wikidata.org/prop/reference/P813": {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2022-08-29T00:00:00Z"
+      },
+      "http://www.wikidata.org/prop/reference/value/P813": {
+        "@id": "http://www.wikidata.org/value/fb67049cdaa17f4404e558a6d3e265bb"
+      },
+      "http://www.wikidata.org/prop/reference/P8974": "r/ef6cf4d6-74a3-444b-a4cf-37ae28bb64be",
+      "http://www.wikidata.org/prop/reference/value-normalized/P8974": {
+        "@id": "http://data.performing-arts.ch/r/ef6cf4d6-74a3-444b-a4cf-37ae28bb64be"
+      }
+    },
+    "http://www.wikidata.org/prop/statement/P10527": {
+      "@id": "http://www.wikidata.org/entity/Q50920401",
+      "@type": "http://wikiba.se/ontology#Item",
+      "http://www.w3.org/2000/01/rdf-schema#label": [
+        {
+          "@language": "en",
+          "@value": "SAPA Foundation, Swiss Archive of the Performing Arts"
+        },
+        {
+          "@language": "fr",
+          "@value": "Fondation SAPA, Archives suisses des arts de la scène"
+        },
+        {
+          "@language": "de",
+          "@value": "Stiftung SAPA, Schweizer Archiv der Darstellenden Künste"
+        }
+      ],
+      "http://schema.org/description": {
+        "@language": "en",
+        "@value": "national memorial institution for the field of Swiss dance and theater culture"
+      },
+      "http://schema.org/name": {
+        "@language": "en",
+        "@value": "SAPA Foundation, Swiss Archive of the Performing Arts"
+      },
+      "http://www.w3.org/2004/02/skos/core#prefLabel": {
+        "@language": "en",
+        "@value": "SAPA Foundation, Swiss Archive of the Performing Arts"
+      }
+    }
+  },
+  "http://www.wikidata.org/prop/direct/P10527": {
+    "@id": "http://www.wikidata.org/entity/Q50920401"
+  },
+  "http://www.wikidata.org/prop/direct/P937": [
+    {
+      "@id": "http://www.wikidata.org/entity/Q72",
+      "@type": "http://wikiba.se/ontology#Item",
+      "http://www.w3.org/2000/01/rdf-schema#label": [
+        {
+          "@language": "en",
+          "@value": "Zürich"
+        },
+        {
+          "@language": "fr",
+          "@value": "Zurich"
+        },
+        {
+          "@language": "de",
+          "@value": "Zürich"
+        }
+      ],
+      "http://schema.org/description": {
+        "@language": "en",
+        "@value": "capital of the canton of Zürich, Switzerland"
+      },
+      "http://schema.org/name": {
+        "@language": "en",
+        "@value": "Zürich"
+      },
+      "http://www.w3.org/2004/02/skos/core#prefLabel": {
+        "@language": "en",
+        "@value": "Zürich"
+      }
+    },
+    {
+      "@id": "http://www.wikidata.org/entity/Q1741",
+      "@type": "http://wikiba.se/ontology#Item",
+      "http://www.w3.org/2000/01/rdf-schema#label": [
+        {
+          "@language": "en",
+          "@value": "Vienna"
+        },
+        {
+          "@language": "fr",
+          "@value": "Vienne"
+        },
+        {
+          "@language": "de",
+          "@value": "Wien"
+        }
+      ],
+      "http://schema.org/description": {
+        "@language": "en",
+        "@value": "capital of and state in Austria"
+      },
+      "http://schema.org/name": {
+        "@language": "en",
+        "@value": "Vienna"
+      },
+      "http://www.w3.org/2004/02/skos/core#prefLabel": {
+        "@language": "en",
+        "@value": "Vienna"
+      }
+    },
+    {
+      "@id": "http://www.wikidata.org/entity/Q64",
+      "@type": "http://wikiba.se/ontology#Item",
+      "http://www.w3.org/2000/01/rdf-schema#label": [
+        {
+          "@language": "en",
+          "@value": "Berlin"
+        },
+        {
+          "@language": "fr",
+          "@value": "Berlin"
+        },
+        {
+          "@language": "de",
+          "@value": "Berlin"
+        }
+      ],
+      "http://schema.org/description": {
+        "@language": "en",
+        "@value": "federal state, capital and largest city of Germany"
+      },
+      "http://schema.org/name": {
+        "@language": "en",
+        "@value": "Berlin"
+      },
+      "http://www.w3.org/2004/02/skos/core#prefLabel": {
+        "@language": "en",
+        "@value": "Berlin"
+      }
+    },
+    {
+      "@id": "http://www.wikidata.org/entity/Q1794",
+      "@type": "http://wikiba.se/ontology#Item",
+      "http://www.w3.org/2000/01/rdf-schema#label": [
+        {
+          "@language": "en",
+          "@value": "Frankfurt am Main"
+        },
+        {
+          "@language": "de",
+          "@value": "Frankfurt am Main"
+        },
+        {
+          "@language": "fr",
+          "@value": "Francfort-sur-le-Main"
+        }
+      ],
+      "http://schema.org/description": {
+        "@language": "en",
+        "@value": "most populous city in Hesse, Germany"
+      },
+      "http://schema.org/name": {
+        "@language": "en",
+        "@value": "Frankfurt am Main"
+      },
+      "http://www.w3.org/2004/02/skos/core#prefLabel": {
+        "@language": "en",
+        "@value": "Frankfurt am Main"
+      }
+    },
+    {
+      "@id": "http://www.wikidata.org/entity/Q2119",
+      "@type": "http://wikiba.se/ontology#Item",
+      "http://www.w3.org/2000/01/rdf-schema#label": [
+        {
+          "@language": "en",
+          "@value": "Mannheim"
+        },
+        {
+          "@language": "fr",
+          "@value": "Mannheim"
+        },
+        {
+          "@language": "de",
+          "@value": "Mannheim"
+        }
+      ],
+      "http://schema.org/description": {
+        "@language": "en",
+        "@value": "city in Baden-Württemberg, Germany"
+      },
+      "http://schema.org/name": {
+        "@language": "en",
+        "@value": "Mannheim"
+      },
+      "http://www.w3.org/2004/02/skos/core#prefLabel": {
+        "@language": "en",
+        "@value": "Mannheim"
+      }
+    }
+  ]
+}

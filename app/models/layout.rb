@@ -1,4 +1,4 @@
-
+# Layout used in a Spotlight
 class Layout
   attr_accessor :turtle, :fields
 

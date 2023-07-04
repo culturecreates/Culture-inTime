@@ -19,14 +19,19 @@ WHERE {
   
   OPTIONAL {
     ?s rdfs:label ?sub_label .
-   
+    values ?langs  {"languages_placeholder" }
+    filter(lang(?sub_label) = ?langs)
   }
   OPTIONAL {
     ?p rdfs:label ?prop_label .
+     values ?langs  {"languages_placeholder" }
+    filter(lang(?prop_label) = ?langs)
   }
 
   OPTIONAL {
     ?o rdfs:label ?obj_label .
+    values ?langs  {"languages_placeholder" }
+    filter(lang(?obj_label) = ?langs)
   }
 
 }

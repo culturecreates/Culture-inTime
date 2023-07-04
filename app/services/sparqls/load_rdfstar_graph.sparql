@@ -1,0 +1,64 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
+PREFIX onto: <http://www.ontotext.com/>
+PREFIX cit: <http://culture-in-time.org/ontology/>
+CONSTRUCT {
+    ?s ?p ?o  .
+    <<?s ?p ?o>> ?a ?b .
+    <<?s ?p ?o>> <http://www.w3.org/ns/prov#wasDerivedFrom> ?c .
+    ?c ?cp ?co .
+    ?cp rdfs:label ?cp_label .
+    ?co rdfs:label ?co_label .
+    ?p rdfs:label ?prop_label .
+    ?o rdfs:label ?obj_label .
+    ?a rdfs:label ?a_label .
+    ?b rdfs:label ?b_label .
+    ?p cit:order ?order .
+}
+WHERE {
+    values ?s {
+        <entity_uri_placeholder> 
+    }
+
+    ?s ?p ?o  .
+
+    # skip predicate to wikidata statement
+    filter(!contains(str(?p),"/prop/P"))
+
+    # main triple labels
+    OPTIONAL {
+        ?o rdfs:label ?obj_label .
+        filter(lang(?obj_label) = "locale_placeholder")
+    }
+    OPTIONAL {
+        ?p rdfs:label ?prop_label .
+        filter(lang(?prop_label) = "locale_placeholder" || "")
+    }
+
+    OPTIONAL {
+        <<?s ?p ?o>> ?a ?b .
+        ?a rdfs:label ?a_label .
+        filter(lang(?a_label) = "locale_placeholder")
+    }
+    OPTIONAL {
+        <<?s ?p ?o>> ?a ?b .
+        ?b rdfs:label ?b_label .
+        filter(lang(?b_label) = "locale_placeholder")
+    }
+
+    OPTIONAL {
+        <<?s ?p ?o>> <http://www.w3.org/ns/prov#wasDerivedFrom> ?c .
+        ?c ?cp ?co .
+    }
+    OPTIONAL {
+        <<?s ?p ?o>> <http://www.w3.org/ns/prov#wasDerivedFrom> ?c .
+        ?c ?cp ?co .
+        ?cp rdfs:label ?cp_label .
+        filter(lang(?cp_label) = "locale_placeholder")
+    }
+    OPTIONAL {
+        <<?s ?p ?o>> <http://www.w3.org/ns/prov#wasDerivedFrom> ?c .
+        ?c ?cp ?co .
+        ?co rdfs:label ?co_label .
+        filter(lang(?co_label) = "locale_placeholder")
+    }
+} order by  ?order ?prop_label ?obj_label ?a 
