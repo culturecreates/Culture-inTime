@@ -21,6 +21,15 @@ where {
         filter(contains(str(?a),"/prop/qualifier/P"))
         bind(?a as ?ps)
     }
+     UNION
+    {
+        OPTIONAL {
+            << ?uri ?p ?o >>  <http://www.w3.org/ns/prov#wasDerivedFrom> ?b .
+            ?b ?ref_prop ?ref_obj
+        }
+       
+        bind(?ref_prop as ?ps)
+    }
     
     ?ps rdfs:label ?l .
     filter(lang(?l) = "en")

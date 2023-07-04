@@ -2,18 +2,21 @@
 
   <% annotations.first.each do |key, value| %>
     <% if key == "http://www.w3.org/ns/prov#wasDerivedFrom" %>
+     
       
-      <% reference_list = display_reference(value.first["@id"]) %>
       <div class="ui accordion">
         <div class="title">
           <i class="dropdown icon"></i>
-         <%= reference_list.count %> <%= t("reference").pluralize(reference_list.count - 1) %>
+         <%=value.count %> <%= t("reference").pluralize(value.count ) %>
         </div>
         <div class="content" style="background: #EEEEEE; padding:0.5em;">
           <p class="transition hidden">
-              <% display_reference(value.first["@id"]).each do |triple|  %>
-                <% if triple[:p].value != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"  %>
-                  <%= display_label(triple[:p].value) %>:  <%= display_label(triple[:o].value) %> <br>
+              <% value.each do |ref|  %>
+                <% solutions = display_reference(ref["@id"]) %>
+                <% solutions.each do |solution| %>
+                <% if solution.p.value != "http://www.w3.org/1999/02/22-rdf-syntax-ns#type"  %>
+                  <%= display_label(solution.p.value) %>:  <%= display_label(solution.o.value) %> <br>
+                <% end %>
                 <% end %>
               <% end %>
           </p>
