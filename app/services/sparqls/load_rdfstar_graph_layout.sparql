@@ -45,10 +45,11 @@ WHERE {
 
 
     # qualifiers from layout
-    OPTIONAL {
-        <<?s ?p ?o>> ?a ?b .
-        graph <layout_graph_placeholder> {
-            ?a cit:order ?order .
+     {
+        select ?a where {
+            graph <layout_graph_placeholder> {
+                ?a cit:order ?order .
+            }
         }
     }
     OPTIONAL {
