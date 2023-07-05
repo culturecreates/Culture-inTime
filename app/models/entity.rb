@@ -207,7 +207,7 @@ class Entity
               elsif approach == "wikidata"
                 SparqlLoader.load('load_wikidata_graph', [
                   'entity_uri_placeholder', @entity_uri,
-                  'languages_placeholder' ,   language.split(",").join("\" \"")
+                  'languages_placeholder' ,  language.split(",").join("\" \"") # "en\" \"fr\" \"de"
                 ])
               elsif @layout_id
                 SparqlLoader.load('load_rdfstar_graph_layout', [

@@ -15,12 +15,16 @@
   <div class="two column row">
     <div class="column">
     <div class="field">
-   <label> API Explorer </label>
-    <input type="text" value="<%= search_rdf_url(spotlight: @spotlight.id, format: :json, locale: @spotlight.language || "en") %>">
+   <label> API Endpoint </label>
+    <input type="text" value="<%= spotlight_url(@spotlight, format: :json, locale: "en") %>">
     </div>
       <div class="field">
         <%= form.label :language %>
         <%= form.text_field :language, placeholder: "Language" %>
+      </div>
+      <div class="field">
+        <label> Refresh frequency (days) </label>
+        <input type="text" value="7">
       </div>
       <div class="field"> 
         <%= form.label "Frame"  %> 
@@ -43,7 +47,7 @@
 class='spotlight-widget' 
 data-spotlight='#{@spotlight.id}' 
 data-limit=5 
-data-locale='#{@spotlight.language || "en"}' 
+data-locale='en' 
 data-endpoint='#{root_url[0..-4]}'>
 </div>"%>
 <br>
