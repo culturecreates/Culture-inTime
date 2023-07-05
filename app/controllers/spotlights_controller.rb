@@ -1,5 +1,5 @@
 class SpotlightsController < ApplicationController
-  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats, :download, :update_layout]
+  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats_prop, :stats_qual, :stats_ref, :download, :update_layout]
 
   # GET /spotlights
   # GET /spotlights.json
@@ -38,10 +38,25 @@ class SpotlightsController < ApplicationController
     send_data  @batch.dump(:jsonld, validate: false), :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
   end
 
-  # GET /spotlights/1/stats
-  def stats
-    results = RDFGraph.execute(@spotlight.generate_sparql_properties)
+  # GET /spotlights/1/stats_prop
+  def stats_prop
+    results = RDFGraph.execute(@spotlight.generate_sparql_stats_prop)
     @properties = results[:message]
+    render "stats"
+  end
+
+  # GET /spotlights/1/stats_qual
+  def stats_qual
+    results = RDFGraph.execute(@spotlight.generate_sparql_stats_qual)
+    @properties = results[:message]
+    render "stats"
+  end
+
+      # GET /spotlights/1/stats_ref
+  def stats_ref
+    results = RDFGraph.execute(@spotlight.generate_sparql_stats_ref)
+    @properties = results[:message]
+    render "stats"
   end
 
   # GET /spotlights/new

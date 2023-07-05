@@ -29,7 +29,7 @@ Rails.application.routes.draw do
 
     resources :spotlights do
       member do
-        get 'stats', 'download'
+        get 'stats_prop','stats_ref','stats_qual', 'download'
         patch 'update_layout'
       end
     end
