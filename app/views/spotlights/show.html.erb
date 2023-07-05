@@ -34,9 +34,10 @@
           
         <div class="column">
         <div style="margin-bottom:10px">
-           <%= link_to "Load entity properties", stats_prop_spotlight_path(@spotlight), remote: true, class: "ui button" %>
-           <%= link_to "Load references", stats_ref_spotlight_path(@spotlight), remote: true, class: "ui button" %>
-           <%= link_to "Load qualifiers", stats_qual_spotlight_path(@spotlight), remote: true, class: "ui button" %>
+           <%= link_to "properties", stats_prop_spotlight_path(@spotlight), remote: true, class: "ui button" %>
+           <%= link_to "references", stats_ref_spotlight_path(@spotlight), remote: true, class: "ui button" %>
+           <%= link_to "qualifiers", stats_qual_spotlight_path(@spotlight), remote: true, class: "ui button" %>
+            <%= link_to "inverse properties", stats_prop_spotlight_path(@spotlight), remote: true, class: "ui button" %>
            </div>
         <div id="stats">
            
