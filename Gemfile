@@ -97,7 +97,7 @@ gem 'codemirror-rails'
 gem "net-http"
 gem "net-smtp"
 gem "net-imap"
-gem "uri", "0.10.0.1"
+gem "uri", "0.10.3"
 
 gem 'rack-cors'
 
