@@ -1,5 +1,5 @@
 class SpotlightsController < ApplicationController
-  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats_prop, :stats_qual, :stats_ref, :download, :update_layout]
+  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats_prop, :stats_qual, :stats_ref, :stats_inverse_prop, :download, :update_layout]
 
   # GET /spotlights
   # GET /spotlights.json
@@ -52,9 +52,16 @@ class SpotlightsController < ApplicationController
     render "stats"
   end
 
-      # GET /spotlights/1/stats_ref
+  # GET /spotlights/1/stats_ref
   def stats_ref
     results = RDFGraph.execute(@spotlight.generate_sparql_stats_ref)
+    @properties = results[:message]
+    render "stats"
+  end
+
+  # GET /spotlights/1/stats_inverse_prop
+  def stats_inverse_prop
+    results = RDFGraph.execute(@spotlight.generate_sparql_stats_inverse_prop)
     @properties = results[:message]
     render "stats"
   end

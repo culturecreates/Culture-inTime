@@ -28,6 +28,11 @@ class Spotlight < ApplicationRecord
       '<spotlight_query_placeholder> a "triple"', self.sparql
     ])
   end
+  def generate_sparql_stats_inverse_prop
+    SparqlLoader.load('collect_spotlight_stats_inverse_prop',[
+      '<spotlight_query_placeholder> a "triple"', self.sparql
+    ])
+  end
 
   private 
 
