@@ -91,7 +91,7 @@ class DataSource < ApplicationRecord
       select distinct ?uri 
       where {
         graph <#{graph_name}> {
-          # ?s a <#{self.type_uri}> .
+          ?s a <#{self.type_uri}> .
           ?s ?p ?uri  .
           ?uri a <http://wikiba.se/ontology#Item> .
         }
