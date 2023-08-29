@@ -29,8 +29,9 @@ class Layout
   end
 
 
-  def add_field(uri, name)
+  def add_field(uri, name, direction = nil)
     return false if @fields.select {|f| f.has_key?(uri)}.present?
+    name = "^" + name if direction == "Reverse"
     @fields << { uri =>  name }
     true
   end
@@ -45,8 +46,6 @@ class Layout
       return true
     end
   end
-
-
 
   def move_up(uri)
     index = @fields.index { |f| f.first[0] == uri } 
@@ -68,7 +67,12 @@ class Layout
   def turtle
     turtle = ''
     @fields.each_with_index do |field,index|
-      turtle += "<#{field.first[0]}>  <http://culture-in-time.org/ontology/order> #{index} ; <http://culture-in-time.org/ontology/name> \"#{field.first[1]}\" .  "
+      name =  field.first[1]
+      if name[0] == "^"
+        turtle += "<#{field.first[0]}>  <http://culture-in-time.org/ontology/order> #{index} ; <http://culture-in-time.org/ontology/name> \"#{name[1..-1]}\" ; <http://culture-in-time.org/ontology/direction> <http://culture-in-time.org/ontology/Reverse> .  "
+      else
+        turtle += "<#{field.first[0]}>  <http://culture-in-time.org/ontology/order> #{index} ; <http://culture-in-time.org/ontology/name> \"#{name}\" .  "
+      end
     end
     turtle
   end

@@ -40,9 +40,15 @@ module ProductionsHelper
       pattern [RDF::URI(id), RDF::URI("http://www.w3.org/2000/01/rdf-schema#label"), :label]
     end
     query << RDF::Query::Pattern.new(RDF::URI(id), RDF::URI("http://schema.org/name"), :name, optional: true)
+    query << RDF::Query::Pattern.new(RDF::URI(id), RDF::URI("http://culture-in-time.org/ontology/direction"), :direction, optional: true)
     solution = @production.graph.query(query)
     if solution.count > 0
-      return solution.first[:label].value
+      if  solution.first[:direction]
+        return "^#{solution.first[:label].value}"
+      else
+        return solution.first[:label].value
+      end
+     
     else 
       return id
     end
