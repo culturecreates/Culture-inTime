@@ -63,13 +63,10 @@ WHERE {
 
 
     # qualifiers from layout
-     {
-        select ?a where {
-            graph <layout_graph_placeholder> {
-                ?a cit:order ?order .
-            }
-        }
+    graph <layout_graph_placeholder> {
+        ?a cit:order ?order .
     }
+       
     OPTIONAL {
         <<?s ?p ?o>> ?a ?b .
         ?a rdfs:label ?a_label .
@@ -82,13 +79,10 @@ WHERE {
     }
 
     # references from layout 
-    {
-        select ?cp where {
-            graph <layout_graph_placeholder> {
-                ?cp cit:order ?order .
-            }
-        }
+    graph <layout_graph_placeholder> {
+        ?cp cit:order ?order .
     }
+
     OPTIONAL {
         <<?s ?p ?o>> <http://www.w3.org/ns/prov#wasDerivedFrom> ?c .
         ?c ?cp ?co .

@@ -11,28 +11,33 @@ class Layout
     graph = RDF::Graph.new
     graph.from_ttl(turtle, prefixes: {rdf: RDF.to_uri, cit: "<http://culture-in-time.org/ontology/>"})
 
-    cit = RDF::Vocabulary.new("http://culture-in-time.org/ontology/")
-    query = RDF::Query.new({
-      uri: {
-        cit.name => :name,
-        cit.order => :order,
-      }
-    }, **{})
-    
+    # cit = RDF::Vocabulary.new("http://culture-in-time.org/ontology/")
+    query = RDF::Query.new do 
+      pattern [:uri,RDF::URI("http://culture-in-time.org/ontology/name"), :name]
+      pattern [:uri, RDF::URI("http://culture-in-time.org/ontology/order"), :order]
+    end
+    query << RDF::Query::Pattern.new(:uri, RDF::URI("http://culture-in-time.org/ontology/direction"), :direction, optional: true)
     fields = []
-    query.execute(graph) do |solution|
-      fields << {solution.uri.value => solution.name.value, order:  solution.order.value.to_i }
+    query.execute(graph) do |solution| 
+      if solution.to_h[:direction] 
+        fields << { solution.uri.value => solution.name.value, order:  solution.order.value.to_i, direction: solution.direction.value}
+      else
+        fields << { solution.uri.value => solution.name.value, order:  solution.order.value.to_i, direction: "http://culture-in-time.org/ontology/Forward"}
+      end
     end
     fields.sort_by! { |f| f[:order] }
-    # puts "fields: #{fields}"
+    puts "fields converted from turtle to list: #{fields}"
     fields
   end
 
 
   def add_field(uri, name, direction = nil)
     return false if @fields.select {|f| f.has_key?(uri)}.present?
-    name = "^" + name if direction == "Reverse"
-    @fields << { uri =>  name }
+    if direction == "Reverse"
+      @fields << { uri =>  name, direction: "http://culture-in-time.org/ontology/Reverse"}
+    else
+      @fields << { uri =>  name, direction: "http://culture-in-time.org/ontology/Forward"}
+    end
     true
   end
 
@@ -66,13 +71,12 @@ class Layout
 
   def turtle
     turtle = ''
+    puts "converting to turtle: #{@fields}"
     @fields.each_with_index do |field,index|
-      name =  field.first[1]
-      if name[0] == "^"
-        turtle += "<#{field.first[0]}>  <http://culture-in-time.org/ontology/order> #{index} ; <http://culture-in-time.org/ontology/name> \"#{name[1..-1]}\" ; <http://culture-in-time.org/ontology/direction> <http://culture-in-time.org/ontology/Reverse> .  "
-      else
-        turtle += "<#{field.first[0]}>  <http://culture-in-time.org/ontology/order> #{index} ; <http://culture-in-time.org/ontology/name> \"#{name}\" .  "
-      end
+      uri = field.first[0]
+      name = field.first[1]
+      turtle += "<#{uri}>  <http://culture-in-time.org/ontology/order> #{index} ; <http://culture-in-time.org/ontology/name> \"#{name}\" ; <http://culture-in-time.org/ontology/direction> <#{field[:direction]}> .  "
+     
     end
     turtle
   end

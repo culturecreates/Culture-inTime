@@ -39,6 +39,13 @@ class LayoutTest < ActiveSupport::TestCase
     assert_equal  expected, @layout.fields
   end
 
+  test "add direction reverse and move up" do
+    @layout.add_field("http://example.com/1","one","Reverse")
+    @layout.move_up("http://example.com/1")
+    expected = [{"http://example.com/1"=>"^one"},{"http://example.com/0"=>"zero"} ]
+    assert_equal  expected, @layout.fields
+  end
+
   test "make turtle with direction" do
     @layout.delete_field("http://example.com/0")
     @layout.add_field("http://example.com/1","one","Reverse")

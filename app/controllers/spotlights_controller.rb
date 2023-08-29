@@ -62,6 +62,7 @@ class SpotlightsController < ApplicationController
   # GET /spotlights/1/stats_inverse_prop
   def stats_inverse_prop
     results = RDFGraph.execute(@spotlight.generate_sparql_stats_inverse_prop)
+    @direction = "Reverse"
     @properties = results[:message]
     render "stats"
   end
