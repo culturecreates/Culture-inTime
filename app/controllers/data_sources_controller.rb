@@ -1,6 +1,6 @@
 class DataSourcesController < ApplicationController
   require 'sidekiq/api'
-  before_action :set_data_source, only: [:show, :fix_labels, :convert_to_rdf_star, :apply_upper_ontology, :load_secondary, :load_rdf, :edit, :update, :destroy]
+  before_action :set_data_source, only: [:show, :fix_labels, :convert_to_rdf_star, :apply_upper_ontology, :load_secondary, :load_tertiary, :load_rdf, :edit, :update, :destroy]
 
 
   # GET /data_sources
@@ -64,6 +64,20 @@ class DataSourcesController < ApplicationController
         flash.now[:notice] = "#{@data_source.secondary_uri_count} additional secondary nodes loaded!"
       else
         flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not load secondary nodes."
+      end
+    end
+    render 'show'
+  end
+
+  # GET /data_sources/1/load_tertiary
+  def load_tertiary
+    if @data_source.upper_title.blank?
+      flash.now[:notice] = "Error: need a title property in upper ontology." 
+    else
+      if @data_source.load_tertiary
+        flash.now[:notice] = "#{@data_source.secondary_uri_count} additional tertiary nodes loaded!"
+      else
+        flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not load tertiary nodes."
       end
     end
     render 'show'

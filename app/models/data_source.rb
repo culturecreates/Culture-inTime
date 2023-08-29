@@ -85,13 +85,13 @@ class DataSource < ApplicationRecord
   end
 
   def load_secondary
-     # Dereference all objects of any type
+     # Dereference all objects of any type steming from the main entity class {self.type_uri}
 
     sparql = <<~SPARQL
       select distinct ?uri 
       where {
         graph <#{graph_name}> {
-          ?s a <#{self.type_uri}> .
+          # ?s a <#{self.type_uri}> .
           ?s ?p ?uri  .
           ?uri a <http://wikiba.se/ontology#Item> .
         }
@@ -137,6 +137,59 @@ class DataSource < ApplicationRecord
     puts "Returning true!"
     return true
   end
+
+  # Dereference all objects of any type
+  def load_tertiary
+    sparql = <<~SPARQL
+      select distinct ?uri 
+      where {
+        graph <#{graph_name}> {
+          ?s ?p ?uri  .
+          ?uri a <http://wikiba.se/ontology#Item> .
+        }
+        MINUS {
+          ?uri <http://www.wikidata.org/prop/direct/P31> ?sometype .
+        }
+        MINUS {
+          ?uri <http://www.wikidata.org/prop/direct/P279> ?sometype .
+        }
+      }
+    SPARQL
+
+    @response = RDFGraph.execute(sparql)
+
+    puts "######### #{@response}"
+    if @response[:code] != 200
+      puts "found error in tertiary load"
+      self.errors.add(:base, "#{@response[:message]}")
+      return false
+    end
+
+    data = @response[:message]
+
+    @tertiary_uris = []
+
+    return true unless data.present?
+    
+    @tertiary_uris = data.pluck("uri").pluck("value")
+    
+    # This limit is set in the GraphDB respository as the "Limit query results"
+    if @tertiary_uris.count >= 100000
+      self.errors.add(:base, "Exceeded limit of 100,000 tertiary URIs. Please break query into smaller groups.")
+      return false 
+    end
+  
+    # chunk in smaller arrays incase one fails in the queue
+    # for a list of 100,000 URIs this will queue 200 jobs 
+    @tertiary_uris.each_slice(200) do |chunk|
+      SetupContentNegotiationJob.perform_later(chunk, graph_name)
+      puts "Tertiary Batch sent...."
+    end
+  
+    puts "Returning true for tertiary load!"
+    return true
+  end
+
 
   def sample_graph
     return @sample_graph

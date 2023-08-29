@@ -64,7 +64,7 @@ WHERE {
 
     # qualifiers from layout
     graph <layout_graph_placeholder> {
-        ?a cit:order ?order .
+        ?a cit:order ?order_a .
     }
        
     OPTIONAL {
@@ -80,7 +80,7 @@ WHERE {
 
     # references from layout 
     graph <layout_graph_placeholder> {
-        ?cp cit:order ?order .
+        ?cp cit:order ?order_cp .
     }
 
     OPTIONAL {
