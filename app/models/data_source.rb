@@ -141,24 +141,26 @@ class DataSource < ApplicationRecord
   # Dereference all objects of any type
   def load_tertiary
     sparql = <<~SPARQL
-      select distinct ?uri 
+      select distinct ?uri_tertiary 
       where {
         graph <#{graph_name}> {
-          ?s ?p ?uri  .
-          ?uri a <http://wikiba.se/ontology#Item> .
-        }
+            ?s a <#{self.type_uri}> .
+            ?s ?p ?uri_secondary .
+            ?uri_secondary ?p_secondary ?uri_tertiary .
+            ?uri_tertiary a <http://wikiba.se/ontology#Item> .
+        } 
         MINUS {
-          ?uri <http://www.wikidata.org/prop/direct/P31> ?sometype .
-        }
+            ?uri_tertiary <http://www.wikidata.org/prop/direct/P31> ?some_instance_of_entity .
+        } 
         MINUS {
-          ?uri <http://www.wikidata.org/prop/direct/P279> ?sometype .
-        }
+            ?uri_tertiary <http://www.wikidata.org/prop/direct/P279> ?some_subclass_of_entity .
+        } 
       }
     SPARQL
 
+
     @response = RDFGraph.execute(sparql)
 
-    puts "######### #{@response}"
     if @response[:code] != 200
       puts "found error in tertiary load"
       self.errors.add(:base, "#{@response[:message]}")
