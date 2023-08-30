@@ -75,7 +75,7 @@ class DataSourcesController < ApplicationController
       flash.now[:notice] = "Error: need a title property in upper ontology." 
     else
       if @data_source.load_tertiary
-        flash.now[:notice] = "#{@data_source.secondary_uri_count} additional tertiary nodes loaded!"
+        flash.now[:notice] = "#{@data_source.tertiary_uri_count} additional tertiary nodes loaded!"
       else
         flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not load tertiary nodes."
       end

@@ -202,6 +202,11 @@ class DataSource < ApplicationRecord
   def secondary_uri_count
     return @secondary_uris.count
   end
+
+  def tertiary_uri_count
+    return @tertiary_uris.count
+  end
+
   def sample_uri 
     return  @sample_uri
   end
