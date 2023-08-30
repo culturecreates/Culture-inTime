@@ -8,7 +8,7 @@
 <% layout.fields.each do |field| %>
 <tr>
   
-  <td><h5 class="ui header"><%= field.first[1]%> <div class="sub header"><%= field.first[0] %></div> </h5></td>
+  <td><h5 class="ui header"><%= "^" if field[:direction] == "http://culture-in-time.org/ontology/Reverse" %><%= field.first[1]%> <div class="sub header"><%= field.first[0] %></div> </h5></td>
   <td> 
   <%= link_to layout_delete_field_path(uri: field.first[0], spotlight: @spotlight),  remote: true do %>
    <i class="x middle aligned icon"></i> <% end %>
