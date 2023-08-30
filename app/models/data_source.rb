@@ -84,8 +84,9 @@ class DataSource < ApplicationRecord
     BatchUpdateJob.perform_now(fix_wikidata_anotated_entity_labels_sparql)
   end
 
+  # Dereference all objects of any type steming from the main entity class {self.type_uri}
   def load_secondary
-     # Dereference all objects of any type steming from the main entity class {self.type_uri}
+     
 
     sparql = <<~SPARQL
       select distinct ?uri 
@@ -141,19 +142,19 @@ class DataSource < ApplicationRecord
   # Dereference all objects of any type
   def load_tertiary
     sparql = <<~SPARQL
-      select distinct ?uri_tertiary 
+      select distinct ?uri
       where {
         graph <#{graph_name}> {
             ?s a <#{self.type_uri}> .
             ?s ?p ?uri_secondary .
-            ?uri_secondary ?p_secondary ?uri_tertiary .
-            ?uri_tertiary a <http://wikiba.se/ontology#Item> .
+            ?uri_secondary ?p_secondary ?uri .
+            ?uri a <http://wikiba.se/ontology#Item> .
         } 
         MINUS {
-            ?uri_tertiary <http://www.wikidata.org/prop/direct/P31> ?some_instance_of_entity .
+            ?uri <http://www.wikidata.org/prop/direct/P31> ?some_instance_of_entity .
         } 
         MINUS {
-            ?uri_tertiary <http://www.wikidata.org/prop/direct/P279> ?some_subclass_of_entity .
+            ?uri <http://www.wikidata.org/prop/direct/P279> ?some_subclass_of_entity .
         } 
       }
     SPARQL
