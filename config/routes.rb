@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   get 'layout/move_down' , to: 'layout#move_down' 
 
   scope "/:locale" do
-    root to: 'home#index'
+    root to: 'spotlights#index'
    
     get '/search', to: 'search#index'
     get '/search_rdf', to: 'search_rdf#index'
