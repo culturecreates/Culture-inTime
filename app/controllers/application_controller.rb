@@ -6,8 +6,15 @@ class ApplicationController < ActionController::Base
   #   I18n.with_locale(locale, &action)
   # end
 
+ 
+rescue_from ActiveRecord::RecordNotFound, with: :not_found_resp
 
 before_action :set_locale
+
+def not_found_resp  
+  redirect_to spotlights_url, notice: 'Please create your first spotlight.'
+end
+
  
 def set_locale
   I18n.locale = params[:locale] || I18n.default_locale
