@@ -8,7 +8,6 @@ module ArtsdataApi
     class Client
       API_ENDPOINT = ENV['GRAPH_API_ENDPOINT'].freeze
       GRAPH_REPOSITORY = ENV['GRAPH_REPOSITORY'].freeze
-      attr_reader :oauth_token
 
       def initialize(oauth_token: nil, graph_repository: GRAPH_REPOSITORY)
         @oauth_token = oauth_token
@@ -116,7 +115,7 @@ module ArtsdataApi
         @client ||= Faraday.new(API_ENDPOINT) do |client|
           client.request :url_encoded
           client.adapter Faraday.default_adapter
-          client.headers['Authorization'] = "Basic #{oauth_token}" if oauth_token.present?
+          client.headers['Authorization'] = "Basic #{@oauth_token}" if @oauth_token.present?
           client.options.timeout = 300 # seconds or about 5 minutes for long updates of 10 MB of data
         end
       end
