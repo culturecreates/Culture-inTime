@@ -39,14 +39,22 @@ module ProductionsHelper
     query = RDF::Query.new do
       pattern [RDF::URI(id), RDF::URI("http://www.w3.org/2000/01/rdf-schema#label"), :label]
     end
-    query << RDF::Query::Pattern.new(RDF::URI(id), RDF::URI("http://schema.org/name"), :name, optional: true)
+    #query << RDF::Query::Pattern.new(RDF::URI(id), RDF::URI("http://schema.org/name"), :name, optional: true)
     query << RDF::Query::Pattern.new(RDF::URI(id), RDF::URI("http://culture-in-time.org/ontology/direction"), :direction, optional: true)
-    solution = @production.graph.query(query)
-    if solution.count > 0
-      if  solution.first[:direction]
-        return "^#{solution.first[:label].value}"
+    solutions = @production.graph.query(query)
+
+    # try to get label in language of UI
+    solutions_in_ui_language = solutions.clone
+    solutions_in_ui_language.filter { |solution| solution.label.language == I18n.locale.to_sym }
+    if solutions_in_ui_language.count > 0
+      solutions = solutions_in_ui_language 
+    end
+
+    if solutions.count > 0
+      if  solutions.first[:direction]
+        return "^#{solutions.first[:label].value}"
       else
-        return solution.first[:label].value
+        return solutions.first[:label].value
       end
      
     else 
