@@ -26,7 +26,7 @@ class Layout
       end
     end
     fields.sort_by! { |f| f[:order] }
-    puts "fields converted from turtle to list: #{fields}"
+    # puts "fields converted from turtle to list: #{fields}"
     fields
   end
 
@@ -71,7 +71,7 @@ class Layout
 
   def turtle
     turtle = ''
-    puts "converting to turtle: #{@fields}"
+    # puts "converting to turtle: #{@fields}"
     @fields.each_with_index do |field,index|
       uri = field.first[0]
       name = field.first[1]
