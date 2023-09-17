@@ -78,6 +78,8 @@ class Layout
       turtle += "<#{uri}>  <http://culture-in-time.org/ontology/order> #{index} ; <http://culture-in-time.org/ontology/name> \"#{name}\" ; <http://culture-in-time.org/ontology/direction> <#{field[:direction]}> .  "
      
     end
+    # Add rdfs:label with any order so it gets included in the layout for display in the title.
+    turtle += "rdfs:label <http://culture-in-time.org/ontology/order> \"99\"^^xsd:integer ." 
     turtle
   end
 
