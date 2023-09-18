@@ -99,7 +99,7 @@ class DataSourcesController < ApplicationController
           Estimated time to load is #{helpers.time_estimate(@data_source) }."
         end
       else
-        flash.now[:notice] = "Ran into a problem. #{@data_source.errors.full_messages}"
+        flash.now[:notice] = "#{@data_source.errors.full_messages} Maybe nothing to update."
       end
     end
     render 'show'
