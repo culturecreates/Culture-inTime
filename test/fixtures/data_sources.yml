@@ -17,6 +17,6 @@ one:
 
 two:
   name: Source Two
-  sparql: SELECT DISTINCT ?uri WHERE { ?a ?b ?c } 
+  sparql: SELECT DISTINCT ?uri WHERE { ?uri schema:modifiedDate CACHEDATE } 
   email: MyString
   loaded: 2021-04-08 21:04:12

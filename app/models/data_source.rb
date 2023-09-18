@@ -11,7 +11,7 @@ class DataSource < ApplicationRecord
 
   # Method to load data source into a graph
   def load_rdf(test_drive = false)
-    @response = RDFGraph.execute(sparql_minus_unchanged_entities)
+    @response = RDFGraph.execute(sparql_new_or_updated_entities)
     if @response[:code] != 200
       self.errors.add(:base, "#{@response[:message]}")
       return false
@@ -261,8 +261,23 @@ class DataSource < ApplicationRecord
   def sparql_minus_unchanged_entities 
     sparql = self.sparql
     sparql_parts = self.sparql.rpartition('}') # splits first occurance from right side
-    sparql = sparql_parts[0] + "MINUS { ?uri a <#{self.type_uri}> . ?feed <http://schema.org/about> ?uri ; <http://schema.org/dateModified> ?mod . filter(?mod <= \"#{self.loaded.to_time.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>) }" + sparql_parts[1] + sparql_parts[2]
+    sparql = sparql_parts[0] + "MINUS { ?uri a <#{self.type_uri}> . }" + sparql_parts[1] + sparql_parts[2]
     sparql
+  end
+
+  def sparql_with_cache_date
+    self.sparql.gsub("CACHEDATE", "\"#{self.loaded.to_time.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>")
+  end
+
+  # Modify the source's sparql to avoid reloaded existing entites
+  def sparql_new_or_updated_entities
+    if self.sparql.include?("CACHEDATE")
+      # if using CACHEDATE then set CACHEDATE so the source can load only updated entites
+      sparql_with_cache_date
+    else
+      # add a minus {} to not reload entities already loaded
+      sparql_minus_unchanged_entities
+    end
   end
 
 end
