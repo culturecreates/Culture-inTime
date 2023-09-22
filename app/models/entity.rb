@@ -191,7 +191,7 @@ class Entity
   
     result = JSON::LD::API.frame(input, frame, rdfstar: true)
 
-    puts JSON.pretty_generate(result)
+    # puts JSON.pretty_generate(result)
     result
   end
 
