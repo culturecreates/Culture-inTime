@@ -23,12 +23,11 @@ where {
                 values ?object_type { owl:ObjectProperty owl:DatatypeProperty }
                 ?p a ?object_type .
                 ?sub ?p ?obj .  # Is being used
+                filter(contains(str(?p),"prop/direct/P") || contains(str(?p),"prop/qualifier/P") || contains(str(?p),"prop/reference/P"))
             }
-            OPTIONAL {
-                ?p  rdfs:label ?label .
-            }
-            filter(contains(str(?p),"prop/direct/P") || contains(str(?p),"prop/qualifier/P") || contains(str(?p),"prop/reference/P"))
-            filter(!bound(?label))
+
+            filter not exists {  ?p  rdfs:label ?label . }
+       
             bind(URI(concat("http://www.wikidata.org/entity/P",strafter(str(?p),"/P"))) as ?uri)
         }
     }

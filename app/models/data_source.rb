@@ -74,12 +74,12 @@ class DataSource < ApplicationRecord
   end
 
   def convert_to_rdf_star 
-    BatchUpdateJob.perform_now(convert_wikidata_to_rdf_star_graph_sparql)
+    BatchUpdateJob.perform_later(convert_wikidata_to_rdf_star_graph_sparql)
   end
 
   def fix_labels 
-    BatchUpdateJob.perform_now(fix_wikidata_property_labels_sparql)
-    BatchUpdateJob.perform_now(fix_wikidata_anotated_entity_labels_sparql)
+    BatchUpdateJob.perform_later(fix_wikidata_property_labels_sparql)
+    BatchUpdateJob.perform_later(fix_wikidata_anotated_entity_labels_sparql)
   end
 
   # Dereference all objects of any type steming from the main entity class {self.type_uri}

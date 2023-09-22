@@ -37,20 +37,20 @@ class DataSourcesController < ApplicationController
   
   def fix_labels
     response = @data_source.fix_labels
-    if response[:code] == 204
-      flash.now[:notice] = "Labels loaded!"
+    if response
+      flash.now[:notice] = "Fix labels job sent to queue!"
     else
-      flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not load labels."
+      flash.now[:notice] = "Error: ran into a problem #{response.inspect}. Could not load labels"
     end
     render 'show'
   end
 
   def convert_to_rdf_star
     response = @data_source.convert_to_rdf_star
-    if response[:code] == 204
-      flash.now[:notice] = "Converted to RDF Star!"
+    if response
+      flash.now[:notice] = "Convert to RDF Star job sent to queue!"
     else
-      flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not convert to RDF Star."
+      flash.now[:notice] = "Error: ran into a problem #{response.inspect}. Could not convert to RDF Star."
     end
     render 'show'
   end
