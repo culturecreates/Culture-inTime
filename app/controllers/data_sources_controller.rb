@@ -9,9 +9,7 @@ class DataSourcesController < ApplicationController
     @data_sources = DataSource.all.order(:name)
     @jobs = 0
     begin
-      @jobs = if Rails.env.production?
-        Sidekiq::Queue.new.size
-      end
+      @jobs = Sidekiq::Queue.new.size if Rails.env.production?
     rescue => exception
       flash.now[:notice] = "Redis Queue: #{exception.inspect} ." 
     end
