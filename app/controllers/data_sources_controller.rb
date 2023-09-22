@@ -7,10 +7,13 @@ class DataSourcesController < ApplicationController
   # GET /data_sources.json
   def index
     @data_sources = DataSource.all.order(:name)
-    @jobs = if Rails.env.production?
-      Sidekiq::Queue.new.size
-    else
-      0
+    @jobs = 0
+    begin
+      @jobs = if Rails.env.production?
+        Sidekiq::Queue.new.size
+      end
+    rescue => exception
+      flash.now[:notice] = "Redis Queue: #{exception.inspect} ." 
     end
   end
 
