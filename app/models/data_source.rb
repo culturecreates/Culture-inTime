@@ -266,7 +266,11 @@ class DataSource < ApplicationRecord
   end
 
   def sparql_with_cache_date
-    self.sparql.gsub("CACHEDATE", "\"#{self.loaded.to_time.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>")
+    if self.loaded
+      self.sparql.gsub("CACHEDATE", "\"#{self.loaded.to_time.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>")
+    else
+      self.sparql.gsub("CACHEDATE", "\"#{Time.now.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>")
+    end
   end
 
   # Modify the source's sparql to avoid reloaded existing entites

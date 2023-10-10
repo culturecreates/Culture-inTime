@@ -20,3 +20,7 @@ two:
   sparql: SELECT DISTINCT ?uri WHERE { ?uri schema:modifiedDate CACHEDATE } 
   email: MyString
   loaded: 2021-04-08 21:04:12
+
+three:
+  name: New source three never loaded
+  sparql: SELECT DISTINCT ?uri WHERE { ?uri schema:modifiedDate CACHEDATE }  

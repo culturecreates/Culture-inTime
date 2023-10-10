@@ -16,6 +16,11 @@ class DataSourceTest < ActiveSupport::TestCase
     assert_equal  expected, @source.sparql_with_cache_date
   end
 
+  test "sparql_with_cache_date_in_new_source" do
+    @source = data_sources(:three)
+    expected = "SELECT DISTINCT ?uri WHERE { ?uri schema:modifiedDate \"#{Time.now.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime> }"
+    assert_equal  expected, @source.sparql_with_cache_date
+  end
 
 
 end
