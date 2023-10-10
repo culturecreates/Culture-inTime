@@ -269,7 +269,7 @@ class DataSource < ApplicationRecord
     if self.loaded
       self.sparql.gsub("CACHEDATE", "\"#{self.loaded.to_time.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>")
     else
-      self.sparql.gsub("CACHEDATE", "\"#{Time.now.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>")
+      self.sparql.gsub("CACHEDATE", "\"1967-01-01T00:00:00+00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>")
     end
   end
 

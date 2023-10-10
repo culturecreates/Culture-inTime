@@ -18,7 +18,8 @@ class DataSourceTest < ActiveSupport::TestCase
 
   test "sparql_with_cache_date_in_new_source" do
     @source = data_sources(:three)
-    expected = "SELECT DISTINCT ?uri WHERE { ?uri schema:modifiedDate \"#{Time.now.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime> }"
+    # Wikidata started in 2012 so 1967 should be a safe date for the earliest RDF datasets.
+    expected = "SELECT DISTINCT ?uri WHERE { ?uri schema:modifiedDate \"1967-01-01T00:00:00+00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime> }"
     assert_equal  expected, @source.sparql_with_cache_date
   end
 
