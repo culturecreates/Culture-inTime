@@ -19,7 +19,7 @@ where {
     {
          select ?uri where {
          <spotlight_query_placeholder> a "triple"
-         } limit 100
+         } limit 500
     }
 } 
 group by ?ps 
