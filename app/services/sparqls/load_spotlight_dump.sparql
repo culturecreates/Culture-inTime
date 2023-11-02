@@ -1,0 +1,18 @@
+PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+PREFIX wd: <http://www.wikidata.org/entity/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX cit: <http://culture-in-time.org/ontology/>
+
+construct 
+{
+   ?uri ?p ?o .
+}
+
+where {
+    values ?uri { <uri_values_placeholder> }
+    values ?p { <forward_prop_values_placeholder> }
+  
+    ?uri ?p ?o .
+    filter(!contains(str(?p),"/prop/P"))
+
+}
