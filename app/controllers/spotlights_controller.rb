@@ -25,13 +25,19 @@ class SpotlightsController < ApplicationController
     redirect_to @spotlight, notice: 'Spotlight layout was successfully updated.'
   end
 
-  # GET /spotlights/1.json/download
+  # GET /spotlights/1/download.json&refresh=&style=
   def download
+    @spotlight.dump = nil if params[:refresh]
+
     if params[:style] != "wikidata"
-      if @spotlight.dump
+      if @spotlight.dump && @spotlight.dump != "loading"
         output = @spotlight.dump
       else
-        DumpSpotlightJob.perform_later(@spotlight.id)
+        if @spotlight.dump != "loading"
+          DumpSpotlightJob.perform_later(@spotlight.id)
+          @spotlight.dump = "loading"
+          @spotlight.save
+        end
         notice = "Compiling spotlight data... Try again in a minute!"
       end
     else
