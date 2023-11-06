@@ -27,10 +27,8 @@ class SpotlightsController < ApplicationController
 
   # GET /spotlights/1/download.json&refresh=&style=
   def download
-    @spotlight.dump = nil if params[:refresh]
-
     if params[:style] != "wikidata"
-      if @spotlight.dump && @spotlight.dump != "loading"
+      if @spotlight.dump && @spotlight.dump != "loading" && !params[:refresh]
         output = @spotlight.dump
       else
         if @spotlight.dump != "loading"
