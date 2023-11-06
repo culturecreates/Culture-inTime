@@ -31,7 +31,7 @@ class SpotlightsController < ApplicationController
       if @spotlight.dump
         output = @spotlight.dump
       else
-        DumpSpotlightJob.perform_now(@spotlight.id)
+        DumpSpotlightJob.perform_later(@spotlight.id)
         notice = "Compiling spotlight data... Try again in a minute!"
       end
     else
