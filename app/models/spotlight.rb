@@ -11,7 +11,11 @@ class Spotlight < ApplicationRecord
   end
 
   def spotlight_lang_values
-    self.language.split(",").map { |l| "\"#{l.squish}\"  " }.join
+    if self.language
+      self.language.split(",").map { |l| "\"#{l.squish}\"  " }.join
+    else
+      ' "en" '  # default english
+    end
   end
 
   def reverse_prop_values
