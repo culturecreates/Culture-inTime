@@ -4,7 +4,11 @@ class Spotlight < ApplicationRecord
   validates :title, :description, :location, :subtitle, presence: true
 
   before_save :remove_sparql_line_feeds, :check_if_search_params_changed
-
+ 
+  # returns a string of properties for use as sparql values
+  def forward_prop_values
+    Layout.new(self.layout).fields.map {|f| "<#{f.first.first}>" }.join(" ") 
+  end
 
   def generate_sparql
     SparqlLoader.load('spotlight_index',[

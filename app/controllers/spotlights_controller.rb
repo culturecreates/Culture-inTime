@@ -6,8 +6,6 @@ class SpotlightsController < ApplicationController
   def index
     @spotlights = Spotlight.all.order(:title)
   end
-
-
   
   # GET /spotlights/1
   # GET /spotlights/1.json
@@ -25,17 +23,12 @@ class SpotlightsController < ApplicationController
     RDFGraph.drop(graph_name)
     RDFGraph.persist(turtle, graph_name)
     redirect_to @spotlight, notice: 'Spotlight layout was successfully updated.'
-   
   end
 
   # GET /spotlights/1.json/download
   def download
-    data = Entity.spotlight(@spotlight.id)
-    @batch = RDF::Graph.new
-    data.paginate(limit:200).each do |entity|
-      @batch << entity.graph
-    end
-    send_data  @batch.dump(:jsonld, validate: false), :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
+    dump_graph = Entity.spotlight(@spotlight).compile_dump_graph(@spotlight)
+    send_data  dump_graph.dump(:jsonld, validate: false), :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
   end
 
   # GET /spotlights/1/stats_prop

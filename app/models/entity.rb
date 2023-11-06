@@ -1,7 +1,54 @@
 
-class Entity
+class EntityCollection
+  include Enumerable
+  attr_accessor :entities
 
-  include ::SpotlightsHelper 
+  def initialize(entities)
+    @entities = entities
+  end
+
+  def each(&block)
+    if block_given?
+      entities.each(&block)
+    else
+      to_enum(:each)
+    end
+  end
+
+  def paginate(**params)
+    page = params[:page] ||= 1
+    limit = params[:limit] ||= 20
+    start_offset = limit.to_i*(page.to_i - 1)
+    end_offset = limit.to_i*(page.to_i) - 1
+    EntityCollection.new(entities[start_offset..end_offset])
+  end
+
+  def uri_values
+    entities.map { |entity|  "<#{entity.entity_uri}>" }.join("  ")
+  end
+
+  # Class method that returns a graph of all  entities in spotlight
+  def compile_dump_graph(spotlight)
+    
+    forward_prop_values = spotlight.forward_prop_values
+    # reverse_prop_values = 
+    sparql = SparqlLoader.load('load_spotlight_dump', [
+      '<uri_values_placeholder>', uri_values,
+      '<forward_prop_values_placeholder>' , forward_prop_values
+    ])
+    response = RDFGraph.construct_turtle_star(sparql)
+    if response[:code] == 200
+      RDF::Graph.new do |graph|
+        RDF::Turtle::Reader.new(response[:message], rdfstar: true) {|reader| graph << reader}
+      end
+    else
+      RDF::Graph.new
+    end
+   end
+end
+
+class Entity
+  include ::SpotlightsHelper
   attr_accessor :title, :description, :date_entity, :location_label, :main_image, :entity_uri, :layout_id
 
   def initialize(**h) 
@@ -15,6 +62,7 @@ class Entity
   end
 
   # Class method to find all entities given a DataSource id
+  # Returns EntityCollection
   def self.data_source(data_source_id)
     data_source = DataSource.find(data_source_id)
     results = RDFGraph.execute(data_source.generate_sparql)
@@ -22,59 +70,33 @@ class Entity
   end
 
   # Class method to find all entities given a Spotlight id
-  def self.spotlight(spotlight_id)
-    spotlight = Spotlight.find(spotlight_id)
+  # Returns EntityCollection
+  def self.spotlight(spotlight)
+    if spotlight.class == String
+      spotlight = Spotlight.find(spotlight)
+    end
     results = RDFGraph.execute(spotlight.generate_sparql)
     load_entities(results[:message])
-    # puts "results[:message] #{results[:message]}"
-  end
-
-  def self.count
-    @count || 0
-  end
-
-
-  # Class method that returns an index list of entities
-  def self.load_entities(sparql_results)
-    @count = sparql_results.count
-    
-    @sparql_results = sparql_results
-    self
-  end
-
-  def self.paginate(**params)
-    entities = []
-    @page = params[:page] ||= 1
-    limit = params[:limit] ||= 20
-    start_offset = limit.to_i*(@page.to_i - 1)
-    end_offset = limit.to_i*(@page.to_i) - 1
-    @sparql_results[start_offset..end_offset].each do |e|
-      title = e.dig("title_lang","value") || e.dig("title","value") || ""
-      description = e.dig("description_lang","value") || e.dig("description","value") || ""
-      startDate = e.dig("startDate","value") || ""
-      place = e.dig("place_lang","value") || e.dig("place","value") || ""
-      image = e.dig("image","value") || ""
-      entity_uri = e.dig("uri","value") || ""
-      entities << Entity.new(title: title, description: description, date: startDate,  place: place, image: image, entity_uri: entity_uri)
-    end
-    entities
   end
 
   # Class method that returns full graph of individual entity
+  # Returns an Entity
   def self.find(entity_uri)
     entity = Entity.new(entity_uri: entity_uri)
     entity.graph
     entity
   end
 
-  # Class method that returns full graph of entity uri in object position
+  # Class method that returns Entity 
+  # with full graph of entity uri in object position
   def self.derived(entity_uri)
     entity = Entity.new(entity_uri: entity_uri)
     entity.graph(approach: "derived")
     entity
   end
 
-  # Class method that returns full graph of a uri 
+  # Class method that returns Entity
+  # with full graph of a uri 
   # with wikidata statement nodes instead of RDF Star
   # with literals in languages chosen by the layout
   def self.wikidata(entity_uri, layout_id = nil)
@@ -89,15 +111,6 @@ class Entity
     entity.graph(approach: "wikidata", language: language_list)
     entity
   end
-
-  # TO DELETE
-  # def layout(spotlight_id)
-  #   @layout_id = spotlight_id
-  #   spotlight = Spotlight.find(spotlight_id)
-  #   layout_graph = RDF::Graph.new
-  #   layout_graph.from_ttl(spotlight.layout, prefixes: {rdf: RDF.to_uri, cit: "<http://culture-in-time.org/ontology/>"})
-  # end
-
 
   def method_missing(m,*args,&block)
     if m.to_s == 'main_image'
@@ -195,8 +208,6 @@ class Entity
     result
   end
 
-
-
   def load_graph(approach = "rdfstar", language = "en")
 
     sparql =  if approach == "derived"
@@ -230,7 +241,24 @@ class Entity
     else
       RDF::Graph.new
     end
-    
   end
+
+
+  private
+
+    # Class method that stores results of a SPARQL select and count
+    def self.load_entities(sparql_results)
+      collection = []
+      sparql_results.each do |e|
+        title = e.dig("title_lang","value") || e.dig("title","value") || ""
+        description = e.dig("description_lang","value") || e.dig("description","value") || ""
+        startDate = e.dig("startDate","value") || ""
+        place = e.dig("place_lang","value") || e.dig("place","value") || ""
+        image = e.dig("image","value") || ""
+        entity_uri = e.dig("uri","value") || ""
+        collection << new(title: title, description: description, date: startDate,  place: place, image: image, entity_uri: entity_uri)
+      end
+      EntityCollection.new(collection)
+    end
 
 end

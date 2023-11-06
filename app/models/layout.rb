@@ -9,9 +9,12 @@ class Layout
 
   def turtle_to_list(turtle)
     graph = RDF::Graph.new
-    graph.from_ttl(turtle, prefixes: {rdf: RDF.to_uri, cit: "<http://culture-in-time.org/ontology/>"})
-
-    # cit = RDF::Vocabulary.new("http://culture-in-time.org/ontology/")
+    graph.from_ttl(turtle, prefixes: {
+      xsd: "<http://www.w3.org/2001/XMLSchema#>", 
+      rdfs: "<http://www.w3.org/2000/01/rdf-schema#>", 
+      rdf: RDF.to_uri, 
+      cit: "<http://culture-in-time.org/ontology/>"
+    })
     query = RDF::Query.new do 
       pattern [:uri,RDF::URI("http://culture-in-time.org/ontology/name"), :name]
       pattern [:uri, RDF::URI("http://culture-in-time.org/ontology/order"), :order]
