@@ -7,7 +7,23 @@ class Spotlight < ApplicationRecord
  
   # returns a string of properties for use as sparql values
   def forward_prop_values
-    Layout.new(self.layout).fields.map {|f| "<#{f.first.first}>" }.join(" ") 
+    Layout.new(self.layout).fields.map {|f| "<#{f.first.first}>" if f.first.first.include?("prop/direct") && f[:direction].include?("Forward") }.join(" ") 
+  end
+
+  def spotlight_lang_values
+    self.language.split(",").map { |l| "\"#{l.squish}\"  " }.join
+  end
+
+  def reverse_prop_values
+    Layout.new(self.layout).fields.map {|f| "<#{f.first.first}>" if f[:direction].include?("Reverse") }.join(" ") 
+  end
+
+  def qualifier_prop_values
+    Layout.new(self.layout).fields.map {|f| "<#{f.first.first}>" if f.first.first.include?("prop/qualifier") && f[:direction].include?("Forward") }.join(" ") 
+  end
+
+  def reference_prop_values
+    Layout.new(self.layout).fields.map {|f| "<#{f.first.first}>" if f.first.first.include?("prop/reference") && f[:direction].include?("Forward") }.join(" ") 
   end
 
   def generate_sparql
@@ -36,6 +52,28 @@ class Spotlight < ApplicationRecord
     SparqlLoader.load('collect_spotlight_stats_inverse_prop',[
       '<spotlight_query_placeholder> a "triple"', self.sparql
     ])
+  end
+
+  # Class method that returns a graph of all entities in spotlight
+  def compile_dump_graph
+    entities = Entity.spotlight(self)
+    
+    # reverse_prop_values = 
+    sparql = SparqlLoader.load('load_spotlight_dump', [
+      '<uri_values_placeholder>', entities.uri_values,
+      '<forward_prop_values_placeholder>', forward_prop_values,
+      '<qualifier_prop_values_placeholder>', qualifier_prop_values,
+      '"en" "de"', spotlight_lang_values 
+    ])
+    response = RDFGraph.construct_turtle_star(sparql)
+    if response[:code] == 200
+      RDF::Graph.new do |graph|
+        RDF::Turtle::Reader.new(response[:message], rdfstar: true) {|reader| graph << reader}
+      end
+    else
+      RDF::Graph.new
+    end
+   
   end
 
   private 

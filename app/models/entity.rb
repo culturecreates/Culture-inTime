@@ -26,25 +26,6 @@ class EntityCollection
   def uri_values
     entities.map { |entity|  "<#{entity.entity_uri}>" }.join("  ")
   end
-
-  # Class method that returns a graph of all  entities in spotlight
-  def compile_dump_graph(spotlight)
-    
-    forward_prop_values = spotlight.forward_prop_values
-    # reverse_prop_values = 
-    sparql = SparqlLoader.load('load_spotlight_dump', [
-      '<uri_values_placeholder>', uri_values,
-      '<forward_prop_values_placeholder>' , forward_prop_values
-    ])
-    response = RDFGraph.construct_turtle_star(sparql)
-    if response[:code] == 200
-      RDF::Graph.new do |graph|
-        RDF::Turtle::Reader.new(response[:message], rdfstar: true) {|reader| graph << reader}
-      end
-    else
-      RDF::Graph.new
-    end
-   end
 end
 
 class Entity

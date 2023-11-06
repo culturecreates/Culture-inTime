@@ -27,8 +27,21 @@ class SpotlightsController < ApplicationController
 
   # GET /spotlights/1.json/download
   def download
-    dump_graph = Entity.spotlight(@spotlight).compile_dump_graph(@spotlight)
-    send_data  dump_graph.dump(:jsonld, validate: false), :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
+    if params[:style] != "wikidata"
+      graph  = @spotlight.compile_dump_graph
+      output = graph.dump(:jsonld, validate: false)
+    else
+      if @spotlight.frame.present?
+        graph = @spotlight.compile_dump_graph
+        frame_json = JSON.parse(@spotlight.frame)
+        output = JSON::LD::API.frame( JSON.parse(graph.to_jsonld), frame_json).to_json
+      end
+    end
+    if output 
+      send_data  output, :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
+    else
+      redirect_to @spotlight, notice: 'Could not export. Please check your JSON-LD Frame in the API screen.'
+    end
   end
 
   # GET /spotlights/1/stats_prop
