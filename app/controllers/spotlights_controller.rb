@@ -35,12 +35,14 @@ class SpotlightsController < ApplicationController
         graph = @spotlight.compile_dump_graph
         frame_json = JSON.parse(@spotlight.frame)
         output = JSON::LD::API.frame( JSON.parse(graph.to_jsonld), frame_json).to_json
+      else
+        notice = 'Could not export. Please check your JSON-LD Frame in the API screen.'
       end
     end
     if output 
       send_data  output, :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
     else
-      redirect_to @spotlight, notice: 'Could not export. Please check your JSON-LD Frame in the API screen.'
+      redirect_to @spotlight, notice: notice
     end
   end
 
