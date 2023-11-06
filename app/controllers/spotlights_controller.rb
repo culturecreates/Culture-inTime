@@ -28,9 +28,14 @@ class SpotlightsController < ApplicationController
   # GET /spotlights/1.json/download
   def download
     if params[:style] != "wikidata"
-      graph  = @spotlight.compile_dump_graph
-      output = graph.dump(:jsonld, validate: false)
+      if @spotlight.dump
+        output = @spotlight.dump
+      else
+        DumpSpotlightJob.perform_now(@spotlight.id)
+        notice = "Compiling spotlight data... Try again in a minute!"
+      end
     else
+      # todo: move to background job
       if @spotlight.frame.present?
         graph = @spotlight.compile_dump_graph
         frame_json = JSON.parse(@spotlight.frame)

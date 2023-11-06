@@ -1,4 +1,4 @@
-class BatchUpdateJob < ApplicationJob
+class DumpSpotlightJob < ApplicationJob
   queue_as :default
 
   # Params: 0 -> sparql
