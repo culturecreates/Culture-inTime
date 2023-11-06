@@ -23,7 +23,12 @@ class Spotlight < ApplicationRecord
   end
 
   def qualifier_prop_values
-    Layout.new(self.layout).fields.map {|f| "<#{f.first.first}>" if f.first.first.include?("prop/qualifier") && f[:direction].include?("Forward") }.join(" ") 
+    str =  "values ?qual { <http://no.qualifiers.org> }"
+    quals = Layout.new(self.layout).fields.map {|f| "<#{f.first.first}>" if f.first.first.include?("prop/qualifier") && f[:direction].include?("Forward") }.join(" ") 
+    return str if quals.blank?
+
+    str.gsub("<http://no.qualifiers.org>", quals)
+   
   end
 
   def reference_prop_values
@@ -66,7 +71,7 @@ class Spotlight < ApplicationRecord
     sparql = SparqlLoader.load('load_spotlight_dump', [
       '<uri_values_placeholder>', entities.uri_values,
       '<forward_prop_values_placeholder>', forward_prop_values,
-      '<qualifier_prop_values_placeholder>', qualifier_prop_values,
+      'values ?qual { <qualifier_prop_values_placeholder> }', qualifier_prop_values,
       '"en" "de"', spotlight_lang_values 
     ])
     response = RDFGraph.construct_turtle_star(sparql)
