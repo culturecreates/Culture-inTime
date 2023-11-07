@@ -64,6 +64,7 @@ class Spotlight < ApplicationRecord
       PREFIX prov: <http://www.w3.org/ns/prov#>
       construct 
       {
+        ?uri ?p ?o_literal .
         ?uri ?p ?o .
         ?o rdfs:label ?label .
         ?reverse_sub ?reverse_prop ?uri . 
@@ -83,10 +84,13 @@ class Spotlight < ApplicationRecord
           #{ "values ?ref_prop { " + reference_prop_values + "}" if !reference_prop_values.blank? }
           #{ "values ?reverse_prop { " + reverse_prop_values + "}" if !reverse_prop_values.blank? }
           values ?lang { #{spotlight_lang_values} }
+          ?uri ?p ?o_literal .
+          filter(lang(?o_literal) = ?lang)
           ?uri ?p ?o .
-          ?o rdfs:label ?label .
-          filter(lang(?label) = ?lang)
-
+          OPTIONAL {
+            ?o rdfs:label ?label .
+            filter(lang(?label) = ?lang)
+          }
           OPTIONAL {
             ?reverse_sub ?reverse_prop ?uri . 
             OPTIONAL {
