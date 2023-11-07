@@ -22,11 +22,14 @@ class DumpSpotlightJob < ApplicationJob
     if frame_json.class == Hash
       puts "framing......"
       output = JSON::LD::API.frame( JSON.parse(graph.to_jsonld), frame_json)
+      @spotlight.dump = output.to_json
+      @spotlight.save
     else
       puts "invalid frame....saving JSON-LD without frame."
       output = graph.dump(:jsonld, validate: false)
+      @spotlight.dump = output
+      @spotlight.save
     end
-    @spotlight.dump = output.to_json
-    @spotlight.save
+    
   end
 end
