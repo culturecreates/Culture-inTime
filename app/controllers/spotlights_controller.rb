@@ -25,28 +25,24 @@ class SpotlightsController < ApplicationController
     redirect_to @spotlight, notice: 'Spotlight layout was successfully updated.'
   end
 
-  # GET /spotlights/1/download.json&refresh=&style=
+
+  # GET /spotlights/1.json/download
   def download
-    if params[:style] != "wikidata"
-      if @spotlight.dump && @spotlight.dump != "loading" && !params[:refresh]
-        output = @spotlight.dump
-      else
-        if @spotlight.dump != "loading"
+    if @spotlight.dump && @spotlight.dump != "loading" && !params[:refresh]
+      output = @spotlight.dump
+    else
+     # if @spotlight.frame.present?
+        if @spotlight.dump != "loading"  || params[:force]
           DumpSpotlightJob.perform_later(@spotlight.id)
           @spotlight.dump = "loading"
           @spotlight.save
+          notice = "Compiling spotlight data... Try again in a minute!"
+        else
+          notice = "Still compiling spotlight data... Try again in a minute!"
         end
-        notice = "Compiling spotlight data... Try again in a minute!"
-      end
-    else
-      # todo: move to background job
-      if @spotlight.frame.present?
-        graph = @spotlight.compile_dump_graph
-        frame_json = JSON.parse(@spotlight.frame)
-        output = JSON::LD::API.frame( JSON.parse(graph.to_jsonld), frame_json).to_json
-      else
-        notice = 'Could not export. Please check your JSON-LD Frame in the API screen.'
-      end
+      # else
+      #   notice = "ERROR! Please add a JSON-LD Frame in API!"
+      # end
     end
     if output 
       send_data  output, :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
@@ -54,6 +50,37 @@ class SpotlightsController < ApplicationController
       redirect_to @spotlight, notice: notice
     end
   end
+
+
+  # # GET /spotlights/1/download.json&refresh=&style=
+  # def download
+  #   if params[:style] != "wikidata"
+  #     if @spotlight.dump && @spotlight.dump != "loading" && !params[:refresh]
+  #       output = @spotlight.dump
+  #     else
+  #       if @spotlight.dump != "loading"
+  #         DumpSpotlightJob.perform_later(@spotlight.id)
+  #         @spotlight.dump = "loading"
+  #         @spotlight.save
+  #       end
+  #       notice = "Compiling spotlight data... Try again in a minute!"
+  #     end
+  #   else
+  #     # todo: move to background job
+  #     if @spotlight.frame.present?
+  #       graph = @spotlight.compile_dump_graph
+  #       frame_json = JSON.parse(@spotlight.frame)
+  #       output = JSON::LD::API.frame( JSON.parse(graph.to_jsonld), frame_json).to_json
+  #     else
+  #       notice = 'Could not export. Please check your JSON-LD Frame in the API screen.'
+  #     end
+  #   end
+  #   if output 
+  #     send_data  output, :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
+  #   else
+  #     redirect_to @spotlight, notice: notice
+  #   end
+  # end
 
   # GET /spotlights/1/stats_prop
   def stats_prop
