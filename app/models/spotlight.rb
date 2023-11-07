@@ -23,12 +23,7 @@ class Spotlight < ApplicationRecord
   end
 
   def qualifier_prop_values
-    str =  "values ?qual { <http://no.qualifiers.org> }"
-    quals = Layout.new(self.layout).fields.map {|f| "<#{f.first.first}>" if f.first.first.include?("prop/qualifier") && f[:direction].include?("Forward") }.join(" ") 
-    return str if quals.blank?
-
-    str.gsub("<http://no.qualifiers.org>", quals)
-   
+    Layout.new(self.layout).fields.map {|f| "<#{f.first.first}>" if f.first.first.include?("prop/qualifier") && f[:direction].include?("Forward") }.join(" ") 
   end
 
   def reference_prop_values
@@ -63,17 +58,67 @@ class Spotlight < ApplicationRecord
     ])
   end
 
+  def dump_sparql(uri_values)
+    <<~SPARQL
+      PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+      PREFIX prov: <http://www.w3.org/ns/prov#>
+      construct 
+      {
+        ?uri ?p ?o .
+        ?o rdfs:label ?label .
+        ?reverse_sub ?reverse_prop ?uri . 
+        ?reverse_sub rdfs:label ?reverse_sub_label .
+
+        << ?uri ?p ?o >> ?qual_prop ?qual_obj .
+        ?qual_obj rdfs:label ?qual_label .
+
+        << ?uri ?p ?o >> prov:wasDerivedFrom ?ref_sub .
+        ?ref_sub ?ref_prop ?ref_obj .
+        ?ref_obj rdfs:label ?ref_label .
+      }
+      where {
+          values ?uri { #{uri_values} }
+          values ?p { #{forward_prop_values} } 
+          #{ "values ?qual_prop { " + qualifier_prop_values + "}" if !qualifier_prop_values.blank? }
+          #{ "values ?ref_prop { " + reference_prop_values + "}" if !reference_prop_values.blank? }
+          #{ "values ?reverse_prop { " + reverse_prop_values + "}" if !reverse_prop_values.blank? }
+          values ?lang { #{spotlight_lang_values} }
+          ?uri ?p ?o .
+          ?o rdfs:label ?label .
+          filter(lang(?label) = ?lang)
+
+          OPTIONAL {
+            ?reverse_sub ?reverse_prop ?uri . 
+            OPTIONAL {
+              ?reverse_sub rdfs:label ?reverse_sub_label .
+              filter(lang(?reverse_sub_label) = ?lang) 
+            }
+           
+          }
+          OPTIONAL {
+            << ?uri ?p ?o >> ?qual_prop ?qual_obj .
+              OPTIONAL {
+                  ?qual_obj rdfs:label ?qual_label .
+                  filter(lang(?qual_label) = ?lang) 
+              }
+          }
+          OPTIONAL {
+            << ?uri ?p ?o >> prov:wasDerivedFrom ?ref_sub .
+            OPTIONAL {
+              ?ref_sub ?ref_prop ?ref_obj .
+              OPTIONAL {
+                ?ref_obj rdfs:label ?ref_label .
+              }
+            }
+          }
+      }
+    SPARQL
+  end
+
   # Class method that returns a graph of all entities in spotlight
   def compile_dump_graph
-    entities = Entity.spotlight(self)
-    
-    # reverse_prop_values = 
-    sparql = SparqlLoader.load('load_spotlight_dump', [
-      '<uri_values_placeholder>', entities.uri_values,
-      '<forward_prop_values_placeholder>', forward_prop_values,
-      'values ?qual { <qualifier_prop_values_placeholder> }', qualifier_prop_values,
-      '"en" "de"', spotlight_lang_values 
-    ])
+    uri_values = Entity.spotlight(self).uri_values
+    sparql = dump_sparql(uri_values)
     response = RDFGraph.construct_turtle_star(sparql)
     if response[:code] == 200
       RDF::Graph.new do |graph|
