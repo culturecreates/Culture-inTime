@@ -1,8 +1,9 @@
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX cit: <http://culture-in-time.org/ontology/>
 
-construct {
+CONSTRUCT {
     <entity_uri_placeholder> ?p ?o .
     ?p rdfs:label ?prop_label .
     ?o rdfs:label ?obj_label .
@@ -17,15 +18,22 @@ construct {
 
 where {
     # Set properties from layout
-    values ?p {
+    {  values ?p {
         rdf:type 
-        rdfs:label 
-        <http://www.wikidata.org/prop/direct/P161> 
-        <http://www.wikidata.org/prop/direct/P31> 
-        <http://www.wikidata.org/prop/P10527> 
-        <http://www.wikidata.org/prop/direct/P10527>  
-        <http://www.wikidata.org/prop/direct/P937>
+        }
     }
+        UNION
+    {
+        select ?p ?order where {
+            graph <layout_graph_placeholder> {
+                ?p cit:order ?order .
+                FILTER NOT EXISTS { ?p cit:direction cit:Reverse }
+            }
+        }
+
+    }
+
+
     <entity_uri_placeholder> a <http://wikiba.se/ontology#Item> .
     <entity_uri_placeholder> ?p ?o .
    
@@ -41,6 +49,11 @@ where {
     }
 
     # Add reference triples from layout
+
+    graph <layout_graph_placeholder> {
+        ?derived_pred cit:order ?order_cp .
+    }
+
     OPTIONAL {
         <entity_uri_placeholder> ?prop ?statement .
         ?statement ?prop_statement ?o .
@@ -55,10 +68,15 @@ where {
     }
 
     # Add qualifier triples from layout
+
+    graph <layout_graph_placeholder> {
+        ?a cit:order ?order_a .
+    }
+
     OPTIONAL {
-        <entity_uri_placeholder> ?prop ?statement .
+        <entity_uri_placeholder> ?a ?statement .
         ?statement ?prop_statement ?o .
-        filter(contains(str(?prop),"/prop/P"))
+        filter(contains(str(?a),"/prop/P"))
         ?statement ?qualifier_prop ?qualifier_obj .
         filter(contains(str(?qualifier_prop),"/prop/qualifier/"))
         OPTIONAL {

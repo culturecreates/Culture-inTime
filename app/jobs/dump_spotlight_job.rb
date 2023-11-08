@@ -1,14 +1,15 @@
 class DumpSpotlightJob < ApplicationJob
   queue_as :default
 
-  # Params: 0 -> sparql
+  # Params: 0 -> spotlight id
   def perform(*args)
     @spotlight = Spotlight.find(args[0])
     data = Entity.spotlight(@spotlight)
-    # old way -> graph  = @spotlight.compile_dump_graph
+    # old fast way for small graphs -> graph  = @spotlight.compile_dump_graph
     graph = RDF::Graph.new
+    language_list =  @spotlight.language ||=  "en"
     data.paginate.each do |entity|
-      graph << entity.graph(approach: "wikidata")
+      graph << entity.graph(approach: "wikidata", language: language_list)
       sleep(0.2) # part of a second
     end
 

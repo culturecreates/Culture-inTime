@@ -57,7 +57,7 @@ class Entity
       spotlight = Spotlight.find(spotlight)
     end
     results = RDFGraph.execute(spotlight.generate_sparql)
-    load_entities(results[:message])
+    load_entities(results[:message], spotlight.id)
   end
 
   # Class method that returns full graph of individual entity
@@ -189,17 +189,17 @@ class Entity
     result
   end
 
-  def load_graph(approach = "rdfstar", language = "en")
-
+  def load_graph(approach = "rdfstar", language = "en") 
     sparql =  if approach == "derived"
                 SparqlLoader.load('load_derived_graph', [
                   'entity_uri_placeholder', @entity_uri,
                   'languages_placeholder' , language.split(",").join("\" \"")
                 ])
-              elsif approach == "wikidata"
-                SparqlLoader.load('load_wikidata_graph', [
+              elsif approach == "wikidata" && @layout_id
+                SparqlLoader.load('load_wikidata_graph_layout', [
                   'entity_uri_placeholder', @entity_uri,
-                  'languages_placeholder' ,  language.split(",").join("\" \"") # "en\" \"fr\" \"de"
+                  'languages_placeholder' ,  language.split(",").join("\" \""),
+                  'layout_graph_placeholder', generate_layout_graph_name(@layout_id) 
                 ])
               elsif @layout_id
                 SparqlLoader.load('load_rdfstar_graph_layout', [
@@ -228,7 +228,7 @@ class Entity
   private
 
     # Class method that stores results of a SPARQL select and count
-    def self.load_entities(sparql_results)
+    def self.load_entities(sparql_results, spotlight = nil)
       collection = []
       sparql_results.each do |e|
         title = e.dig("title_lang","value") || e.dig("title","value") || ""
@@ -237,7 +237,7 @@ class Entity
         place = e.dig("place_lang","value") || e.dig("place","value") || ""
         image = e.dig("image","value") || ""
         entity_uri = e.dig("uri","value") || ""
-        collection << new(title: title, description: description, date: startDate,  place: place, image: image, entity_uri: entity_uri)
+        collection << new(layout_id: spotlight, title: title, description: description, date: startDate,  place: place, image: image, entity_uri: entity_uri)
       end
       EntityCollection.new(collection)
     end
