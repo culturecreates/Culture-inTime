@@ -3,14 +3,16 @@ class DumpSpotlightJob < ApplicationJob
 
   # Params: 0 -> spotlight id
   def perform(*args)
+    @logger = Rails.logger
     @spotlight = Spotlight.find(args[0])
     data = Entity.spotlight(@spotlight)
     # old fast way for small graphs -> graph  = @spotlight.compile_dump_graph
     graph = RDF::Graph.new
     language_list =  @spotlight.language ||=  "en"
-    data.paginate.each do |entity|
+    data.paginate.each_with_index do |entity, index|
       graph << entity.graph(approach: "wikidata", language: language_list)
-      sleep(0.2) # part of a second
+      # sleep(0.2) # part of a second
+      @logger.info "index ---------------> #{index + 1} of #{data.count}"
     end
 
     frame_json = nil
