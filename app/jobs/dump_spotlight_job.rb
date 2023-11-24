@@ -8,7 +8,9 @@ class DumpSpotlightJob < ApplicationJob
     data = Entity.spotlight(@spotlight)
     props =  @spotlight.forward_prop_values
     qualifiers =  @spotlight.qualifier_prop_values
+    qualifiers = "<http://none.com>" if qualifiers.blank?
     references =  @spotlight.reference_prop_values
+    references = "<http://none.com>" if references.blank?
     spotlight_lang = @spotlight.spotlight_lang_values
     graph = RDF::Graph.new
     data.paginate.each_with_index do |entity, index|
