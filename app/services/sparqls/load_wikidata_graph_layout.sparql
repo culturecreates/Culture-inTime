@@ -55,7 +55,6 @@ where {
         }
         # References
          OPTIONAL {
-            # References
             ?statement prov:wasDerivedFrom ?reference .
             ?reference  ?reference_prop  ?reference_obj .
             OPTIONAL {

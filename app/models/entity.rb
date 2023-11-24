@@ -199,7 +199,9 @@ class Entity
                   @spotlight = Spotlight.find(@layout_id)
                   props =  @spotlight.forward_prop_values
                   qualifiers =  @spotlight.qualifier_prop_values
+                  qualifiers = "<http://none.com>" if qualifiers.blank?
                   references =  @spotlight.reference_prop_values
+                  references = "<http://none.com>" if references.blank?
                   language = @spotlight.spotlight_lang_values
                 end
                 SparqlLoader.load('load_wikidata_graph_layout', [
