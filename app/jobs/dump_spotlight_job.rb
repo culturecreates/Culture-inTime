@@ -6,11 +6,22 @@ class DumpSpotlightJob < ApplicationJob
     @logger = Rails.logger
     @spotlight = Spotlight.find(args[0])
     data = Entity.spotlight(@spotlight)
-    # old fast way for small graphs -> graph  = @spotlight.compile_dump_graph
+    props =  @spotlight.forward_prop_values
+    qualifiers =  @spotlight.qualifier_prop_values
+    references =  @spotlight.reference_prop_values
+    spotlight_lang = @spotlight.spotlight_lang_values
     graph = RDF::Graph.new
-    language_list =  @spotlight.language ||=  "en"
     data.paginate.each_with_index do |entity, index|
-      graph << entity.graph(approach: "wikidata", language: language_list)
+      entity.graph(
+        approach: "wikidata", 
+        language: spotlight_lang,
+        props: props,
+        qualifiers: qualifiers,
+        references: references
+      )
+      json_framed = entity.framed_graph
+      g =  RDF::Graph.new
+      graph << g.from_jsonld(json_framed.to_json)
       # sleep(0.2) # part of a second
       @logger.info "index ---------------> #{index + 1} of #{data.count}"
     end

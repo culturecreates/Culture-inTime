@@ -81,7 +81,6 @@ class Entity
   # with wikidata statement nodes instead of RDF Star
   # with literals in languages chosen by the layout
   def self.wikidata(entity_uri, layout_id = nil)
-    puts "layout_id: #{layout_id}"
     
     language_list = if layout_id 
                       Spotlight.find(layout_id).language
@@ -101,10 +100,10 @@ class Entity
     end 
   end
 
-  def graph(approach: "rdfstar", language: "en")
+  def graph(approach: "rdfstar", language: "en",  props: nil, qualifiers:  "<http://none.com>", references:  "<http://none.com>")
     # TODO: this should not call load_graph. 
     #       Change code to call load_graph explicitly
-    @graph ||= load_graph(approach, language)
+    @graph ||= load_graph(approach, language, props, qualifiers, references)
   end
 
   def framed_graph
@@ -127,7 +126,6 @@ class Entity
     end
       
     if frame_json.class == Hash
-      puts "framing......"
      JSON::LD::API.frame( JSON.parse(graph.to_jsonld), frame_json)
     end
   end
@@ -189,17 +187,28 @@ class Entity
     result
   end
 
-  def load_graph(approach = "rdfstar", language = "en") 
+  def load_graph(approach = "rdfstar", language = " \"en\" ", props, qualifiers, references) 
+    
     sparql =  if approach == "derived"
                 SparqlLoader.load('load_derived_graph', [
                   'entity_uri_placeholder', @entity_uri,
-                  'languages_placeholder' , language.split(",").join("\" \"")
+                  'languages_placeholder' , language
                 ])
               elsif approach == "wikidata" && @layout_id
+                if !props
+                  @spotlight = Spotlight.find(@layout_id)
+                  props =  @spotlight.forward_prop_values
+                  qualifiers =  @spotlight.qualifier_prop_values
+                  references =  @spotlight.reference_prop_values
+                  language = @spotlight.spotlight_lang_values
+                end
                 SparqlLoader.load('load_wikidata_graph_layout', [
                   'entity_uri_placeholder', @entity_uri,
-                  'languages_placeholder' ,  language.split(",").join("\" \""),
-                  'layout_graph_placeholder', generate_layout_graph_name(@layout_id) 
+                  'languages_placeholder' , language,
+                  'layout_graph_placeholder', generate_layout_graph_name(@layout_id),
+                  '<forward_prop_placeholder>', props,
+                  '<qualifier_prop_placeholder>', qualifiers,
+                  '<reference_prop_placeholder>', references,
                 ])
               elsif @layout_id
                 SparqlLoader.load('load_rdfstar_graph_layout', [

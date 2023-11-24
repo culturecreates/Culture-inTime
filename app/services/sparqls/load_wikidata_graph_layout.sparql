@@ -1,93 +1,97 @@
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
-PREFIX cit: <http://culture-in-time.org/ontology/>
+PREFIX ex: <http://example.com/>
+construct {
+    ?uri a <http://wikiba.se/ontology#Item> .
 
-CONSTRUCT {
-    <entity_uri_placeholder> ?p ?o .
-    ?p rdfs:label ?prop_label .
-    ?o rdfs:label ?obj_label .
-    <entity_uri_placeholder> ?prop ?statement .
-    ?statement ?prop_statement ?o ; prov:wasDerivedFrom ?wasDerivedFrom .
-    ?wasDerivedFrom ?derived_pred ?dervied_obj .
-    ?dervied_obj rdfs:label ?dervied_obj_label .
-    ?statement ?qualifier_prop ?qualifier_obj .
-    ?qualifier_prop rdfs:label ?qualifier_prop_label .      
-    ?qualifier_obj rdfs:label ?qualifier_obj_label . 
+    ?uri ?forward_prop2 ?statement .
+    ?statement ?prop_statement2 ?obj .
+    ?obj rdfs:label ?obj_label.
+    #qual
+    ?statement ?qualifier_prop ?qual_obj .
+    ?qual_obj rdfs:label ?qual_obj_label .
+    #ref
+    ?statement prov:wasDerivedFrom ?reference .
+    ?reference  ?reference_prop  ?reference_obj .
+    ?reference_obj rdfs:label ?reference_obj_label .
 }
-
 where {
-    # Set properties from layout
-    {  values ?p {
-        rdf:type 
-        }
+    values ?uri {
+        <entity_uri_placeholder>
     }
-        UNION
+    values ?forward_prop {
+        <forward_prop_placeholder>
+    }
+    values ?qualifier_prop {
+        <qualifier_prop_placeholder> 
+    }
+    values ?reference_prop {
+        <reference_prop_placeholder>
+    }
+    #values ?reverse_prop {<http://www.wikidata.org/prop/direct/P5869> <http://www.wikidata.org/prop/direct/P4646> }
+    values ?lang {
+        "de"  "fr"  "en"  
+    }
     {
-        select ?p ?order where {
-            graph <layout_graph_placeholder> {
-                ?p cit:order ?order .
-                FILTER NOT EXISTS { ?p cit:direction cit:Reverse }
+       bind(URI(concat("http://www.wikidata.org/prop/",STRAFTER(str(?forward_prop),"/direct/")))  as ?forward_prop2)
+       bind(URI(concat("http://www.wikidata.org/prop/statement/",STRAFTER(str(?forward_prop),"/direct/")))  as ?prop_statement2)
+       ?uri ?forward_prop ?obj .
+       ?uri ?forward_prop2 ?statement .
+       ?statement ?prop_statement2 ?obj .
+       filter(isURI(?obj))
+        OPTIONAL {
+            ?obj rdfs:label ?obj_label .
+            filter(lang(?obj_label) =  ?lang)
+        }
+        # Qualifiers
+        OPTIONAL {
+            
+            ?statement ?qualifier_prop ?qual_obj .
+            OPTIONAL {
+                ?qual_obj rdfs:label ?qual_obj_label .
+                filter(lang(?qual_obj_label) =  ?lang)
             }
         }
-
+        # References
+         OPTIONAL {
+            # References
+            ?statement prov:wasDerivedFrom ?reference .
+            ?reference  ?reference_prop  ?reference_obj .
+            OPTIONAL {
+                ?reference_obj rdfs:label ?reference_obj_label .
+                filter(lang(?reference_obj_label) =  ?lang)
+            }
+        }
     }
-
-
-    <entity_uri_placeholder> a <http://wikiba.se/ontology#Item> .
-    <entity_uri_placeholder> ?p ?o .
+    UNION 
+    {
+        bind(URI(concat("http://www.wikidata.org/prop/",STRAFTER(str(?forward_prop),"/direct/")))  as ?forward_prop2)
+      bind(URI(concat("http://www.wikidata.org/prop/statement/",STRAFTER(str(?forward_prop),"/direct/")))  as ?prop_statement2)
    
-    OPTIONAL {
-        ?p rdfs:label ?prop_label .
-        values ?langs  {"languages_placeholder" }
-        filter(lang(?prop_label) = ?langs)
-    }
-    OPTIONAL {
-        ?o rdfs:label ?obj_label .
-        values ?langs  {"languages_placeholder" }
-        filter(lang(?obj_label) = ?langs)
-    }
+      ?uri ?forward_prop ?obj .
+      ?uri ?forward_prop2 ?statement .
+      ?statement ?prop_statement2 ?obj .
+    
+        filter(isLITERAL(?obj))
+        filter((lang(?obj) = ?lang) || !(datatype(?obj) = rdf:langString ) )
 
-    # Add reference triples from layout
-
-    graph <layout_graph_placeholder> {
-        ?derived_pred cit:order ?order_cp .
-    }
-
-    OPTIONAL {
-        <entity_uri_placeholder> ?prop ?statement .
-        ?statement ?prop_statement ?o .
-        filter(contains(str(?prop),"/prop/P"))
-        ?statement prov:wasDerivedFrom ?wasDerivedFrom .
-        ?wasDerivedFrom ?derived_pred ?dervied_obj .
+        # Qualifiers
         OPTIONAL {
-            ?dervied_obj rdfs:label ?dervied_obj_label .
-            values ?langs  {"languages_placeholder" }
-            filter(lang(?dervied_obj_label) = ?langs)
+            ?statement ?qualifier_prop ?qual_obj .
+            OPTIONAL {
+                ?qual_obj rdfs:label ?qual_obj_label .
+                filter(lang(?qual_obj_label) =  ?lang)
+            }
         }
-    }
-
-    # Add qualifier triples from layout
-
-    graph <layout_graph_placeholder> {
-        ?a cit:order ?order_a .
-    }
-
-    OPTIONAL {
-        <entity_uri_placeholder> ?a ?statement .
-        ?statement ?prop_statement ?o .
-        filter(contains(str(?a),"/prop/P"))
-        ?statement ?qualifier_prop ?qualifier_obj .
-        filter(contains(str(?qualifier_prop),"/prop/qualifier/"))
+        # References
         OPTIONAL {
-            ?qualifier_prop rdfs:label ?qualifier_prop_label .
-            values ?langs  {"languages_placeholder" }
-            filter(lang(?qualifier_prop_label) = ?langs)
-        }
-        OPTIONAL {
-            ?qualifier_obj rdfs:label ?qualifier_obj_label .
-            values ?langs  {"languages_placeholder" }
-            filter(lang(?qualifier_obj_label) = ?langs)
+            ?statement prov:wasDerivedFrom ?reference .
+            ?reference  ?reference_prop  ?reference_obj .
+            OPTIONAL {
+                ?reference_obj rdfs:label ?reference_obj_label .
+                filter(lang(?reference_obj_label) =  ?lang)
+            }
         }
     }
 }
