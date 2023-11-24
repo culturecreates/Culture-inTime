@@ -13,7 +13,7 @@ class DumpSpotlightJob < ApplicationJob
     references = "<http://none.com>" if references.blank?
     spotlight_lang = @spotlight.spotlight_lang_values
     graph = RDF::Graph.new
-    data.paginate.each_with_index do |entity, index|
+    data.paginate(limit:10000).each_with_index do |entity, index|
       entity.graph(
         approach: "wikidata", 
         language: spotlight_lang,
