@@ -54,6 +54,7 @@
       JSON-LD
     </div>
     <div class="content">
+      <%= link_to "Wikidata JSON-LD",  wikidata_productions_path(params:{uri:@production.entity_uri, layout: params[:layout]},format: :json) %>
       <pre class="transition hidden">
       <code>
          <%= @production.graph.dump(:jsonld) %>
