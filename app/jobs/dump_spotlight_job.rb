@@ -13,7 +13,7 @@ class DumpSpotlightJob < ApplicationJob
     references =  @spotlight.reference_prop_values
     references = "<http://none.com>" if references.blank?
     spotlight_lang = @spotlight.spotlight_lang_values
-    graph = RDF::Graph.new
+    all_entities = {"@context"=>JSON.parse(@spotlight.frame)["@context"],"@graph"=>[]}
     data.paginate(limit:10000).each_with_index do |entity, index|
       entity.graph(
         approach: "wikidata", 
@@ -24,30 +24,12 @@ class DumpSpotlightJob < ApplicationJob
         references: references
       )
       json_framed = entity.framed_graph
-      g =  RDF::Graph.new
-      graph << g.from_jsonld(json_framed.to_json)
-      # sleep(0.2) # part of a second
+      all_entities["@graph"] << json_framed.except("@context")
       @logger.info "index ---------------> #{index + 1} of #{data.count}"
     end
-
-    frame_json = nil
-    if @spotlight.frame.present?
-      begin
-        frame_json = JSON.parse(@spotlight.frame)
-      end
-    end
-    
-    if frame_json.class == Hash
-      puts "framing......"
-      output = JSON::LD::API.frame( JSON.parse(graph.to_jsonld), frame_json)
-      @spotlight.dump = output.to_json
-      @spotlight.save
-    else
-      puts "invalid frame....saving JSON-LD without frame."
-      output = graph.dump(:jsonld, validate: false)
-      @spotlight.dump = output
-      @spotlight.save
-    end
+    @logger.info "Saving dump to spotlight....."
+    @spotlight.dump = all_entities.to_json
+    @spotlight.save
     
   end
 end

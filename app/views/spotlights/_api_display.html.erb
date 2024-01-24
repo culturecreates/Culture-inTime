@@ -28,10 +28,10 @@
         <%= form.text_area :frame, rows: 10 %>
       </div>
       <p>
-          <%= link_to "Compile Spotlight...",  download_spotlight_url(@spotlight, params: {refresh: true},format: :json), class:"ui button small" %> <%= link_to ".",  download_spotlight_url(@spotlight, params: {refresh: true, force: true},format: :json) %>
+        <%= link_to "Compile Spotlight...",  download_spotlight_url(@spotlight, params: {refresh: true},format: :json), class:"ui button tiny secondardy show_loading" %> <%= link_to ".",  download_spotlight_url(@spotlight, params: {refresh: true, force: true},format: :json) %>
       </p>
        <div class="actions">
-        <%= form.submit "Submit", class: 'ui button green show_loading' %>
+        <%= form.submit "Save", class: 'ui button green show_loading' %>
       </div>
   
     </div>

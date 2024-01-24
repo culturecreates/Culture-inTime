@@ -31,7 +31,7 @@ class SpotlightsController < ApplicationController
     if @spotlight.dump && @spotlight.dump != "loading" && !params[:refresh]
       output = @spotlight.dump
     else
-     # if @spotlight.frame.present?
+      if @spotlight.frame.present? && @spotlight.frame.class == Hash
         if @spotlight.dump != "loading"  || params[:force]
           DumpSpotlightJob.perform_later(@spotlight.id)
           @spotlight.dump = "loading"
@@ -40,9 +40,9 @@ class SpotlightsController < ApplicationController
         else
           notice = "Still compiling spotlight data... Try again in a couple of minutes!"
         end
-      # else
-      #   notice = "ERROR! Please add a JSON-LD Frame in API!"
-      # end
+      else
+        notice = "ERROR! Please add a JSON-LD Frame in API settings!"
+      end
     end
     if output 
       send_data  output, :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
