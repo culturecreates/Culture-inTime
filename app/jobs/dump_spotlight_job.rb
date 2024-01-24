@@ -31,7 +31,7 @@ class DumpSpotlightJob < ApplicationJob
       else
         all_entities["@graph"] << json_framed
       end
-      @logger.info "index ---------------> #{index + 1} of #{data.count} JSON-LD #{json_framed}"
+      @logger.info "index ---------------> #{index + 1} of #{data.count}"
     end
     @logger.info "Saving dump to spotlight....."
     @spotlight.dump = all_entities.to_json
