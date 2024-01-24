@@ -107,14 +107,6 @@ class Entity
   end
 
   def framed_graph
-    # frame_json = {  "@context"=> {
-    #   "@vocab" =>"http://schema.org/",
-    #   "cit"=>"http://culture-in-time.org/ontology/"
-    # },
-    #  "@explicit"=> true,
-    #  "cit:description" =>{"@language"=> "en", "@value"=> {}},
-    #  "http://www.wikidata.org/prop/P31" => {}
-    # }
     begin
       if @layout_id
         spotlight = Spotlight.find(@layout_id)

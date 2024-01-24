@@ -7,7 +7,9 @@ class DumpSpotlightJob < ApplicationJob
     @spotlight = Spotlight.find(args[0])
     data = Entity.spotlight(@spotlight)
     props =  @spotlight.forward_prop_values
+    props = "<http://none.com>" if props.blank?
     reverse = @spotlight.reverse_prop_values
+    reverse = "<http://none.com>" if reverse.blank?
     qualifiers =  @spotlight.qualifier_prop_values
     qualifiers = "<http://none.com>" if qualifiers.blank?
     references =  @spotlight.reference_prop_values
@@ -23,9 +25,13 @@ class DumpSpotlightJob < ApplicationJob
         qualifiers: qualifiers,
         references: references
       )
-      json_framed = entity.framed_graph
-      all_entities["@graph"] << json_framed.except("@context")
-      @logger.info "index ---------------> #{index + 1} of #{data.count}"
+      json_framed = entity.framed_graph.except("@context")
+      if json_framed["@graph"].present?
+        all_entities["@graph"] << json_framed["@graph"]
+      else
+        all_entities["@graph"] << json_framed
+      end
+      @logger.info "index ---------------> #{index + 1} of #{data.count} JSON-LD #{json_framed}"
     end
     @logger.info "Saving dump to spotlight....."
     @spotlight.dump = all_entities.to_json
