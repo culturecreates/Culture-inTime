@@ -1,7 +1,7 @@
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
-PREFIX ex: <http://example.com/>
+
 construct {
     ?uri a <http://wikiba.se/ontology#Item> .
 
@@ -18,13 +18,16 @@ construct {
     # reverse
     ?reverse_obj  ?reverse_prop  ?uri .
     ?reverse_obj rdfs:label ?reverse_obj_label .
+
+    # always get the name
+    ?uri rdfs:label ?enity_label .
 }
 where {
     values ?uri {
-        <entity_uri_placeholder>
+        <entity_uri_placeholder> 
     }
     values ?forward_prop {
-        <forward_prop_placeholder>
+        <forward_prop_placeholder>  
     }
     values ?qualifier_prop {
         <qualifier_prop_placeholder> 
@@ -105,5 +108,9 @@ where {
             ?reverse_obj rdfs:label ?reverse_obj_label .
             filter(lang(?reverse_obj_label) =  ?lang)
         }
+    }
+    OPTIONAL {
+        ?uri rdfs:label ?enity_label .
+        filter(lang(?enity_label) =  ?lang)
     }
 }

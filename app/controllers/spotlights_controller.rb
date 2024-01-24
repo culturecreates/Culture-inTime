@@ -36,9 +36,9 @@ class SpotlightsController < ApplicationController
           DumpSpotlightJob.perform_later(@spotlight.id)
           @spotlight.dump = "loading"
           @spotlight.save
-          notice = "Compiling spotlight data... Try again in a minute!"
+          notice = "Compiling spotlight data in the queue!"
         else
-          notice = "Still compiling spotlight data... Try again in a minute!"
+          notice = "Still compiling spotlight data... Try again in a couple of minutes!"
         end
       # else
       #   notice = "ERROR! Please add a JSON-LD Frame in API!"
