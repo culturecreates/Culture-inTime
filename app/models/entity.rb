@@ -202,6 +202,7 @@ class Entity
                   props =  @spotlight.forward_prop_values
                   puts "props: #{props}"
                   reverse = @spotlight.reverse_prop_values
+                  reverse = "<http://none.com>" if reverse.blank?
                   puts "reverse: #{reverse}"
                   qualifiers =  @spotlight.qualifier_prop_values
                   qualifiers = "<http://none.com>" if qualifiers.blank?
