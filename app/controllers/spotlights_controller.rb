@@ -31,16 +31,21 @@ class SpotlightsController < ApplicationController
     if @spotlight.dump && @spotlight.dump != "loading" && !params[:refresh]
       output = @spotlight.dump
     else
-      if @spotlight.frame.present? && @spotlight.frame.class == Hash
-        if @spotlight.dump != "loading"  || params[:force]
-          DumpSpotlightJob.perform_later(@spotlight.id)
-          @spotlight.dump = "loading"
-          @spotlight.save
-          notice = "Compiling spotlight data in the queue!"
+      begin
+        frame_json = JSON.parse(@spotlight.frame)
+        if frame_json.class == Hash
+          if @spotlight.dump != "loading"  || params[:force]
+            DumpSpotlightJob.perform_later(@spotlight.id)
+            @spotlight.dump = "loading"
+            @spotlight.save
+            notice = "Compiling spotlight data in the queue!"
+          else
+            notice = "Still compiling spotlight data... Try again in a couple of minutes!"
+          end
         else
-          notice = "Still compiling spotlight data... Try again in a couple of minutes!"
+          notice = "ERROR! Please add a JSON-LD Frame inside {} in API settings!"
         end
-      else
+      rescue JSON::ParserError
         notice = "ERROR! Please add a JSON-LD Frame in API settings!"
       end
     end
