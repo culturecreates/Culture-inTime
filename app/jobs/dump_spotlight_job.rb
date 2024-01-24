@@ -7,6 +7,7 @@ class DumpSpotlightJob < ApplicationJob
     @spotlight = Spotlight.find(args[0])
     data = Entity.spotlight(@spotlight)
     props =  @spotlight.forward_prop_values
+    reverse = @spotlight.reverse_prop_values
     qualifiers =  @spotlight.qualifier_prop_values
     qualifiers = "<http://none.com>" if qualifiers.blank?
     references =  @spotlight.reference_prop_values
@@ -18,6 +19,7 @@ class DumpSpotlightJob < ApplicationJob
         approach: "wikidata", 
         language: spotlight_lang,
         props: props,
+        reverse: reverse,
         qualifiers: qualifiers,
         references: references
       )

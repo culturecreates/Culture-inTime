@@ -100,10 +100,10 @@ class Entity
     end 
   end
 
-  def graph(approach: "rdfstar", language: "en",  props: nil, qualifiers:  "<http://none.com>", references:  "<http://none.com>")
+  def graph(approach: "rdfstar", language: "en",  props: nil, reverse: "<http://none.com>", qualifiers:  "<http://none.com>", references:  "<http://none.com>")
     # TODO: this should not call load_graph. 
     #       Change code to call load_graph explicitly
-    @graph ||= load_graph(approach, language, props, qualifiers, references)
+    @graph ||= load_graph(approach, language, props, reverse, qualifiers, references)
   end
 
   def framed_graph
@@ -187,7 +187,7 @@ class Entity
     result
   end
 
-  def load_graph(approach = "rdfstar", language = " \"en\" ", props, qualifiers, references) 
+  def load_graph(approach = "rdfstar", language = " \"en\" ", props, reverse, qualifiers, references) 
     
     sparql =  if approach == "derived"
                 SparqlLoader.load('load_derived_graph', [
@@ -195,20 +195,30 @@ class Entity
                   'languages_placeholder' , language
                 ])
               elsif approach == "wikidata" && @layout_id
+                puts "props: #{props}"
                 if !props
+                  puts "no props"
                   @spotlight = Spotlight.find(@layout_id)
                   props =  @spotlight.forward_prop_values
+                  puts "props: #{props}"
+                  reverse = @spotlight.reverse_prop_values
+                  puts "reverse: #{reverse}"
                   qualifiers =  @spotlight.qualifier_prop_values
                   qualifiers = "<http://none.com>" if qualifiers.blank?
+                  puts "qualifiers: #{qualifiers}"
                   references =  @spotlight.reference_prop_values
                   references = "<http://none.com>" if references.blank?
+                  puts "references: #{references}"
                   language = @spotlight.spotlight_lang_values
+                  language = ' \"en\" ' if language.blank?
+                  puts "language: #{language}"
                 end
                 SparqlLoader.load('load_wikidata_graph_layout', [
                   'entity_uri_placeholder', @entity_uri,
-                  'languages_placeholder' , language,
+                  '<languages_placeholder>' , language,
                   'layout_graph_placeholder', generate_layout_graph_name(@layout_id),
                   '<forward_prop_placeholder>', props,
+                  '<reverse_prop_placeholder>', reverse,
                   '<qualifier_prop_placeholder>', qualifiers,
                   '<reference_prop_placeholder>', references,
                 ])

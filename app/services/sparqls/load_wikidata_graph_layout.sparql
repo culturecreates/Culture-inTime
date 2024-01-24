@@ -8,13 +8,16 @@ construct {
     ?uri ?forward_prop2 ?statement .
     ?statement ?prop_statement2 ?obj .
     ?obj rdfs:label ?obj_label.
-    #qual
+    # qual
     ?statement ?qualifier_prop ?qual_obj .
     ?qual_obj rdfs:label ?qual_obj_label .
-    #ref
+    # ref
     ?statement prov:wasDerivedFrom ?reference .
     ?reference  ?reference_prop  ?reference_obj .
     ?reference_obj rdfs:label ?reference_obj_label .
+    # reverse
+    ?reverse_obj  ?reverse_prop  ?uri .
+    ?reverse_obj rdfs:label ?reverse_obj_label .
 }
 where {
     values ?uri {
@@ -29,9 +32,11 @@ where {
     values ?reference_prop {
         <reference_prop_placeholder>
     }
-    #values ?reverse_prop {<http://www.wikidata.org/prop/direct/P5869> <http://www.wikidata.org/prop/direct/P4646> }
+    values ?reverse_prop {
+        <reverse_prop_placeholder> 
+    }
     values ?lang {
-        "de"  "fr"  "en"  
+        <languages_placeholder>
     }
     {
        bind(URI(concat("http://www.wikidata.org/prop/",STRAFTER(str(?forward_prop),"/direct/")))  as ?forward_prop2)
@@ -66,11 +71,11 @@ where {
     UNION 
     {
         bind(URI(concat("http://www.wikidata.org/prop/",STRAFTER(str(?forward_prop),"/direct/")))  as ?forward_prop2)
-      bind(URI(concat("http://www.wikidata.org/prop/statement/",STRAFTER(str(?forward_prop),"/direct/")))  as ?prop_statement2)
+        bind(URI(concat("http://www.wikidata.org/prop/statement/",STRAFTER(str(?forward_prop),"/direct/")))  as ?prop_statement2)
    
-      ?uri ?forward_prop ?obj .
-      ?uri ?forward_prop2 ?statement .
-      ?statement ?prop_statement2 ?obj .
+        ?uri ?forward_prop ?obj .
+        ?uri ?forward_prop2 ?statement .
+        ?statement ?prop_statement2 ?obj .
     
         filter(isLITERAL(?obj))
         filter((lang(?obj) = ?lang) || !(datatype(?obj) = rdf:langString ) )
@@ -91,6 +96,14 @@ where {
                 ?reference_obj rdfs:label ?reference_obj_label .
                 filter(lang(?reference_obj_label) =  ?lang)
             }
+        }
+    }
+    UNION 
+    {
+       ?reverse_obj  ?reverse_prop  ?uri .
+        OPTIONAL {
+            ?reverse_obj rdfs:label ?reverse_obj_label .
+            filter(lang(?reverse_obj_label) =  ?lang)
         }
     }
 }
