@@ -137,23 +137,50 @@ class DataSource < ApplicationRecord
 
   # Dereference all objects of any type
   def load_tertiary
+    # sparql = <<~SPARQL
+    #   select distinct ?uri
+    #   where {
+    #     graph <#{graph_name}> {
+    #         ?s a <#{self.type_uri}> .
+    #         ?s ?p ?uri_secondary .
+    #         ?uri_secondary ?p_secondary ?uri .
+    #         ?uri a <http://wikiba.se/ontology#Item> .
+    #     } 
+    #     MINUS {
+    #         ?uri <http://www.wikidata.org/prop/direct/P31> ?some_instance_of_entity .
+    #     } 
+    #     MINUS {
+    #         ?uri <http://www.wikidata.org/prop/direct/P279> ?some_subclass_of_entity .
+    #     } 
+    #   }
+    # SPARQL
+
     sparql = <<~SPARQL
       select distinct ?uri
       where {
-        graph <#{graph_name}> {
-            ?s a <#{self.type_uri}> .
-            ?s ?p ?uri_secondary .
-            ?uri_secondary ?p_secondary ?uri .
-            ?uri a <http://wikiba.se/ontology#Item> .
-        } 
-        MINUS {
-            ?uri <http://www.wikidata.org/prop/direct/P31> ?some_instance_of_entity .
-        } 
-        MINUS {
-            ?uri <http://www.wikidata.org/prop/direct/P279> ?some_subclass_of_entity .
-        } 
-      }
-    SPARQL
+          {
+              select distinct  ?uri  where {
+                  graph <#{graph_name}> {
+                      {
+                          select distinct ?secondary_uri where {
+                              ?s a <#{self.type_uri}> .
+                              ?s ?some_prop ?secondary_uri .
+                              ?secondary_uri a <http://wikiba.se/ontology#Item> .
+                              ?some_prop a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+                          }
+                      }
+                      ?secondary_uri ?secondary_prop ?uri .
+                      ?secondary_prop a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+                      ?uri a <http://wikiba.se/ontology#Item> .
+                  }
+              }
+          }
+          filter not exists {
+              ?uri ?extra_prop ?extra_obj .
+              ?extra_prop a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+          }
+      }   
+      SPARQL
 
 
     @response = RDFGraph.execute(sparql)
