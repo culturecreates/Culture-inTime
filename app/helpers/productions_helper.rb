@@ -43,10 +43,18 @@ module ProductionsHelper
     solutions = @production.graph.query(query)
 
     if solutions.count > 0
-      if  solutions.first[:direction]
-        return "^#{solutions.first[:label].value}"
+      
+      selected = solutions.select! { |s| s.label.language == locale }
+      selected = solutions if selected.nil? # fall back to any language
+      
+      if selected.count > 0
+        if  solutions.first[:direction]
+          return "^#{selected.first[:label].value}"
+        else
+          return selected.first[:label].value
+        end
       else
-        return solutions.first[:label].value
+        return id
       end
      
     else 
