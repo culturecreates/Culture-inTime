@@ -8,19 +8,20 @@ PREFIX schema: <http://schema.org/>
 
 select distinct (sample(?l_lowercase) as ?l_sample) ?ps (count(distinct ?uri) as ?count) 
 where {
-
-    << ?uri ?p ?o >>  <http://www.w3.org/ns/prov#wasDerivedFrom> ?b .
-    ?b ?ps ?ref_obj .
-    
+    # inverse with uri in object position
+    ?o ?ps ?uri .
+    filter(contains(str(?ps),"/prop/direct/P"))
     ?ps rdfs:label ?l .
     filter(lang(?l) = "en")
 
     bind(lcase(?l) as ?l_lowercase)
     {
-         select ?uri where {
-         <spotlight_query_placeholder> a "triple"
-         } limit 500
+        select ?uri where {
+            <spotlight_query_placeholder> a "triple"
+        } limit 500
+       
     }
 } 
 group by ?ps 
 order by DESC(?count) ?l_sample
+

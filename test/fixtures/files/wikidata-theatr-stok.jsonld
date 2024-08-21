@@ -1,0 +1,57 @@
+
+[
+  {
+    "@id": "http://www.wikidata.org/entity/Q15850586",
+    "@type": [
+      "http://wikiba.se/ontology#Item"
+    ],
+    "http://www.wikidata.org/prop/P31": [
+      {
+        "@id": "http://www.wikidata.org/entity/statement/Q15850586-A897541E-A6C8-40E2-9931-D6FEFAA60482"
+      }
+    ]
+  },
+  {
+    "@id": "http://www.wikidata.org/entity/statement/Q15850586-A897541E-A6C8-40E2-9931-D6FEFAA60482",
+    "http://www.wikidata.org/prop/statement/P31": [
+      {
+        "@id": "http://www.wikidata.org/entity/Q57660343"
+      }
+    ]
+  },
+  {
+    "@id": "http://www.wikidata.org/entity/Q57660343",
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@language": "en",
+        "@value": "performing arts building"
+      },
+      {
+        "@language": "fr",
+        "@value": "bâtiment des arts de la scène"
+      },
+      {
+        "@language": "de",
+        "@value": "Gebäude für darstellende Kunst"
+      }
+    ]
+  },
+  {
+    "@id": "http://www.wikidata.org/entity/Q111234992",
+    "http://www.wikidata.org/prop/direct/P276": [
+      {
+        "@id": "http://www.wikidata.org/entity/Q15850586"
+      }
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@language": "en",
+        "@value": "Zwei auf der Schaukel"
+      },
+      {
+        "@language": "de",
+        "@value": "Zwei auf der Schaukel"
+      }
+    ]
+  }
+]

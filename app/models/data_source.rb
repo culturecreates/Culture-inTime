@@ -11,13 +11,11 @@ class DataSource < ApplicationRecord
 
   # Method to load data source into a graph
   def load_rdf(test_drive = false)
-    @response = RDFGraph.execute(self.sparql)
-
+    @response = RDFGraph.execute(sparql_new_or_updated_entities)
     if @response[:code] != 200
       self.errors.add(:base, "#{@response[:message]}")
       return false
     end
-
 
     data = @response[:message]
 
@@ -76,17 +74,16 @@ class DataSource < ApplicationRecord
   end
 
   def convert_to_rdf_star 
-    BatchUpdateJob.perform_now(convert_wikidata_to_rdf_star_graph_sparql)
+    BatchUpdateJob.perform_later(convert_wikidata_to_rdf_star_graph_sparql)
   end
 
   def fix_labels 
-    BatchUpdateJob.perform_now(fix_wikidata_property_labels_sparql)
-    BatchUpdateJob.perform_now(fix_wikidata_anotated_entity_labels_sparql)
+    BatchUpdateJob.perform_later(fix_wikidata_property_labels_sparql)
+    BatchUpdateJob.perform_later(fix_wikidata_anotated_entity_labels_sparql)
   end
 
+  # Dereference all objects of any type steming from the main entity class {self.type_uri}
   def load_secondary
-     # Dereference all objects of any type
-
     sparql = <<~SPARQL
       select distinct ?uri 
       where {
@@ -138,6 +135,88 @@ class DataSource < ApplicationRecord
     return true
   end
 
+  # Dereference all objects of any type
+  def load_tertiary
+    # sparql = <<~SPARQL
+    #   select distinct ?uri
+    #   where {
+    #     graph <#{graph_name}> {
+    #         ?s a <#{self.type_uri}> .
+    #         ?s ?p ?uri_secondary .
+    #         ?uri_secondary ?p_secondary ?uri .
+    #         ?uri a <http://wikiba.se/ontology#Item> .
+    #     } 
+    #     MINUS {
+    #         ?uri <http://www.wikidata.org/prop/direct/P31> ?some_instance_of_entity .
+    #     } 
+    #     MINUS {
+    #         ?uri <http://www.wikidata.org/prop/direct/P279> ?some_subclass_of_entity .
+    #     } 
+    #   }
+    # SPARQL
+
+    sparql = <<~SPARQL
+      select distinct ?uri
+      where {
+          {
+              select distinct  ?uri  where {
+                  graph <#{graph_name}> {
+                      {
+                          select distinct ?secondary_uri where {
+                              ?s a <#{self.type_uri}> .
+                              ?s ?some_prop ?secondary_uri .
+                              ?secondary_uri a <http://wikiba.se/ontology#Item> .
+                              ?some_prop a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+                          }
+                      }
+                      ?secondary_uri ?secondary_prop ?uri .
+                      ?secondary_prop a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+                      ?uri a <http://wikiba.se/ontology#Item> .
+                  }
+              }
+          }
+          filter not exists {
+              ?uri ?extra_prop ?extra_obj .
+              ?extra_prop a <http://www.w3.org/2002/07/owl#ObjectProperty> .
+          }
+      }   
+      SPARQL
+
+
+    @response = RDFGraph.execute(sparql)
+
+    if @response[:code] != 200
+      puts "found error in tertiary load"
+      self.errors.add(:base, "#{@response[:message]}")
+      return false
+    end
+
+    data = @response[:message]
+
+    @tertiary_uris = []
+
+    return true unless data.present?
+    
+    @tertiary_uris = data.pluck("uri").pluck("value")
+    
+    # This limit is set in the GraphDB respository as the "Limit query results"
+    if @tertiary_uris.count >= 100000
+      self.errors.add(:base, "Exceeded limit of 100,000 tertiary URIs. Please break query into smaller groups.")
+      return false 
+    end
+  
+    # chunk in smaller arrays incase one fails in the queue
+    # for a list of 100,000 URIs this will queue 200 jobs 
+    @tertiary_uris.each_slice(200) do |chunk|
+      SetupContentNegotiationJob.perform_later(chunk, graph_name)
+      puts "Tertiary Batch sent...."
+    end
+  
+    puts "Returning true for tertiary load!"
+    return true
+  end
+
+
   def sample_graph
     return @sample_graph
   end
@@ -149,6 +228,11 @@ class DataSource < ApplicationRecord
   def secondary_uri_count
     return @secondary_uris.count
   end
+
+  def tertiary_uri_count
+    return @tertiary_uris.count
+  end
+
   def sample_uri 
     return  @sample_uri
   end
@@ -198,6 +282,33 @@ class DataSource < ApplicationRecord
     SparqlLoader.load('fix_wikidata_anotated_entity_labels', [
       'graph_placeholder', graph_name
     ])
+  end
+
+  # remove entities that already exist and have not been modified since last loaded
+  def sparql_minus_unchanged_entities 
+    sparql = self.sparql
+    sparql_parts = self.sparql.rpartition('}') # splits first occurance from right side
+    sparql = sparql_parts[0] + "MINUS { ?uri a <#{self.type_uri}> . }" + sparql_parts[1] + sparql_parts[2]
+    sparql
+  end
+
+  def sparql_with_cache_date
+    if self.loaded
+      self.sparql.gsub("CACHEDATE", "\"#{self.loaded.to_time.iso8601}\"^^<http://www.w3.org/2001/XMLSchema#dateTime>")
+    else
+      self.sparql.gsub("CACHEDATE", "\"1967-01-01T00:00:00+00:00\"^^<http://www.w3.org/2001/XMLSchema#dateTime>")
+    end
+  end
+
+  # Modify the source's sparql to avoid reloaded existing entites
+  def sparql_new_or_updated_entities
+    if self.sparql.include?("CACHEDATE")
+      # if using CACHEDATE then set CACHEDATE so the source can load only updated entites
+      sparql_with_cache_date
+    else
+      # add a minus {} to not reload entities already loaded
+      sparql_minus_unchanged_entities
+    end
   end
 
 end

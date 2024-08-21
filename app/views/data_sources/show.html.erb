@@ -16,21 +16,28 @@
 <p>
   <%  if @data_source.layers.count == 0 %>
   <%  if @data_source.loaded %>
-  <div class="ui labeled button" tabindex="0">
-    <div class="ui tertiary button"> <i class="calendar icon"></i> Cached on</div>
-    <div class="ui basic tertiary left pointing label"><%= @data_source.loaded %></div>
-  </div>
+    <div class="ui labeled button" tabindex="0">
+      <div class="ui tertiary button"> <i class="calendar icon"></i> Cached on</div>
+      <div class="ui basic tertiary left pointing label"><%= @data_source.loaded %></div>
+    </div>
   <% end %>
   <%= link_to t("button.test"), load_rdf_data_source_path(test: true), class: "ui button primary basic show_loading" %>
-  <%= link_to t("button.import"), load_rdf_data_source_path, class: "ui button primary show_loading_if_confirmed", data: { confirm: "This will load everything in \"#{@data_source.name}\". Are you sure?" } %>
-  <%= link_to t("button.apply_upper_ontology"), apply_upper_ontology_data_source_path, class: "ui button secondary show_loading" %>
-  <%= link_to t("button.load_labels"), fix_labels_data_source_path, class: "ui button secondary show_loading" %>
-  <%= link_to t("button.convert_to_rdf_star"), convert_to_rdf_star_data_source_path, class: "ui button secondary show_loading" %>
-  <%= link_to t("button.load_secondary"), load_secondary_data_source_path, class: "ui button info show_loading" %>
-
   <% if @data_source.loaded.present? %>
-  <%= link_to t("button.view_all"), search_rdf_path(data_source: @data_source.id), class: "ui button tertiary" %>
+    <%= link_to t("button.update"), load_rdf_data_source_path, class: "ui button primary show_loading_if_confirmed", data: { confirm: "This will update everything in \"#{@data_source.name}\" that has changed since #{@data_source.loaded}. Are you sure?" } %>
+  <% else %>
+    <%= link_to t("button.import"), load_rdf_data_source_path, class: "ui button primary show_loading_if_confirmed", data: { confirm: "This will load everything in \"#{@data_source.name}\". Are you sure?" } %>
   <% end %>
+  <% if @data_source.loaded.present? %>
+    <%= link_to t("button.view_all"), search_rdf_path(data_source: @data_source.id), class: "ui button tertiary" %>
+  <% end %>
+  <br><br> 
+  <%= link_to t("button.apply_upper_ontology"), apply_upper_ontology_data_source_path, class: "ui button tiny secondary show_loading" %>
+  <%= link_to t("button.load_labels"), fix_labels_data_source_path, class: "ui button tiny secondary show_loading" %>
+  <%= link_to t("button.convert_to_rdf_star"), convert_to_rdf_star_data_source_path, class: "ui button tiny secondary show_loading" %>
+  <%= link_to t("button.load_secondary"), load_secondary_data_source_path, class: "ui button secondary tiny basic show_loading" %>
+  <%= link_to t("button.load_tertiary"), load_tertiary_data_source_path, class: "ui button secondary tiny basic show_loading" %>
+
+
 
   <% else %>
   Chained to layers: <%= @data_source.layers.map {|l| l.name }.join(", ") %>

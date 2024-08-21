@@ -1,13 +1,11 @@
 class SpotlightsController < ApplicationController
-  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats_prop, :stats_qual, :stats_ref, :download, :update_layout]
+  before_action :set_spotlight, only: [:show, :edit, :update, :destroy, :stats_prop, :stats_qual, :stats_ref, :stats_inverse_prop, :download, :update_layout]
 
   # GET /spotlights
   # GET /spotlights.json
   def index
     @spotlights = Spotlight.all.order(:title)
   end
-
-
   
   # GET /spotlights/1
   # GET /spotlights/1.json
@@ -25,18 +23,69 @@ class SpotlightsController < ApplicationController
     RDFGraph.drop(graph_name)
     RDFGraph.persist(turtle, graph_name)
     redirect_to @spotlight, notice: 'Spotlight layout was successfully updated.'
-   
   end
+
 
   # GET /spotlights/1.json/download
   def download
-    data = Entity.spotlight(@spotlight.id)
-    @batch = RDF::Graph.new
-    data.paginate(limit:200).each do |entity|
-      @batch << entity.graph
+    if @spotlight.dump && @spotlight.dump != "loading" && !params[:refresh]
+      output = @spotlight.dump
+    else
+      begin
+        frame_json = JSON.parse(@spotlight.frame)
+        if frame_json.class == Hash
+          if @spotlight.dump != "loading"  || params[:force]
+            DumpSpotlightJob.perform_later(@spotlight.id)
+            @spotlight.dump = "loading"
+            @spotlight.save
+            notice = "Compiling spotlight data in the queue!"
+          else
+            notice = "Still compiling spotlight data... Try again in a couple of minutes!"
+          end
+        else
+          notice = "ERROR! Please add a JSON-LD Frame inside {} in API settings!"
+        end
+      rescue JSON::ParserError
+        notice = "ERROR! Please add a JSON-LD Frame in API settings!"
+      end
     end
-    send_data  @batch.dump(:jsonld, validate: false), :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
+    if output 
+      send_data  output, :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
+    else
+      redirect_to @spotlight, notice: notice
+    end
   end
+
+
+  # # GET /spotlights/1/download.json&refresh=&style=
+  # def download
+  #   if params[:style] != "wikidata"
+  #     if @spotlight.dump && @spotlight.dump != "loading" && !params[:refresh]
+  #       output = @spotlight.dump
+  #     else
+  #       if @spotlight.dump != "loading"
+  #         DumpSpotlightJob.perform_later(@spotlight.id)
+  #         @spotlight.dump = "loading"
+  #         @spotlight.save
+  #       end
+  #       notice = "Compiling spotlight data... Try again in a minute!"
+  #     end
+  #   else
+  #     # todo: move to background job
+  #     if @spotlight.frame.present?
+  #       graph = @spotlight.compile_dump_graph
+  #       frame_json = JSON.parse(@spotlight.frame)
+  #       output = JSON::LD::API.frame( JSON.parse(graph.to_jsonld), frame_json).to_json
+  #     else
+  #       notice = 'Could not export. Please check your JSON-LD Frame in the API screen.'
+  #     end
+  #   end
+  #   if output 
+  #     send_data  output, :disposition => 'attachment', :filename=>"#{@spotlight.title}.jsonld"
+  #   else
+  #     redirect_to @spotlight, notice: notice
+  #   end
+  # end
 
   # GET /spotlights/1/stats_prop
   def stats_prop
@@ -52,9 +101,17 @@ class SpotlightsController < ApplicationController
     render "stats"
   end
 
-      # GET /spotlights/1/stats_ref
+  # GET /spotlights/1/stats_ref
   def stats_ref
     results = RDFGraph.execute(@spotlight.generate_sparql_stats_ref)
+    @properties = results[:message]
+    render "stats"
+  end
+
+  # GET /spotlights/1/stats_inverse_prop
+  def stats_inverse_prop
+    results = RDFGraph.execute(@spotlight.generate_sparql_stats_inverse_prop)
+    @direction = "Reverse"
     @properties = results[:message]
     render "stats"
   end

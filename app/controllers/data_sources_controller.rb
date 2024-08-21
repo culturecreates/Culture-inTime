@@ -1,16 +1,17 @@
 class DataSourcesController < ApplicationController
   require 'sidekiq/api'
-  before_action :set_data_source, only: [:show, :fix_labels, :convert_to_rdf_star, :apply_upper_ontology, :load_secondary, :load_rdf, :edit, :update, :destroy]
+  before_action :set_data_source, only: [:show, :fix_labels, :convert_to_rdf_star, :apply_upper_ontology, :load_secondary, :load_tertiary, :load_rdf, :edit, :update, :destroy]
 
 
   # GET /data_sources
   # GET /data_sources.json
   def index
     @data_sources = DataSource.all.order(:name)
-    @jobs = if Rails.env.production?
-      Sidekiq::Queue.new.size
-    else
-      0
+    @jobs = 0
+    begin
+      @jobs = Sidekiq::Queue.new.size if Rails.env.production?
+    rescue => exception
+      flash.now[:notice] = "Redis Queue: #{exception.inspect} ." 
     end
   end
 
@@ -37,20 +38,20 @@ class DataSourcesController < ApplicationController
   
   def fix_labels
     response = @data_source.fix_labels
-    if response[:code] == 204
-      flash.now[:notice] = "Labels loaded!"
+    if response
+      flash.now[:notice] = "Fix labels job sent to queue!"
     else
-      flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not load labels."
+      flash.now[:notice] = "Error: ran into a problem #{response.inspect}. Could not load labels"
     end
     render 'show'
   end
 
   def convert_to_rdf_star
     response = @data_source.convert_to_rdf_star
-    if response[:code] == 204
-      flash.now[:notice] = "Converted to RDF Star!"
+    if response
+      flash.now[:notice] = "Convert to RDF Star job sent to queue!"
     else
-      flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not convert to RDF Star."
+      flash.now[:notice] = "Error: ran into a problem #{response.inspect}. Could not convert to RDF Star."
     end
     render 'show'
   end
@@ -64,6 +65,20 @@ class DataSourcesController < ApplicationController
         flash.now[:notice] = "#{@data_source.secondary_uri_count} additional secondary nodes loaded!"
       else
         flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not load secondary nodes."
+      end
+    end
+    render 'show'
+  end
+
+  # GET /data_sources/1/load_tertiary
+  def load_tertiary
+    if @data_source.upper_title.blank?
+      flash.now[:notice] = "Error: need a title property in upper ontology." 
+    else
+      if @data_source.load_tertiary
+        flash.now[:notice] = "#{@data_source.tertiary_uri_count} additional tertiary nodes loaded!"
+      else
+        flash.now[:notice] = "Error: ran into a problem #{response[:code]}. Could not load tertiary nodes."
       end
     end
     render 'show'
@@ -85,7 +100,7 @@ class DataSourcesController < ApplicationController
           Estimated time to load is #{helpers.time_estimate(@data_source) }."
         end
       else
-        flash.now[:notice] = "Ran into a problem. #{@data_source.errors.full_messages}"
+        flash.now[:notice] = "#{@data_source.errors.full_messages} Maybe nothing to update."
       end
     end
     render 'show'

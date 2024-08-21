@@ -19,6 +19,9 @@ en:
     import:
     apply_upper_ontology: 
     view_all: 
+    apply_upper_ontology: "Apply Upper Ontology"
+    load_labels: "Load labels"
+    convert_to_rdf_star: "Convert to RDF-Star"
   table:
     name: "Name"
     author: "Author"

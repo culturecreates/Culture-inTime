@@ -2,13 +2,14 @@ class SearchRdfController < ApplicationController
   def index
     @spotlight = params[:spotlight]
     @entities = if @spotlight
-                  Entity.spotlight(@spotlight).paginate(page: params[:page], limit:params[:limit] )
+                  Entity.spotlight(@spotlight)
                 elsif params[:data_source]
-                  Entity.data_source(params[:data_source]).paginate(page: params[:page]) 
+                  Entity.data_source(params[:data_source]) 
                 else
                   Entity.spotlight(1)
                 end
-    @count = Entity.count
+    @count = @entities.count
+    @entities = @entities.paginate(page: params[:page], limit:params[:limit] )
   end
 
   def spotlight 

@@ -37,7 +37,7 @@
            <%= link_to "properties", stats_prop_spotlight_path(@spotlight), remote: true, class: "ui button" %>
            <%= link_to "references", stats_ref_spotlight_path(@spotlight), remote: true, class: "ui button" %>
            <%= link_to "qualifiers", stats_qual_spotlight_path(@spotlight), remote: true, class: "ui button" %>
-            <%= link_to "inverse properties", stats_prop_spotlight_path(@spotlight), remote: true, class: "ui button" %>
+            <%= link_to "inverse properties", stats_inverse_prop_spotlight_path(@spotlight), remote: true, class: "ui button" %>
            </div>
         <div id="stats">
            
@@ -49,7 +49,7 @@
           </div>
           <div> 
           <br>
-          <%= link_to "Save", update_layout_spotlight_path(@spotlight), method: :patch, remote: false, class: "ui button primary" %>
+          <%= link_to "Save", update_layout_spotlight_path(@spotlight), method: :patch, remote: false, class: "ui button green" %>
           </div>
         </div>
        

@@ -1,10 +1,10 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  sparql: MyString
+  name: Source One
+  sparql: SELECT ?uri WHERE { ?a ?b ?c } LIMIT 10
   email: MyString
-  loaded: 2021-04-08 21:04:12
+  loaded: 2021-04-08 21:00:00
   upper_title: schema:name
   upper_description: schema:upper_description
   type_uri: http://schema.org/Event
@@ -16,7 +16,11 @@ one:
   upper_prefix: "wdt: <http://www.wikidata.org/prop/direct/>, schema: <http://schema.org/>"
 
 two:
-  name: MyString
-  sparql: MyString
+  name: Source Two
+  sparql: SELECT DISTINCT ?uri WHERE { ?uri schema:modifiedDate CACHEDATE } 
   email: MyString
   loaded: 2021-04-08 21:04:12
+
+three:
+  name: New source three never loaded
+  sparql: SELECT DISTINCT ?uri WHERE { ?uri schema:modifiedDate CACHEDATE }  

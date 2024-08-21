@@ -9,29 +9,38 @@ class Layout
 
   def turtle_to_list(turtle)
     graph = RDF::Graph.new
-    graph.from_ttl(turtle, prefixes: {rdf: RDF.to_uri, cit: "<http://culture-in-time.org/ontology/>"})
-
-    cit = RDF::Vocabulary.new("http://culture-in-time.org/ontology/")
-    query = RDF::Query.new({
-      uri: {
-        cit.name => :name,
-        cit.order => :order,
-      }
-    }, **{})
-    
+    graph.from_ttl(turtle, prefixes: {
+      xsd: "<http://www.w3.org/2001/XMLSchema#>", 
+      rdfs: "<http://www.w3.org/2000/01/rdf-schema#>", 
+      rdf: RDF.to_uri, 
+      cit: "<http://culture-in-time.org/ontology/>"
+    })
+    query = RDF::Query.new do 
+      pattern [:uri,RDF::URI("http://culture-in-time.org/ontology/name"), :name]
+      pattern [:uri, RDF::URI("http://culture-in-time.org/ontology/order"), :order]
+    end
+    query << RDF::Query::Pattern.new(:uri, RDF::URI("http://culture-in-time.org/ontology/direction"), :direction, optional: true)
     fields = []
-    query.execute(graph) do |solution|
-      fields << {solution.uri.value => solution.name.value, order:  solution.order.value.to_i }
+    query.execute(graph) do |solution| 
+      if solution.to_h[:direction] 
+        fields << { solution.uri.value => solution.name.value, order:  solution.order.value.to_i, direction: solution.direction.value}
+      else
+        fields << { solution.uri.value => solution.name.value, order:  solution.order.value.to_i, direction: "http://culture-in-time.org/ontology/Forward"}
+      end
     end
     fields.sort_by! { |f| f[:order] }
-    # puts "fields: #{fields}"
+    # puts "fields converted from turtle to list: #{fields}"
     fields
   end
 
 
-  def add_field(uri, name)
+  def add_field(uri, name, direction = nil)
     return false if @fields.select {|f| f.has_key?(uri)}.present?
-    @fields << { uri =>  name }
+    if direction == "Reverse"
+      @fields << { uri =>  name, direction: "http://culture-in-time.org/ontology/Reverse"}
+    else
+      @fields << { uri =>  name, direction: "http://culture-in-time.org/ontology/Forward"}
+    end
     true
   end
 
@@ -45,8 +54,6 @@ class Layout
       return true
     end
   end
-
-
 
   def move_up(uri)
     index = @fields.index { |f| f.first[0] == uri } 
@@ -67,9 +74,15 @@ class Layout
 
   def turtle
     turtle = ''
+    # puts "converting to turtle: #{@fields}"
     @fields.each_with_index do |field,index|
-      turtle += "<#{field.first[0]}>  <http://culture-in-time.org/ontology/order> #{index} ; <http://culture-in-time.org/ontology/name> \"#{field.first[1]}\" .  "
+      uri = field.first[0]
+      name = field.first[1]
+      turtle += "<#{uri}>  <http://culture-in-time.org/ontology/order> #{index} ; <http://culture-in-time.org/ontology/name> \"#{name}\" ; <http://culture-in-time.org/ontology/direction> <#{field[:direction]}> .  "
+     
     end
+    # Add rdfs:label with any order so it gets included in the layout for display in the title.
+    turtle += "rdfs:label <http://culture-in-time.org/ontology/order> \"99\"^^xsd:integer ." 
     turtle
   end
 

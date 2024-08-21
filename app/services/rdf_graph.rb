@@ -27,7 +27,8 @@ class RDFGraph
   end
 
   def self.artsdata_client
-    @artsdata_client ||= ArtsdataApi::V1::Client.new  # (oauth_token: Rails.application.credentials.dig(:graphdb, :oauth_token))
+    # EDITOR="code --wait" rails credentials:edit
+    @artsdata_client ||= ArtsdataApi::V1::Client.new(oauth_token: Rails.application.credentials.dig(:graphdb, :oauth_token))
   end
 end
 

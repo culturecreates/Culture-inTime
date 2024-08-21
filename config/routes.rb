@@ -13,7 +13,7 @@ Rails.application.routes.draw do
   get 'layout/move_down' , to: 'layout#move_down' 
 
   scope "/:locale" do
-    root to: 'home#index'
+    root to: 'spotlights#index'
    
     get '/search', to: 'search#index'
     get '/search_rdf', to: 'search_rdf#index'
@@ -29,14 +29,14 @@ Rails.application.routes.draw do
 
     resources :spotlights do
       member do
-        get 'stats_prop','stats_ref','stats_qual', 'download'
+        get 'stats_prop','stats_ref','stats_qual', 'stats_inverse_prop', 'download'
         patch 'update_layout'
       end
     end
 
     resources :data_sources do
       member do
-        get  'load_rdf', 'apply_upper_ontology', 'load_secondary','fix_labels','convert_to_rdf_star'
+        get  'load_rdf', 'apply_upper_ontology', 'load_secondary','load_tertiary','fix_labels','convert_to_rdf_star'
       end
     end
   end

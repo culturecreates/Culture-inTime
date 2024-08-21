@@ -11,7 +11,7 @@ class EntityTest < ActiveSupport::TestCase
 
   test "demo" do
     entity = Entity.new
-    expected = 22
+    expected = {"@context"=>{"@base"=>"http://www.artsdata.ca/resource/", "@vocab"=>"http://www.artsdata.ca/resource/"}, "@id"=>"TheShow", "@type"=>"Performance", "performer"=>{"@id"=>"John", "@type"=>"Person", "name"=>"John Smith"}}
     assert_equal  expected, entity.test_frame
   end
 end

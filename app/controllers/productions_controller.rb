@@ -11,7 +11,7 @@ class ProductionsController < ApplicationController
   # GET /productions/show?uri=
   # Input: uri String
   # Output: 
-  #   @production Class Entity with methods graph and properties_with_labels
+  #   @production Class Entity
   def show
     entity = Entity.new(entity_uri: params[:uri])
     entity.layout_id = params[:layout]
@@ -29,7 +29,9 @@ class ProductionsController < ApplicationController
    # GET /productions/wikidata?uri=
   # Graph of wikidata statement nodes instead of RDF Star
   def wikidata 
-    @production = Entity.wikidata(params[:uri], params[:layout])
+    entity = Entity.new(entity_uri: params[:uri],layout_id: params[:layout])
+    entity.graph(approach: "wikidata")
+    @production = entity
     render 'show'
   end
 

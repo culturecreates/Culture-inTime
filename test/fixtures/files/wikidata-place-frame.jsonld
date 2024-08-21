@@ -1,0 +1,11 @@
+{ 
+"@context": {
+"wdt":"http://www.wikidata.org/prop/direct/",
+"wd":"http://www.wikidata.org/entity/",
+"ex":"http://example.com",
+ "premieredHere": {"@reverse": "wdt:P4647"}
+},
+"@type":"http://wikiba.se/ontology#Item",
+"@embed":"@always",
+ "premieredHere": {}
+}

@@ -1,0 +1,116 @@
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+
+construct {
+    ?uri a <http://wikiba.se/ontology#Item> .
+
+    ?uri ?forward_prop2 ?statement .
+    ?statement ?prop_statement2 ?obj .
+    ?obj rdfs:label ?obj_label.
+    # qual
+    ?statement ?qualifier_prop ?qual_obj .
+    ?qual_obj rdfs:label ?qual_obj_label .
+    # ref
+    ?statement prov:wasDerivedFrom ?reference .
+    ?reference  ?reference_prop  ?reference_obj .
+    ?reference_obj rdfs:label ?reference_obj_label .
+    # reverse
+    ?reverse_obj  ?reverse_prop  ?uri .
+    ?reverse_obj rdfs:label ?reverse_obj_label .
+
+    # always get the name
+    ?uri rdfs:label ?enity_label .
+}
+where {
+    values ?uri {
+        <entity_uri_placeholder> 
+    }
+    values ?forward_prop {
+        <forward_prop_placeholder>  
+    }
+    values ?qualifier_prop {
+        <qualifier_prop_placeholder> 
+    }
+    values ?reference_prop {
+        <reference_prop_placeholder>
+    }
+    values ?reverse_prop {
+        <reverse_prop_placeholder> 
+    }
+    values ?lang {
+        <languages_placeholder>
+    }
+    {
+       bind(URI(concat("http://www.wikidata.org/prop/",STRAFTER(str(?forward_prop),"/direct/")))  as ?forward_prop2)
+       bind(URI(concat("http://www.wikidata.org/prop/statement/",STRAFTER(str(?forward_prop),"/direct/")))  as ?prop_statement2)
+       ?uri ?forward_prop ?obj .
+       ?uri ?forward_prop2 ?statement .
+       ?statement ?prop_statement2 ?obj .
+       filter(isURI(?obj))
+        OPTIONAL {
+            ?obj rdfs:label ?obj_label .
+            filter(lang(?obj_label) =  ?lang)
+        }
+        # Qualifiers
+        OPTIONAL {
+            
+            ?statement ?qualifier_prop ?qual_obj .
+            OPTIONAL {
+                ?qual_obj rdfs:label ?qual_obj_label .
+                filter(lang(?qual_obj_label) =  ?lang)
+            }
+        }
+        # References
+         OPTIONAL {
+            ?statement prov:wasDerivedFrom ?reference .
+            ?reference  ?reference_prop  ?reference_obj .
+            OPTIONAL {
+                ?reference_obj rdfs:label ?reference_obj_label .
+                filter(lang(?reference_obj_label) =  ?lang)
+            }
+        }
+    }
+    UNION 
+    {
+        bind(URI(concat("http://www.wikidata.org/prop/",STRAFTER(str(?forward_prop),"/direct/")))  as ?forward_prop2)
+        bind(URI(concat("http://www.wikidata.org/prop/statement/",STRAFTER(str(?forward_prop),"/direct/")))  as ?prop_statement2)
+   
+        ?uri ?forward_prop ?obj .
+        ?uri ?forward_prop2 ?statement .
+        ?statement ?prop_statement2 ?obj .
+    
+        filter(isLITERAL(?obj))
+        filter((lang(?obj) = ?lang) || !(datatype(?obj) = rdf:langString ) )
+
+        # Qualifiers
+        OPTIONAL {
+            ?statement ?qualifier_prop ?qual_obj .
+            OPTIONAL {
+                ?qual_obj rdfs:label ?qual_obj_label .
+                filter(lang(?qual_obj_label) =  ?lang)
+            }
+        }
+        # References
+        OPTIONAL {
+            ?statement prov:wasDerivedFrom ?reference .
+            ?reference  ?reference_prop  ?reference_obj .
+            OPTIONAL {
+                ?reference_obj rdfs:label ?reference_obj_label .
+                filter(lang(?reference_obj_label) =  ?lang)
+            }
+        }
+    }
+    UNION 
+    {
+       ?reverse_obj  ?reverse_prop  ?uri .
+        OPTIONAL {
+            ?reverse_obj rdfs:label ?reverse_obj_label .
+            filter(lang(?reverse_obj_label) =  ?lang)
+        }
+    }
+    OPTIONAL {
+        ?uri rdfs:label ?enity_label .
+        filter(lang(?enity_label) =  ?lang)
+    }
+}

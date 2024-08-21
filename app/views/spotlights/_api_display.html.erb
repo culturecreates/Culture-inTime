@@ -18,21 +18,20 @@
    <label> API Endpoint </label>
     <input type="text" value="<%= spotlight_url(@spotlight, format: :json, locale: "en") %>">
     </div>
+    
       <div class="field">
         <%= form.label :language %>
         <%= form.text_field :language, placeholder: "Language" %>
-      </div>
-      <div class="field">
-        <label> Refresh frequency (days) </label>
-        <input type="text" value="7">
       </div>
       <div class="field"> 
         <%= form.label "Frame"  %> 
         <%= form.text_area :frame, rows: 10 %>
       </div>
-     
-      <div class="actions">
-        <%= form.submit "Submit", class: 'ui button green show_loading' %>
+      <p>
+        <%= link_to "Compile Spotlight...",  download_spotlight_url(@spotlight, params: {refresh: true},format: :json), class:"ui button tiny secondardy show_loading" %> <%= link_to ".",  download_spotlight_url(@spotlight, params: {refresh: true, force: true},format: :json) %>
+      </p>
+       <div class="actions">
+        <%= form.submit "Save", class: 'ui button green show_loading' %>
       </div>
   
     </div>
@@ -43,7 +42,7 @@
 
       <h3>To install widget</h3>
       <p>Copy/paste the following into your website.
-<pre><p><%="<div 
+<pre><p style="overflow:auto"><%="<div 
 class='spotlight-widget' 
 data-spotlight='#{@spotlight.id}' 
 data-limit=5 
